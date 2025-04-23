@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
-async function signupUser(req, res) {
+async function signupValidator(req, res) {
     try {
         const { firstName, lastName, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -10,14 +10,14 @@ async function signupUser(req, res) {
             lastName,
             email,
             password: hashedPassword,
-            role: "admin"
+            role: "validator"
         })
         const savedUser = await newUser.save();
-        res.status(201).json({ message: "An admin created successfully", user: savedUser });
+        res.status(201).json({ message: "A validator created successfully", user: savedUser });
     } catch (error) {
         res.status(400).json({ message: error.message || "An error occurred during signup" });
         // res.status(400).json({ message: message.error }); 
     }
 }
 
-module.exports = { signupUser };
+module.exports = { signupValidator };

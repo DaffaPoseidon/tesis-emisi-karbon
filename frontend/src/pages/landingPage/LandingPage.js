@@ -12,7 +12,7 @@ const LandingPage = () => {
     const token = JSON.parse(localStorage.getItem('user'));
 
     // Cek apakah token ada dan apakah role sesuai
-    if (token && (token.role === 'admin' || token.role === 'superadmin')) {
+    if (token && (token.role === 'seller')) {
       setHasAccess(true); // Pengguna memiliki akses
     } else {
       setHasAccess(false); // Pengguna tidak memiliki akses

@@ -43,13 +43,13 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
             <th className="border border-gray-300 px-4 py-2">
               Kepemilikan Lahan
             </th>
-            {["admin", "superadmin"].includes(userRole) && (
+            {["seller"].includes(userRole) && (
               <th className="border border-gray-300 px-4 py-2">
                 Akun Pengunggah
               </th>
             )}
             <th className="border border-gray-300 px-4 py-2">Download</th>
-            {["admin", "superadmin"].includes(userRole) && (
+            {["seller"].includes(userRole) && (
               <th className="border border-gray-300 px-4 py-2">Aksi</th>
             )}
           </tr>
@@ -82,7 +82,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
               <td className="border border-gray-300 px-4 py-2">
                 {item.kepemilikanLahan}
               </td>
-              {["admin", "superadmin"].includes(userRole) && (
+              {["seller"].includes(userRole) && (
                 <td className="border border-gray-300 px-4 py-2">
                   {item.penggugah
                     ? `${item.penggugah.firstName} ${item.penggugah.lastName}`
@@ -109,7 +109,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                   "Tidak ada file"
                 )}
               </td>
-              {["admin", "superadmin"].includes(userRole) && (
+              {["seller"].includes(userRole) && (
                 <td className="border border-gray-300 px-4 py-2">
                   <button
                     className="bg-yellow-500 text-white px-4 py-2 rounded"
@@ -117,7 +117,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                   >
                     Edit
                   </button>
-                  {userRole === "superadmin" && (
+                  {userRole === "seller" && (
                     <button
                       className="bg-red-500 text-white px-4 py-2 rounded ml-2"
                       onClick={() => handleDelete(item._id)}

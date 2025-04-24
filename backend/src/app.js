@@ -1,8 +1,7 @@
 const express = require("express"); // Mengimpor modul Express untuk membuat aplikasi server Node.js
 const mongoose = require("mongoose");
 const signupValidator = require("./routes/SignupValidatorRoutes");
-const signupBuyer = require("./routes/SignupBuyerRoutes");
-const signupSeller = require("./routes/SignupSellerRoutes");
+const signupUser = require("./routes/SignupUserRoutes");
 const loginRoute = require("./routes/Login");
 const authenticatedRoute = require("./routes/Authenticated");
 const bodyParser = require("body-parser");
@@ -26,8 +25,7 @@ app.use(bodyParser.json({ limit: "50mb" })); // Tingkatkan batas JSON payload
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true })); // Tingkatkan batas URL-encoded
 
 app.use("/validator", signupValidator);
-app.use("/buyer", signupBuyer);
-app.use("/seller", signupSeller);
+app.use("/user", signupUser);
 app.use("/auth", loginRoute);
 app.use("/api", authenticatedRoute);
 

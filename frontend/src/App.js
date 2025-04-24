@@ -10,6 +10,8 @@ import LandingPage from "./pages/landingPage/LandingPage";
 import DataRekap from "./pages/dataRekap/DataRekap";
 import ProtectedRouteValidator from "./components/ProtectedRouteValidator";
 import ProtectedRouteSuperadmin from "./components/ProtectedRouteSuperadmin";
+import ProtectedRouteBuyer from "./components/ProtectedRouteBuyer";
+import ProtectedRouteSeller from "./components/ProtectedRouteSeller";
 
 function App() {
   return (
@@ -28,10 +30,7 @@ function App() {
           path="/register-validator"
           element={<ProtectedRouteSuperadmin element={<SignupValidator />} />}
         />
-        <Route
-          path="/register-seller"
-          element={<ProtectedRouteSeller element={<SignupSeller />} />}
-        />
+        <Route path="/register-seller" element={<SignupSeller />} />
         <Route
           path="/register-buyer"
           element={<ProtectedRouteBuyer element={<SignupBuyer />} />}

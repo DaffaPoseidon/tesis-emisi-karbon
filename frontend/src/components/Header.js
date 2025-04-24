@@ -1,34 +1,77 @@
 // src/components/Header.js
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Gunakan Link untuk routing dan useNavigate untuk navigasi
-import logo from '../images/Logo-Kementerian-Dalam-Negeri.png'; // Import gambar logo
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Gunakan Link untuk routing dan useNavigate untuk navigasi
+import logo from "../images/Logo-Kementerian-Dalam-Negeri.png"; // Import gambar logo
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [isValidator, setIsValidator] = useState(false);
+  const [isBuyer, setIsBuyer] = useState(false);
+  const [isSeller, setIsSeller] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Ambil token dari localStorage
-    const token = JSON.parse(localStorage.getItem('user'));
+    const token = JSON.parse(localStorage.getItem("user"));
+
+    // Reset semua state role ke false terlebih dahulu
+    setIsSuperAdmin(false);
+    setIsValidator(false);
+    setIsBuyer(false);
+    setIsSeller(false);
 
     // Cek apakah token ada
     if (token) {
-      setIsLoggedIn(true); // Set pengguna sebagai logged in
-      // Cek apakah role pengguna adalah 'superadmin'
-      if (token.role === 'superadmin') {
-        setIsSuperAdmin(true);
-      } else {
-        setIsSuperAdmin(false);
+      setIsLoggedIn(true);
+
+      switch (token.role) {
+        case "superadmin":
+          setIsSuperAdmin(true);
+          break;
+        case "validator":
+          setIsValidator(true);
+          break;
+        case "buyer":
+          setIsBuyer(true);
+          break;
+        case "seller":
+          setIsSeller(true);
+          break;
+        default:
+          break;
       }
     } else {
       setIsLoggedIn(false);
     }
   }, []);
 
+  // const Header = () => {
+  //   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  //   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  //   const [isValidator, setIsValidator] = useState(false);
+  //   const [isBuyer, setIsBuyer] = useState(false);
+  //   const [isSeller, setIsSeller] = useState(false);
+  //   const navigate = useNavigate();
+
+  //   useEffect(() => {
+  //     const token = JSON.parse(localStorage.getItem("user"));
+
+  //     if (token) {
+  //       setIsLoggedIn(true);
+  //       if (token.role === "superadmin") {
+  //         setIsSuperAdmin(true);
+  //       } else {
+  //         setIsSuperAdmin(false);
+  //       }
+  //     } else {
+  //       setIsLoggedIn(false);
+  //     }
+  //   }, []);
+
   // Fungsi untuk handle logout
   const handleLogout = () => {
-    localStorage.removeItem('user'); // Hapus user dari localStorage
+    localStorage.removeItem("user"); // Hapus user dari localStorage
     setIsLoggedIn(false); // Set status login menjadi false
     setIsSuperAdmin(false); // Reset role superadmin
     window.location.reload(); // Refresh halaman (seperti CTRL + SHIFT + R)
@@ -40,19 +83,27 @@ const Header = () => {
         {/* Logo di Pojok Kiri */}
         <div className="flex items-center flex-1">
           <Link to="/">
-            <img src={logo} alt="Logo Kementerian Dalam Negeri" className="h-20 w-20" />
+            <img
+              src={logo}
+              alt="Logo Kementerian Dalam Negeri"
+              className="h-20 w-20"
+            />
           </Link>
           <ul className="ml-4 text-white">
-            <li>KEMENTERIAN DALAM NEGERI</li>
-            <li>SEKRETARIAT JENDERAL</li>
-            <li>BIRO HUKUM</li>
+            <li>POLINEMA</li>
+            <li>BLOCKCHAIN</li>
+            <li>EMISI KARBON</li>
           </ul>
         </div>
 
         {/* Navigasi di Tengah */}
         <div className="flex space-x-8 mx-auto flex-1 justify-center items-center">
-          <Link to="/" className="text-white hover:text-gray-300">Beranda</Link>
-          <Link to="/data-rekap" className="text-white hover:text-gray-300">Data Rekap</Link>
+          <Link to="/" className="text-white hover:text-gray-300">
+            Beranda
+          </Link>
+          <Link to="/data-rekap" className="text-white hover:text-gray-300">
+            Data Rekap
+          </Link>
         </div>
 
         {/* Tombol Login / Logout dan Register */}
@@ -69,7 +120,7 @@ const Header = () => {
               {/* Tombol Register (Hanya untuk Superadmin) */}
               {isSuperAdmin && (
                 <Link
-                  to="/register"
+                  to="/register-validator"
                   className="ml-4 px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300"
                 >
                   Register Admin
@@ -81,10 +132,55 @@ const Header = () => {
               to="/login"
               className="px-6 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 transition duration-300"
             >
-              Login Admin
+              Login
             </Link>
           )}
         </div>
+        <div className="flex-1 flex justify-end">
+          {isLoggedIn ? (
+            // Jika sudah login, tampilkan tombol Log Out
+            <button
+              onClick={handleLogout}
+              className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300"
+            >
+              Log Out
+            </button>
+          ) : (
+            // Jika belum login, tampilkan tombol Register Seller
+            <Link
+              to="/register-seller"
+              className="px-6 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 transition duration-300"
+            >
+              Register Seller
+            </Link>
+          )}
+        </div>
+        {/* <div className="flex-1 flex justify-end">
+          {isLoggedIn ? (
+            <>
+              <button
+                onClick={handleLogout}
+                className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300"
+              >
+                Log Out
+              </button>
+              <Link
+                to="/register-seller"
+                className="px-6 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 transition duration-300"
+              >
+                Register Seller
+              </Link>
+              
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="px-6 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 transition duration-300"
+            >
+              Login
+            </Link>
+          )}
+        </div> */}
       </div>
     </header>
   );

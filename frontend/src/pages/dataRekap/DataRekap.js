@@ -130,7 +130,7 @@ const DataRekap = () => {
             <tbody>
               {cases
                 .filter((caseItem) =>
-                  caseItem.penggugat
+                  caseItem.kepemilikanLahan
                     .toLowerCase()
                     .includes(searchQuery.toLowerCase())
                 )

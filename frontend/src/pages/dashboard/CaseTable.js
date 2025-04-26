@@ -6,9 +6,10 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
   const userId = user?._id;
 
   // Filter data berdasarkan role
-  const filteredCases = userRole === "user" 
-    ? cases.filter(caseItem => caseItem.penggugah?._id === userId)
-    : cases;
+  const filteredCases =
+    userRole === "user"
+      ? cases.filter((caseItem) => caseItem.penggugah?._id === userId)
+      : cases;
 
   const handleDelete = async (id) => {
     if (!onDelete) return;
@@ -18,7 +19,9 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
 
   // Cek visibility kolom
   const showUploaderColumn = ["superadmin", "validator"].includes(userRole);
-  const showActionColumn = ["superadmin", "validator", "user"].includes(userRole);
+  const showActionColumn = ["superadmin", "validator", "user"].includes(
+    userRole
+  );
 
   return (
     <div className="bg-white shadow rounded p-6 overflow-x-auto">
@@ -27,21 +30,35 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
         <thead>
           <tr>
             <th className="border border-gray-300 px-4 py-2">No</th>
-            <th className="border border-gray-300 px-4 py-2">Luas Tanah (Ha)</th>
+            <th className="border border-gray-300 px-4 py-2">
+              Luas Tanah (Ha)
+            </th>
             <th className="border border-gray-300 px-4 py-2">Jenis Pohon</th>
-            <th className="border border-gray-300 px-4 py-2">Lembaga Sertifikasi</th>
-            <th className="border border-gray-300 px-4 py-2">Jumlah Karbon (Ton)</th>
-            <th className="border border-gray-300 px-4 py-2">Metode Pengukuran</th>
+            <th className="border border-gray-300 px-4 py-2">
+              Lembaga Sertifikasi
+            </th>
+            <th className="border border-gray-300 px-4 py-2">
+              Jumlah Karbon (Ton)
+            </th>
+            <th className="border border-gray-300 px-4 py-2">
+              Metode Pengukuran
+            </th>
             <th className="border border-gray-300 px-4 py-2">Jenis Tanah</th>
-            <th className="border border-gray-300 px-4 py-2">Lokasi Geografis</th>
-            <th className="border border-gray-300 px-4 py-2">Kepemilikan Lahan</th>
-            
+            <th className="border border-gray-300 px-4 py-2">
+              Lokasi Geografis
+            </th>
+            <th className="border border-gray-300 px-4 py-2">
+              Kepemilikan Lahan
+            </th>
+
             {showUploaderColumn && (
-              <th className="border border-gray-300 px-4 py-2">Akun Pengunggah</th>
+              <th className="border border-gray-300 px-4 py-2">
+                Akun Pengunggah
+              </th>
             )}
-            
+
             <th className="border border-gray-300 px-4 py-2">Download</th>
-            
+
             {showActionColumn && (
               <th className="border border-gray-300 px-4 py-2">Aksi</th>
             )}
@@ -51,15 +68,31 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
           {filteredCases.map((item, index) => (
             <tr key={item._id}>
               <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.luasTanah}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.jenisPohon}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.lembagaSertifikasi}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.jumlahKarbon}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.metodePengukuran}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.jenisTanah}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.lokasiGeografis}</td>
-              <td className="border border-gray-300 px-4 py-2">{item.kepemilikanLahan}</td>
-              
+              <td className="border border-gray-300 px-4 py-2">
+                {item.luasTanah}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {item.jenisPohon}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {item.lembagaSertifikasi}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {item.jumlahKarbon}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {item.metodePengukuran}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {item.jenisTanah}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {item.lokasiGeografis}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {item.kepemilikanLahan}
+              </td>
+
               {showUploaderColumn && (
                 <td className="border border-gray-300 px-4 py-2">
                   {item.penggugah
@@ -67,7 +100,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                     : "Tidak Diketahui"}
                 </td>
               )}
-              
+
               <td className="border border-gray-300 px-4 py-2">
                 {item.files.length > 0 ? (
                   <ul>
@@ -84,29 +117,26 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                       </li>
                     ))}
                   </ul>
-                ) : "Tidak ada file"}
+                ) : (
+                  "Tidak ada file"
+                )}
               </td>
-              
+
               {showActionColumn && (
                 <td className="border border-gray-300 px-4 py-2">
-                  {/* Edit button untuk semua role yang diizinkan */}
                   <button
                     className="bg-yellow-500 text-white px-4 py-2 rounded"
                     onClick={() => onEdit(item)}
                   >
                     Edit
                   </button>
-                  
-                  {/* Delete button dengan pengecekan kepemilikan */}
-                  {(userRole === "superadmin" || 
-                   (userRole === "user" && item.penggugah?._id === userId)) && (
-                    <button
-                      className="bg-red-500 text-white px-4 py-2 rounded ml-2"
-                      onClick={() => handleDelete(item._id)}
-                    >
-                      Delete
-                    </button>
-                  )}
+
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded ml-2"
+                    onClick={() => handleDelete(item._id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               )}
             </tr>

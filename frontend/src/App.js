@@ -22,14 +22,17 @@ function App() {
         {/* Menggunakan ProtectedRoute untuk melindungi Dashboard */}
         <Route
           path="/dashboard"
-          element={<ProtectedRouteValidator element={<Dashboard />} />}
+          element={<Dashboard />}
         />
         <Route
           path="/register-validator"
           element={<ProtectedRouteSuperadmin element={<SignupValidator />} />}
         />
         <Route path="/register-user" element={<SignupUser />} />
-        <Route path="/data-rekap" element={<DataRekap />} />
+        <Route 
+        path="/data-rekap" 
+        element={<ProtectedRouteValidator element={<DataRekap />}  />}
+        />
       </Routes>
     </>
   );

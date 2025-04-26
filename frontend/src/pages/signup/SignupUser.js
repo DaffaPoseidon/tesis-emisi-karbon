@@ -36,7 +36,7 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/buyer/register`, {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/user/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

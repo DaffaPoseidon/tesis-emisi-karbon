@@ -3,15 +3,13 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/login/Login";
 import SignupValidator from "./pages/signup/SignupValidator";
-import SignupSeller from "./pages/signup/SignupSeller";
-import SignupBuyer from "./pages/signup/SignupBuyer";
+import SignupUser from "./pages/signup/SignupUser";
 import Dashboard from "./pages/dashboard/Dashboard";
 import LandingPage from "./pages/landingPage/LandingPage";
 import DataRekap from "./pages/dataRekap/DataRekap";
 import ProtectedRouteValidator from "./components/ProtectedRouteValidator";
 import ProtectedRouteSuperadmin from "./components/ProtectedRouteSuperadmin";
-import ProtectedRouteBuyer from "./components/ProtectedRouteBuyer";
-import ProtectedRouteSeller from "./components/ProtectedRouteSeller";
+import ProtectedRouteUser from "./components/ProtectedRouteUser";
 
 function App() {
   return (
@@ -30,11 +28,7 @@ function App() {
           path="/register-validator"
           element={<ProtectedRouteSuperadmin element={<SignupValidator />} />}
         />
-        <Route path="/register-seller" element={<SignupSeller />} />
-        <Route
-          path="/register-buyer"
-          element={<ProtectedRouteBuyer element={<SignupBuyer />} />}
-        />
+        <Route path="/register-user" element={<SignupUser />} />
         <Route path="/data-rekap" element={<DataRekap />} />
       </Routes>
     </>

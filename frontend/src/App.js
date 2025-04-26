@@ -6,7 +6,7 @@ import SignupValidator from "./pages/signup/SignupValidator";
 import SignupUser from "./pages/signup/SignupUser";
 import Dashboard from "./pages/dashboard/Dashboard";
 import LandingPage from "./pages/landingPage/LandingPage";
-import DataRekap from "./pages/dataRekap/DataRekap";
+import DataKandidat from "./pages/dataKandidat/DataKandidat";
 import ProtectedRouteValidator from "./components/ProtectedRouteValidator";
 import ProtectedRouteSuperadmin from "./components/ProtectedRouteSuperadmin";
 import ProtectedRouteUser from "./components/ProtectedRouteUser";
@@ -30,8 +30,8 @@ function App() {
         />
         <Route path="/register-user" element={<SignupUser />} />
         <Route 
-        path="/data-rekap" 
-        element={<ProtectedRouteValidator element={<DataRekap />}  />}
+        path="/data-kandidat" 
+        element={<ProtectedRouteValidator element={<DataKandidat />}  />}
         />
       </Routes>
     </>

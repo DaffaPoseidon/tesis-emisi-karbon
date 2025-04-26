@@ -75,9 +75,11 @@ const Header = () => {
             <Link to="/" className="text-white hover:text-gray-300">
               Beranda
             </Link>
-            <Link to="/data-rekap" className="text-white hover:text-gray-300">
+            {(isSuperAdmin || isValidator) && (
+            <Link to="/data-kandidat" className="text-white hover:text-gray-300">
               Data Rekap
             </Link>
+            )}
           </div>
         </div>
 

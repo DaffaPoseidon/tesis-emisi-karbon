@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 
-const DataRekap = () => {
+const DataKandidat = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const userRole = user?.role; // Ambil role dari user (bisa undefined jika tidak ada user)
 
@@ -195,4 +195,4 @@ const DataRekap = () => {
   );
 };
 
-export default DataRekap;
+export default DataKandidat;

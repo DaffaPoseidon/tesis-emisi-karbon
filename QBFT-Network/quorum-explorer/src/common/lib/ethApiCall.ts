@@ -1,5 +1,5 @@
 import axios from "axios";
-import { configReader } from "../../common/lib/getConfig";
+import { configReader } from "./getConfig";
 import { QuorumNode } from "../types/QuorumConfig";
 
 const allowedMethods = [

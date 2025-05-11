@@ -1,0 +1,276 @@
+{
+  "id": "0cce40e8b19bfbbcaf0489b846dd7377",
+  "_format": "hh-sol-build-info-1",
+  "solcVersion": "0.8.27",
+  "solcLongVersion": "0.8.27+commit.40a35a09",
+  "input": {
+    "language": "Solidity",
+    "sources": {
+      "contracts/Lock.sol": {
+        "content": "// SPDX-License-Identifier: UNLICENSED\npragma solidity ^0.8.20;\n\ncontract Lock {\n    uint public unlockTime;\n    \n    constructor(uint _unlockTime) payable {\n        unlockTime = _unlockTime;\n    }\n}"
+      }
+    },
+    "settings": {
+      "optimizer": {
+        "enabled": true,
+        "runs": 500
+      },
+      "viaIR": true,
+      "evmVersion": "paris",
+      "outputSelection": {
+        "*": {
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ],
+          "": [
+            "ast"
+          ]
+        }
+      }
+    }
+  },
+  "output": {
+    "sources": {
+      "contracts/Lock.sol": {
+        "ast": {
+          "absolutePath": "contracts/Lock.sol",
+          "exportedSymbols": {
+            "Lock": [
+              14
+            ]
+          },
+          "id": 15,
+          "license": "UNLICENSED",
+          "nodeType": "SourceUnit",
+          "nodes": [
+            {
+              "id": 1,
+              "literals": [
+                "solidity",
+                "^",
+                "0.8",
+                ".20"
+              ],
+              "nodeType": "PragmaDirective",
+              "src": "39:24:0"
+            },
+            {
+              "abstract": false,
+              "baseContracts": [],
+              "canonicalName": "Lock",
+              "contractDependencies": [],
+              "contractKind": "contract",
+              "fullyImplemented": true,
+              "id": 14,
+              "linearizedBaseContracts": [
+                14
+              ],
+              "name": "Lock",
+              "nameLocation": "74:4:0",
+              "nodeType": "ContractDefinition",
+              "nodes": [
+                {
+                  "constant": false,
+                  "functionSelector": "251c1aa3",
+                  "id": 3,
+                  "mutability": "mutable",
+                  "name": "unlockTime",
+                  "nameLocation": "97:10:0",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14,
+                  "src": "85:22:0",
+                  "stateVariable": true,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "85:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "public"
+                },
+                {
+                  "body": {
+                    "id": 12,
+                    "nodeType": "Block",
+                    "src": "156:41:0",
+                    "statements": [
+                      {
+                        "expression": {
+                          "id": 10,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftHandSide": {
+                            "id": 8,
+                            "name": "unlockTime",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 3,
+                            "src": "166:10:0",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "nodeType": "Assignment",
+                          "operator": "=",
+                          "rightHandSide": {
+                            "id": 9,
+                            "name": "_unlockTime",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 5,
+                            "src": "179:11:0",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_uint256",
+                              "typeString": "uint256"
+                            }
+                          },
+                          "src": "166:24:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 11,
+                        "nodeType": "ExpressionStatement",
+                        "src": "166:24:0"
+                      }
+                    ]
+                  },
+                  "id": 13,
+                  "implemented": true,
+                  "kind": "constructor",
+                  "modifiers": [],
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "FunctionDefinition",
+                  "parameters": {
+                    "id": 6,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 5,
+                        "mutability": "mutable",
+                        "name": "_unlockTime",
+                        "nameLocation": "135:11:0",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 13,
+                        "src": "130:16:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "typeName": {
+                          "id": 4,
+                          "name": "uint",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "130:4:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "129:18:0"
+                  },
+                  "returnParameters": {
+                    "id": 7,
+                    "nodeType": "ParameterList",
+                    "parameters": [],
+                    "src": "156:0:0"
+                  },
+                  "scope": 14,
+                  "src": "118:79:0",
+                  "stateMutability": "payable",
+                  "virtual": false,
+                  "visibility": "public"
+                }
+              ],
+              "scope": 15,
+              "src": "65:134:0",
+              "usedErrors": [],
+              "usedEvents": []
+            }
+          ],
+          "src": "39:160:0"
+        },
+        "id": 0
+      }
+    },
+    "contracts": {
+      "contracts/Lock.sol": {
+        "Lock": {
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_unlockTime",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "constructor"
+            },
+            {
+              "inputs": [],
+              "name": "unlockTime",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            }
+          ],
+          "evm": {
+            "bytecode": {
+              "functionDebugData": {},
+              "generatedSources": [],
+              "linkReferences": {},
+              "object": "6080601f60dd38819003918201601f19168301916001600160401b03831184841017604c5780849260209460405283398101031260475751600055604051607a908160638239f35b600080fd5b634e487b7160e01b600052604160045260246000fdfe6080806040526004361015601257600080fd5b60003560e01c63251c1aa314602657600080fd5b34603f576000366003190112603f576020906000548152f35b600080fdfea2646970667358221220d79aad1435205d8be121fc3e24a2acaf0339a0f20eca7a60c257ba325700e15b64736f6c634300081b0033",
+              "opcodes": "PUSH1 0x80 PUSH1 0x1F PUSH1 0xDD CODESIZE DUP2 SWAP1 SUB SWAP2 DUP3 ADD PUSH1 0x1F NOT AND DUP4 ADD SWAP2 PUSH1 0x1 PUSH1 0x1 PUSH1 0x40 SHL SUB DUP4 GT DUP5 DUP5 LT OR PUSH1 0x4C JUMPI DUP1 DUP5 SWAP3 PUSH1 0x20 SWAP5 PUSH1 0x40 MSTORE DUP4 CODECOPY DUP2 ADD SUB SLT PUSH1 0x47 JUMPI MLOAD PUSH1 0x0 SSTORE PUSH1 0x40 MLOAD PUSH1 0x7A SWAP1 DUP2 PUSH1 0x63 DUP3 CODECOPY RETURN JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH4 0x4E487B71 PUSH1 0xE0 SHL PUSH1 0x0 MSTORE PUSH1 0x41 PUSH1 0x4 MSTORE PUSH1 0x24 PUSH1 0x0 REVERT INVALID PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT ISZERO PUSH1 0x12 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH1 0x0 CALLDATALOAD PUSH1 0xE0 SHR PUSH4 0x251C1AA3 EQ PUSH1 0x26 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST CALLVALUE PUSH1 0x3F JUMPI PUSH1 0x0 CALLDATASIZE PUSH1 0x3 NOT ADD SLT PUSH1 0x3F JUMPI PUSH1 0x20 SWAP1 PUSH1 0x0 SLOAD DUP2 MSTORE RETURN JUMPDEST PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xD7 SWAP11 0xAD EQ CALLDATALOAD KECCAK256 TSTORE DUP12 0xE1 0x21 0xFC RETURNDATACOPY 0x24 LOG2 0xAC 0xAF SUB CODECOPY LOG0 CALLCODE 0xE 0xCA PUSH27 0x60C257BA325700E15B64736F6C634300081B003300000000000000 ",
+              "sourceMap": "65:134:0:-:0;;;;;;;;;;-1:-1:-1;;65:134:0;;;;-1:-1:-1;;;;;65:134:0;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;65:134:0;;;;;;;;;;;-1:-1:-1;65:134:0;;;;;;-1:-1:-1;65:134:0;;;;;-1:-1:-1;65:134:0"
+            },
+            "deployedBytecode": {
+              "functionDebugData": {},
+              "generatedSources": [],
+              "immutableReferences": {},
+              "linkReferences": {},
+              "object": "6080806040526004361015601257600080fd5b60003560e01c63251c1aa314602657600080fd5b34603f576000366003190112603f576020906000548152f35b600080fdfea2646970667358221220d79aad1435205d8be121fc3e24a2acaf0339a0f20eca7a60c257ba325700e15b64736f6c634300081b0033",
+              "opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT ISZERO PUSH1 0x12 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH1 0x0 CALLDATALOAD PUSH1 0xE0 SHR PUSH4 0x251C1AA3 EQ PUSH1 0x26 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST CALLVALUE PUSH1 0x3F JUMPI PUSH1 0x0 CALLDATASIZE PUSH1 0x3 NOT ADD SLT PUSH1 0x3F JUMPI PUSH1 0x20 SWAP1 PUSH1 0x0 SLOAD DUP2 MSTORE RETURN JUMPDEST PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xD7 SWAP11 0xAD EQ CALLDATALOAD KECCAK256 TSTORE DUP12 0xE1 0x21 0xFC RETURNDATACOPY 0x24 LOG2 0xAC 0xAF SUB CODECOPY LOG0 CALLCODE 0xE 0xCA PUSH27 0x60C257BA325700E15B64736F6C634300081B003300000000000000 ",
+              "sourceMap": "65:134:0:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;65:134:0;;;;;;;;;;;;;;"
+            },
+            "methodIdentifiers": {
+              "unlockTime()": "251c1aa3"
+            }
+          },
+          "metadata": "{\"compiler\":{\"version\":\"0.8.27+commit.40a35a09\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_unlockTime\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"unlockTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Lock.sol\":\"Lock\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":500},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/Lock.sol\":{\"keccak256\":\"0xbc5a36a14ec6732c21542e33628e6345be8559e740e08b087811ff343a459417\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://169a73c07faa2f5508eab429065302726e139d771eec8673253cd2c324219fa3\",\"dweb:/ipfs/QmUkDgpR552EvLJZ2Zc7CyycQbVeeBuB6NsfqbLovGyLxf\"]}},\"version\":1}"
+        }
+      }
+    }
+  }
+}

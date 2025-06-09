@@ -6,7 +6,8 @@ const {
   upload, 
   getFile,
   getFileByIndex, // Tambahkan ini
-  deleteCase // Tambahkan fungsi deleteCase dari controller
+  deleteCase, // Tambahkan fungsi deleteCase dari controller
+  updateStatus
 } = require('../controller/CaseController');
 
 const { authenticateToken } = require("../utils/authMiddleware");
@@ -22,5 +23,6 @@ router.put("/:id", authenticateToken, upload.array("files", 100), updateCase);
 router.get("/:id/file", getFile); // Tidak menggunakan `authenticateToken`
 router.get("/:caseId/files/:fileIndex", getFileByIndex); // Rute baru untuk mengunduh file berdasarkan index
 router.delete("/:id", authenticateToken, deleteCase); // Menambahkan route untuk menghapus kasus
+router.patch("/:id/status", authenticateToken, updateStatus);
 
 module.exports = router;

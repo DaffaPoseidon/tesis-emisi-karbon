@@ -33,10 +33,24 @@ const DataKandidat = () => {
       //   return;
       // }
 
-      const data = await response.json();
-      setCases(data.cases);
+    //   const data = await response.json();
+    //   setCases(data.cases);
+    // } catch (error) {
+    //   console.error("Error fetching cases:", error.message);
+    // }
+
+      if (response.ok) {
+        const data = await response.json();
+        // Filter hanya cases dengan status Diterima
+        const acceptedCases = data.cases.filter(
+          item => item.statusPengajuan === "Diterima"
+        );
+        setCases(acceptedCases);
+      } else {
+        console.error("Gagal mengambil data");
+      }
     } catch (error) {
-      console.error("Error fetching cases:", error.message);
+      console.error("Error:", error.message);
     }
   }, [navigate]);
 

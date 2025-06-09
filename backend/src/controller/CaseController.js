@@ -10,7 +10,7 @@ const upload = multer({ storage }); // Buat instance multer dengan penyimpanan m
 const headers = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "Access-Control-Allow-Headers, Content-Type, Authorization",
+  "Access-Control-Allow-Headers, Content-Type, Authorization",
   "Access-Control-Allow-Methods": "*",
   "Content-Type": "application/json",
 };
@@ -46,7 +46,8 @@ const createCase = async (req, res) => {
       lokasiGeografis,
       kepemilikanLahan,
       penggugah: userId, // Simpan ID user yang mengunggah kasus
-      files: uploadedFiles, // Simpan banyak file
+      files: uploadedFiles, // Simpan banyak file,
+      statusPengajuan: "Diajukan" // Default status pengajuan
       // file: req.file ? req.file.buffer : null,
       // fileName: req.file ? req.file.originalname : null,
     });
@@ -201,6 +202,37 @@ const deleteCase = async (req, res) => {
   }
 };
 
+// Tambahkan fungsi baru untuk update status pengajuan
+const updateStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { statusPengajuan } = req.body;
+    
+    // Validasi status
+    if (!['Diajukan', 'Diterima', 'Ditolak'].includes(statusPengajuan)) {
+      return res.status(400).json({ message: "Status pengajuan tidak valid" });
+    }
+
+    const updatedCase = await Case.findByIdAndUpdate(
+      id,
+      { statusPengajuan },
+      { new: true }
+    ).populate('penggugah');
+
+    if (!updatedCase) {
+      return res.status(404).json({ message: "Case not found" });
+    }
+
+    res.status(200).json({
+      message: "Status pengajuan berhasil diperbarui",
+      case: updatedCase
+    });
+  } catch (error) {
+    console.error("Error updating status:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createCase,
   getAllCases,
@@ -209,4 +241,5 @@ module.exports = {
   getFileByIndex,
   deleteCase, // Menambahkan fungsi delete
   upload,
+  updateStatus
 };

@@ -17,11 +17,40 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
     refreshCases?.();
   };
 
+  // Fungsi baru untuk update status pengajuan
+  const handleStatusUpdate = async (id, newStatus) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/cases/${id}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ statusPengajuan: newStatus }),
+        }
+      );
+
+      if (response.ok) {
+        console.log(`Status berhasil diubah menjadi ${newStatus}`);
+        refreshCases?.();
+      } else {
+        console.error("Gagal mengubah status pengajuan");
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
+
   // Cek visibility kolom
   const showUploaderColumn = ["superadmin", "validator"].includes(userRole);
   const showActionColumn = ["superadmin", "validator", "user"].includes(
     userRole
   );
+  const showApprovalColumn = ["superadmin", "validator"].includes(userRole);
+  const showStatusColumn = userRole === "user"
 
   return (
     <div className="bg-white shadow rounded p-6 overflow-x-auto">
@@ -54,6 +83,20 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
             {showUploaderColumn && (
               <th className="border border-gray-300 px-4 py-2">
                 Akun Pengunggah
+              </th>
+            )}
+
+            {/* Kolom status pengajuan untuk user */}
+            {showStatusColumn && (
+              <th className="border border-gray-300 px-4 py-2">
+                Status Pengajuan
+              </th>
+            )}
+            
+            {/* Kolom penerimaan untuk validator/superadmin */}
+            {showApprovalColumn && (
+              <th className="border border-gray-300 px-4 py-2">
+                Penerimaan
               </th>
             )}
 
@@ -98,6 +141,45 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                   {item.penggugah
                     ? `${item.penggugah.firstName} ${item.penggugah.lastName}`
                     : "Tidak Diketahui"}
+                </td>
+              )}
+
+              {/* Status pengajuan untuk user */}
+              {showStatusColumn && (
+                <td className="border border-gray-300 px-4 py-2">
+                  {!item.statusPengajuan || item.statusPengajuan === "Diajukan" ? (
+                    <span className="inline-block px-3 py-1 rounded bg-yellow-500 text-white">
+                      Diajukan
+                    </span>
+                  ) : item.statusPengajuan === "Diterima" ? (
+                    <span className="inline-block px-3 py-1 rounded bg-green-500 text-white">
+                      Diterima
+                    </span>
+                  ) : (
+                    <span className="inline-block px-3 py-1 rounded bg-red-500 text-white">
+                      Ditolak
+                    </span>
+                  )}
+                </td>
+              )}
+              
+              {/* Tombol penerimaan untuk validator/superadmin */}
+              {showApprovalColumn && (
+                <td className="border border-gray-300 px-4 py-2">
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleStatusUpdate(item._id, "Diterima")}
+                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                    >
+                      Terima
+                    </button>
+                    <button
+                      onClick={() => handleStatusUpdate(item._id, "Ditolak")}
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    >
+                      Tolak
+                    </button>
+                  </div>
                 </td>
               )}
 

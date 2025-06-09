@@ -9,7 +9,11 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
   const filteredCases =
     userRole === "user"
       ? cases.filter((caseItem) => caseItem.penggugah?._id === userId)
-      : cases;
+      : userRole === "validator" || userRole === "superadmin"
+        ? cases.filter((caseItem) => 
+            !caseItem.statusPengajuan || caseItem.statusPengajuan === "Diajukan"
+          )
+        : cases;
 
   const handleDelete = async (id) => {
     if (!onDelete) return;

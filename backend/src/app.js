@@ -29,7 +29,7 @@ app.use("/api/cases", caseRoutes);
 // 
 const { ethers } = require("ethers");
 
-if (!process.env.API_URL) {
+if (!process.env.BESU_RPC_URL) {
   throw new Error("Api Url is not defined in the environment variables.");
 }
 if (!process.env.PRIVATE_KEY) {

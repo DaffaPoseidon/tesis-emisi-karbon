@@ -15,6 +15,117 @@ const headers = {
   "Content-Type": "application/json",
 };
 
+// blockchain
+const { issueCarbonCertificate } = require("../services/blockchainService");
+const fs = require("fs");
+
+// Fungsi untuk memproses persetujuan validator
+const updateStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { statusPengajuan } = req.body;
+
+    // Validasi status
+    if (!['Diajukan', 'Diterima', 'Ditolak'].includes(statusPengajuan)) {
+      return res.status(400).json({ message: "Status pengajuan tidak valid" });
+    }
+
+    // Ambil data kasus
+    const caseData = await Case.findById(id).populate('penggugah');
+    if (!caseData) {
+      return res.status(404).json({ message: "Case not found" });
+    }
+
+    // Update status pengajuan
+    caseData.statusPengajuan = statusPengajuan;
+
+    // Jika status "Diterima", kirim data ke blockchain
+    if (statusPengajuan === 'Diterima') {
+      // Alamat penerima (bisa dari user.walletAddress jika ada, atau gunakan default)
+      const recipientAddress = caseData.penggugah.walletAddress || 
+                              process.env.DEFAULT_RECIPIENT_ADDRESS || 
+                              "0xF84D3c1248c04D7791f7E732B110EF1d337F1CaA";
+      
+      // Jumlah karbon dalam ton
+      const carbonAmount = parseInt(caseData.jumlahKarbon);
+      
+      // Gunakan ID kasus sebagai projectId
+      const projectId = caseData._id.toString();
+      
+      // Panggil fungsi untuk menerbitkan sertifikat di blockchain
+      const blockchainResult = await issueCarbonCertificate(
+        recipientAddress,
+        carbonAmount,
+        projectId
+      );
+      
+      if (blockchainResult.success) {
+        // Simpan hasil blockchain ke data kasus
+        caseData.blockchainData = {
+          issuedOn: new Date(),
+          transactionHash: blockchainResult.transactionHash,
+          blockNumber: blockchainResult.blockNumber,
+          tokenIds: blockchainResult.tokenIds,
+          recipientAddress: recipientAddress
+        };
+        
+        await caseData.save();
+        
+        return res.status(200).json({
+          message: `Status pengajuan diperbarui dan ${carbonAmount} sertifikat karbon telah diterbitkan di blockchain`,
+          case: caseData,
+          blockchain: blockchainResult
+        });
+      } else {
+        // Simpan perubahan status meskipun blockchain gagal
+        await caseData.save();
+        
+        return res.status(200).json({
+          message: "Status pengajuan diperbarui tetapi gagal menerbitkan sertifikat di blockchain",
+          case: caseData,
+          blockchainError: blockchainResult.error
+        });
+      }
+    } else {
+      // Jika status bukan "Diterima", cukup simpan perubahan status
+      await caseData.save();
+      
+      return res.status(200).json({
+        message: "Status pengajuan berhasil diperbarui",
+        case: caseData
+      });
+    }
+  } catch (error) {
+    console.error("Error updating status:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Fungsi untuk mendapatkan detail sertifikat berdasarkan tokenId
+const getCertificateByTokenId = async (req, res) => {
+  try {
+    const { tokenId } = req.params;
+    const { getCertificateDetails } = require("../services/blockchainService");
+    
+    const certificateDetails = await getCertificateDetails(tokenId);
+    
+    if (certificateDetails.success) {
+      res.status(200).json({
+        message: "Certificate details retrieved successfully",
+        certificate: certificateDetails
+      });
+    } else {
+      res.status(404).json({
+        message: "Failed to retrieve certificate details",
+        error: certificateDetails.error
+      });
+    }
+  } catch (error) {
+    console.error("Error getting certificate details:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createCase = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -202,37 +313,6 @@ const deleteCase = async (req, res) => {
   }
 };
 
-// Tambahkan fungsi baru untuk update status pengajuan
-const updateStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { statusPengajuan } = req.body;
-    
-    // Validasi status
-    if (!['Diajukan', 'Diterima', 'Ditolak'].includes(statusPengajuan)) {
-      return res.status(400).json({ message: "Status pengajuan tidak valid" });
-    }
-
-    const updatedCase = await Case.findByIdAndUpdate(
-      id,
-      { statusPengajuan },
-      { new: true }
-    ).populate('penggugah');
-
-    if (!updatedCase) {
-      return res.status(404).json({ message: "Case not found" });
-    }
-
-    res.status(200).json({
-      message: "Status pengajuan berhasil diperbarui",
-      case: updatedCase
-    });
-  } catch (error) {
-    console.error("Error updating status:", error);
-    res.status(500).json({ message: error.message });
-  }
-};
-
 module.exports = {
   createCase,
   getAllCases,
@@ -241,5 +321,6 @@ module.exports = {
   getFileByIndex,
   deleteCase, // Menambahkan fungsi delete
   upload,
-  updateStatus
+  updateStatus,
+  getCertificateByTokenId
 };

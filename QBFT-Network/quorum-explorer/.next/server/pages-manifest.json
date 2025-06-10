@@ -3,7 +3,9 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/nodes": "pages/nodes.js",
-  "/api/nodeGetDetails": "pages/api/nodeGetDetails.js",
+  "/contracts": "pages/contracts.js",
+  "/explorer": "pages/explorer.js",
+  "/validators": "pages/validators.js",
   "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
-  "/api/nodeGetPeers": "pages/api/nodeGetPeers.js"
+  "/api/blockGetByNumber": "pages/api/blockGetByNumber.js"
 }

@@ -22,6 +22,16 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/contracts": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/contracts.js"
+    ],
+    "/explorer": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/explorer.js"
+    ],
     "/nodes": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

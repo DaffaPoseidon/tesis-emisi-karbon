@@ -65,7 +65,7 @@ const updateStatus = async (req, res) => {
           issuedOn: new Date(),
           transactionHash: blockchainResult.transactionHash,
           blockNumber: blockchainResult.blockNumber,
-          tokenIds: blockchainResult.tokenIds,
+          tokens: blockchainResult.tokens, // Array yang berisi tokenId dan uniqueHash
           recipientAddress: recipientAddress
         };
         
@@ -97,6 +97,50 @@ const updateStatus = async (req, res) => {
     }
   } catch (error) {
     console.error("Error updating status:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const verifyCertificate = async (req, res) => {
+  try {
+    const { uniqueHash } = req.params;
+    
+    if (!uniqueHash) {
+      return res.status(400).json({ message: "Hash unik tidak diberikan" });
+    }
+    
+    const { verifyCertificate } = require("../services/blockchainService");
+    const verificationResult = await verifyCertificate(uniqueHash);
+    
+    if (verificationResult.success && verificationResult.isValid) {
+      // Jika hash valid, ambil data sertifikat lengkap
+      const { getCertificateByHash } = require("../services/blockchainService");
+      const certificateDetails = await getCertificateByHash(uniqueHash);
+      
+      // Cari data case terkait di MongoDB
+      const caseData = await Case.findOne({
+        'blockchainData.tokens.uniqueHash': uniqueHash
+      });
+      
+      res.status(200).json({
+        message: "Sertifikat terverifikasi dan valid",
+        isValid: true,
+        certificate: certificateDetails,
+        caseData: caseData
+      });
+    } else if (verificationResult.success) {
+      res.status(200).json({
+        message: "Sertifikat tidak valid atau tidak ditemukan",
+        isValid: false
+      });
+    } else {
+      res.status(500).json({
+        message: "Gagal memverifikasi sertifikat",
+        error: verificationResult.error
+      });
+    }
+  } catch (error) {
+    console.error("Error verifying certificate:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -322,5 +366,6 @@ module.exports = {
   deleteCase, // Menambahkan fungsi delete
   upload,
   updateStatus,
-  getCertificateByTokenId
+  getCertificateByTokenId,
+  verifyCertificate
 };

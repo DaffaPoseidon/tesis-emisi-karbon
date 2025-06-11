@@ -18,7 +18,6 @@ const caseSchema = new mongoose.Schema({
     fileName: String,
     filePath: String
   }],
-  // Field baru untuk status pengajuan
   statusPengajuan: {
     type: String,
     enum: ['Diajukan', 'Diterima', 'Ditolak'],
@@ -28,7 +27,10 @@ const caseSchema = new mongoose.Schema({
     issuedOn: Date,
     transactionHash: String,
     blockNumber: Number,
-    tokenIds: [String],
+    tokens: [{
+      tokenId: String,
+      uniqueHash: String // Menyimpan hash unik untuk setiap token
+    }],
     recipientAddress: String
   }
 }, { timestamps: true });

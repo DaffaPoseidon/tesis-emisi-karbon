@@ -8,7 +8,8 @@ const {
   getFileByIndex, // Tambahkan ini
   deleteCase, // Tambahkan fungsi deleteCase dari controller
   updateStatus,
-  getCertificateByTokenId
+  getCertificateByTokenId,
+  verifyCertificate
 } = require('../controller/CaseController');
 
 const { authenticateToken } = require("../utils/authMiddleware");
@@ -27,5 +28,8 @@ router.delete("/:id", authenticateToken, deleteCase); // Menambahkan route untuk
 
 router.patch("/:id/status", authenticateToken, updateStatus);
 router.get("/certificate/:tokenId", authenticateToken, getCertificateByTokenId);
+
+// Rute untuk verifikasi sertifikat berdasarkan hash unik
+router.get("/certificates/verify/:uniqueHash", authenticateToken, verifyCertificate);
 
 module.exports = router;

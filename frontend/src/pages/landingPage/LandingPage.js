@@ -37,7 +37,7 @@ const LandingPage = () => {
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
         <div className="text-center p-4 sm:w-full md:w-3/4 lg:w-1/2">
           <h1 className="text-4xl sm:text-5xl font-bold text-blue-600 mb-6">
-            Selamat Datang di Sistem Rekap Penanganan Perkara
+            BLOCKCHAIN MARKETPLACE EMISI KARBON!
           </h1>
           <p className="text-xl sm:text-2xl text-gray-700 mb-6">
             Pantau perkembangan perkara secara langsung di pengadilan.

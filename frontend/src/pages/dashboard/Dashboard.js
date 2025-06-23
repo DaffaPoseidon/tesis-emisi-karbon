@@ -37,35 +37,34 @@ const Dashboard = () => {
 
   // Fetch daftar kasus
   const fetchCases = useCallback(async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
+    console.log("Fetching cases...");
+    const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/cases?filter=${filter}`,
+        `${process.env.REACT_APP_API_BASE_URL}/cases`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
-      if (response.status === 401 || response.status === 403) {
-        console.error('Token invalid, redirecting to login');
-        navigate('/login');
-        return;
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Cases fetched successfully:", data.cases.length);
+        setCases(data.cases);
+        return true; // Return success for promise chaining
+      } else {
+        console.error("Gagal mengambil data");
+        return false;
       }
-
-      const data = await response.json();
-      setCases(data.cases);
     } catch (error) {
-      console.error('Error fetching cases:', error.message);
+      console.error("Error:", error.message);
+      return false;
     }
-  }, [filter, navigate]);
-
+  }, []);
+  
+  // Memastikan fetchCases dipanggil pada mount
   useEffect(() => {
     fetchCases();
   }, [fetchCases]);
@@ -232,13 +231,17 @@ const Dashboard = () => {
 
         {/* Tabel kasus */}
         <CaseTable
-          cases={cases.filter((caseItem) =>
-            caseItem.kepemilikanLahan.toLowerCase().includes(searchQuery.toLowerCase())
-          )}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          refreshCases={fetchCases}
-        />
+  cases={cases.filter((caseItem) =>
+    caseItem.kepemilikanLahan.toLowerCase().includes(searchQuery.toLowerCase())
+  )}
+  onEdit={handleEdit}
+  onDelete={handleDelete}
+  refreshCases={async () => {
+    console.log("Manual refresh triggered");
+    await fetchCases(); 
+    console.log("Manual refresh completed");
+  }}
+/>
       </div>
     </div>
   );

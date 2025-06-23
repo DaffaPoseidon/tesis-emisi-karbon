@@ -1,113 +1,3 @@
-// const { ethers } = require("ethers");
-// const fs = require("fs");
-// const path = require("path");
-// require("dotenv").config();
-
-// // Load ABI dari file JSON yang dihasilkan saat kompilasi kontrak
-// const contractABIPath = path.join(__dirname, '../../../smart-contract/artifacts/contracts/Contract.sol/CarbonCertificate.json');
-// const contractABI = JSON.parse(fs.readFileSync(contractABIPath, 'utf8')).abi;
-
-// // Check ethers version and use appropriate provider syntax
-// // For ethers v6
-// const provider = new ethers.JsonRpcProvider(process.env.BESU_RPC_URL || "http://127.0.0.1:8545");
-// const wallet = new ethers.Wallet(process.env.PRIVATE_KEY || "1bda73f51aeccda93af5e06826dc4fefec67d283911bbc14ebbb1680aeb774d0", provider);
-// const contractAddress = process.env.CONTRACT_ADDRESS || "0x16976173761B80b94f807C7b9d9f768FF9a8DF69";
-// const carbonContract = new ethers.Contract(contractAddress, contractABI, wallet);
-
-// /**
-//  * Menerbitkan sertifikat karbon ke blockchain
-//  * @param {string} recipient - Alamat penerima sertifikat 
-//  * @param {number} carbonAmount - Jumlah karbon dalam ton
-//  * @param {string} projectId - ID proyek (bisa berupa ID dari MongoDB)
-//  * @returns {Promise<Object>} - Hasil transaksi dari blockchain
-//  */
-// async function issueCarbonCertificate(recipient, carbonAmount, projectId) {
-//   try {
-//     // Pastikan carbonAmount adalah angka
-//     const amount = parseInt(carbonAmount);
-//     if (isNaN(amount) || amount <= 0) {
-//       throw new Error("Jumlah karbon harus berupa angka positif");
-//     }
-
-//     console.log(`Issuing ${amount} carbon certificates for project ${projectId} to ${recipient}`);
-
-//     // Panggil fungsi smart contract
-//     const tx = await carbonContract.issueCertificate(
-//       recipient,
-//       amount,
-//       projectId
-//     );
-
-//     console.log("Transaction hash:", tx.hash);
-    
-//     // Tunggu konfirmasi transaksi
-//     const receipt = await tx.wait();
-//     console.log("Transaction confirmed in block:", receipt.blockNumber);
-    
-//     // Parse event dari receipt untuk mendapatkan token IDs
-//     // Adjust this for ethers v6
-//     const events = receipt.logs.filter(log => {
-//       try {
-//         const parsed = carbonContract.interface.parseLog(log);
-//         return parsed && parsed.name === 'CertificateIssued';
-//       } catch (e) {
-//         return false;
-//       }
-//     }).map(log => {
-//       const parsed = carbonContract.interface.parseLog(log);
-//       return {
-//         args: parsed.args
-//       };
-//     });
-
-//     const tokenIds = events.map(event => event.args[0].toString());
-    
-//     return {
-//       success: true,
-//       transactionHash: tx.hash,
-//       blockNumber: receipt.blockNumber,
-//       tokenIds: tokenIds,
-//       recipient: recipient,
-//       carbonAmount: amount,
-//       projectId: projectId
-//     };
-//   } catch (error) {
-//     console.error("Error issuing carbon certificate:", error);
-//     return {
-//       success: false,
-//       error: error.message
-//     };
-//   }
-// }
-
-// /**
-//  * Mengambil detail sertifikat dari blockchain
-//  * @param {string} tokenId - ID token sertifikat yang akan diambil
-//  * @returns {Promise<Object>} Detail sertifikat
-//  */
-// async function getCertificateDetails(tokenId) {
-//   try {
-//     const certificate = await carbonContract.getCertificate(tokenId);
-//     return {
-//       success: true,
-//       carbonAmount: certificate[0].toString(),
-//       projectId: certificate[1],
-//       issueDate: new Date(certificate[2].toString() * 1000).toISOString()
-//     };
-//   } catch (error) {
-//     console.error(`Error getting certificate details for token ${tokenId}:`, error);
-//     return {
-//       success: false,
-//       error: error.message
-//     };
-//   }
-// }
-
-// module.exports = {
-//   issueCarbonCertificate,
-//   getCertificateDetails
-// };
-
 const { ethers } = require("ethers");
 const fs = require("fs");
 const path = require("path");
@@ -115,19 +5,47 @@ require("dotenv").config();
 
 // Load ABI dari file JSON yang dihasilkan saat kompilasi kontrak
 const contractABIPath = path.join(__dirname, '../../../smart-contract/artifacts/contracts/Contract.sol/CarbonCertificate.json');
-const contractABI = JSON.parse(fs.readFileSync(contractABIPath, 'utf8')).abi;
+let contractABI;
 
-// Setup provider dan wallet
-const provider = new ethers.JsonRpcProvider(process.env.BESU_RPC_URL || "http://127.0.0.1:8545");
-const wallet = new ethers.Wallet(process.env.PRIVATE_KEY || "1bda73f51aeccda93af5e06826dc4fefec67d283911bbc14ebbb1680aeb774d0", provider);
-const contractAddress = process.env.CONTRACT_ADDRESS;
+try {
+  const abiFile = fs.readFileSync(contractABIPath, 'utf8');
+  contractABI = JSON.parse(abiFile).abi;
+} catch (error) {
+  console.error(`Error loading ABI file from ${contractABIPath}:`, error);
+  process.exit(1); // Fatal error - exit the application
+}
+
+// Setup provider dan wallet tanpa fallback
+if (!process.env.BESU_RPC_URL) {
+  console.error("BESU_RPC_URL is not defined in environment variables");
+  process.exit(1);
+}
+
+if (!process.env.PRIVATE_KEY_BLOCKCHAIN) {
+  console.error("PRIVATE_KEY_BLOCKCHAIN is not defined in environment variables");
+  process.exit(1);
+}
+
+if (!process.env.CONTRACT_ADDRESS_SMARTCONTRACT) {
+  console.error("CONTRACT_ADDRESS_SMARTCONTRACT is not defined in environment variables");
+  process.exit(1);
+}
+
+const provider = new ethers.JsonRpcProvider(process.env.BESU_RPC_URL);
+const wallet = new ethers.Wallet(process.env.PRIVATE_KEY_BLOCKCHAIN, provider);
+const contractAddress = process.env.CONTRACT_ADDRESS_SMARTCONTRACT;
 const carbonContract = new ethers.Contract(contractAddress, contractABI, wallet);
+
+console.log(`Blockchain service initialized with:
+- Provider: ${process.env.BESU_RPC_URL}
+- Contract: ${contractAddress}
+- Wallet: ${wallet.address}`);
 
 /**
  * Menerbitkan sertifikat karbon ke blockchain dengan token unik
  * @param {string} recipient - Alamat penerima sertifikat 
  * @param {number} carbonAmount - Jumlah karbon dalam ton
- * @param {string} projectId - ID proyek (bisa berupa ID dari MongoDB)
+ * @param {string} projectId - ID proyek (dari MongoDB)
  * @returns {Promise<Object>} - Hasil transaksi dari blockchain
  */
 async function issueCarbonCertificate(recipient, carbonAmount, projectId) {
@@ -141,6 +59,7 @@ async function issueCarbonCertificate(recipient, carbonAmount, projectId) {
     console.log(`Issuing ${amount} carbon certificates for project ${projectId} to ${recipient}`);
 
     // Panggil fungsi smart contract yang akan menghasilkan token unik
+    console.log("Memanggil kontrak di alamat:", contractAddress);
     const tx = await carbonContract.issueCertificate(
       recipient,
       amount,
@@ -150,39 +69,98 @@ async function issueCarbonCertificate(recipient, carbonAmount, projectId) {
     console.log("Transaction hash:", tx.hash);
     
     // Tunggu konfirmasi transaksi
+    console.log("Menunggu konfirmasi transaksi...");
     const receipt = await tx.wait();
     console.log("Transaction confirmed in block:", receipt.blockNumber);
     
-    // Parse event untuk mendapatkan token unik (uniqueHash)
-    const events = receipt.logs.filter(log => {
-      try {
-        const parsed = carbonContract.interface.parseLog({
-          topics: log.topics,
-          data: log.data
-        });
-        return parsed && parsed.name === 'CertificateIssued';
-      } catch (e) {
-        return false;
-      }
-    }).map(log => {
-      const parsed = carbonContract.interface.parseLog({
-        topics: log.topics,
-        data: log.data
-      });
-      return {
-        tokenId: parsed.args[0].toString(),
-        recipient: parsed.args[1],
-        carbonAmount: parsed.args[2].toString(),
-        projectId: parsed.args[3],
-        uniqueHash: parsed.args[4]  // Ekstrak uniqueHash dari event
-      };
-    });
+// Parse event untuk mendapatkan token unik (uniqueHash)
+console.log("Parsing events dari receipt dengan log count:", receipt.logs.length);
+console.log("Contract address untuk filter:", contractAddress.toLowerCase());
 
+// Log semua event topics untuk debugging
+receipt.logs.forEach((log, i) => {
+  console.log(`Log #${i} address: ${log.address.toLowerCase()}, topics:`, log.topics);
+});
+
+// Filter hanya log dari kontrak kita
+const contractLogs = receipt.logs.filter(log => 
+  log.address.toLowerCase() === contractAddress.toLowerCase()
+);
+console.log(`Filtered logs dari kontrak kita: ${contractLogs.length}`);
+
+// // Parse event secara manual (perbaikan utama)
+// const events = [];
+// for (const log of contractLogs) {
+//   try {
+//     // Untuk ethers v6, gunakan parseLog dengan bentuk yang benar
+//     const parsedLog = carbonContract.interface.parseLog({
+//       topics: log.topics,
+//       data: log.data
+//     });
+    
+//     if (parsedLog && parsedLog.name === 'CertificateIssued') {
+//       console.log("Event CertificateIssued ditemukan!", parsedLog.args);
+      
+//       // Pastikan args memiliki 5 parameter sesuai event definition
+//       events.push({
+//         tokenId: parsedLog.args[0].toString(),
+//         recipient: parsedLog.args[1],
+//         carbonAmount: parsedLog.args[2].toString(),
+//         projectId: parsedLog.args[3],
+//         uniqueHash: parsedLog.args[4]  // Ini adalah bytes32
+//       });
+//       console.log("Event parsed:", events[events.length-1]);
+//     } else if (parsedLog) {
+//       console.log("Event lain ditemukan:", parsedLog.name);
+//     }
+//   } catch (error) {
+//     console.log("Error parsing log:", error.message);
+//   }
+// }
+
+// Alternatif pendekatan parsing event jika cara di atas masih gagal
+const events = [];
+const iface = new ethers.Interface(contractABI);
+
+for (const log of receipt.logs) {
+  try {
+    // Hanya proses log dari kontrak kita
+    if (log.address.toLowerCase() !== contractAddress.toLowerCase()) continue;
+    
+    // Format log untuk parsing
+    const logDescription = iface.parseLog({
+      topics: [...log.topics],
+      data: log.data
+    });
+    
+    if (logDescription && logDescription.name === 'CertificateIssued') {
+      const { args } = logDescription;
+      
+      // Format data dengan benar
+      events.push({
+        tokenId: args.tokenId.toString(),
+        recipient: args.recipient,
+        carbonAmount: args.carbonAmount.toString(),
+        projectId: args.projectId,
+        uniqueHash: args.uniqueHash
+      });
+      
+      console.log("Token berhasil diparsing:", events[events.length-1]);
+    }
+  } catch (e) {
+    // Ignore parsing errors for non-matching logs
+  }
+}
+
+console.log(`Jumlah event CertificateIssued yang berhasil di-parse: ${events.length}`);
+    
     // Kumpulkan token ID dan hash unik
     const tokenData = events.map(event => ({
       tokenId: event.tokenId,
       uniqueHash: event.uniqueHash
     }));
+    
+    console.log("Generated tokens:", tokenData);
     
     return {
       success: true,

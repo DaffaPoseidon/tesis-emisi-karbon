@@ -41,49 +41,72 @@ const updateStatus = async (req, res) => {
 
     // Jika status "Diterima", kirim data ke blockchain
     if (statusPengajuan === 'Diterima') {
-      // Alamat penerima (bisa dari user.walletAddress jika ada, atau gunakan default)
-      const recipientAddress = caseData.penggugah.walletAddress || 
-                              process.env.DEFAULT_RECIPIENT_ADDRESS || 
-                              "0xF84D3c1248c04D7791f7E732B110EF1d337F1CaA";
-      
-      // Jumlah karbon dalam ton
-      const carbonAmount = parseInt(caseData.jumlahKarbon);
-      
-      // Gunakan ID kasus sebagai projectId
-      const projectId = caseData._id.toString();
-      
-      // Panggil fungsi untuk menerbitkan sertifikat di blockchain
-      const blockchainResult = await issueCarbonCertificate(
-        recipientAddress,
-        carbonAmount,
-        projectId
-      );
-      
-      if (blockchainResult.success) {
-        // Simpan hasil blockchain ke data kasus
-        caseData.blockchainData = {
-          issuedOn: new Date(),
-          transactionHash: blockchainResult.transactionHash,
-          blockNumber: blockchainResult.blockNumber,
-          tokens: blockchainResult.tokens, // Array yang berisi tokenId dan uniqueHash
-          recipientAddress: recipientAddress
-        };
+      try {
+        // Alamat penerima (bisa dari user.walletAddress jika ada, atau gunakan default)
+        const recipientAddress = process.env.DEFAULT_RECIPIENT_ADDRESS;
         
-        await caseData.save();
+        // Jumlah karbon dalam ton
+        const carbonAmount = parseInt(caseData.jumlahKarbon);
         
-        return res.status(200).json({
-          message: `Status pengajuan diperbarui dan ${carbonAmount} sertifikat karbon telah diterbitkan di blockchain`,
-          case: caseData,
-          blockchain: blockchainResult
-        });
-      } else {
-        // Simpan perubahan status meskipun blockchain gagal
-        await caseData.save();
+        // Gunakan ID kasus sebagai projectId
+        const projectId = caseData._id.toString();
+
+        console.log(`Status: ${statusPengajuan}, Carbon Amount: ${carbonAmount}, Project ID: ${projectId}`);
+        console.log(`Recipient Address: ${recipientAddress}`);
         
-        return res.status(200).json({
-          message: "Status pengajuan diperbarui tetapi gagal menerbitkan sertifikat di blockchain",
-          case: caseData,
-          blockchainError: blockchainResult.error
+        // Tambahkan timeout untuk memastikan transaksi diproses
+        console.log("Menunggu transaksi blockchain...");
+        const blockchainResult = await issueCarbonCertificate(
+          recipientAddress,
+          carbonAmount,
+          projectId
+        );
+        
+        // Logging detail untuk debugging
+        console.log("Hasil blockchain:", JSON.stringify(blockchainResult, null, 2));
+        
+        if (blockchainResult.success) {
+          // Tambahkan pemeriksaan token yang lebih robust
+          if (blockchainResult.tokens && blockchainResult.tokens.length > 0) {
+            console.log(`${blockchainResult.tokens.length} token berhasil dibuat`);
+            
+            // Simpan hasil blockchain ke data kasus
+            caseData.blockchainData = {
+              issuedOn: new Date(),
+              transactionHash: blockchainResult.transactionHash,
+              blockNumber: blockchainResult.blockNumber,
+              tokens: blockchainResult.tokens, // Array yang berisi tokenId dan uniqueHash
+              recipientAddress: recipientAddress
+            };
+            
+            // Simpan perubahan ke database
+            await caseData.save();
+            
+            // Kirim response ke client dengan data lengkap
+            return res.status(200).json({
+              message: `Status pengajuan diperbarui dan ${carbonAmount} sertifikat karbon telah diterbitkan di blockchain`,
+              case: caseData,
+              blockchain: blockchainResult
+            });
+          } else {
+            console.error("Tidak ada token yang dibuat meskipun transaksi berhasil!");
+            return res.status(500).json({ 
+              message: "Transaksi blockchain berhasil tetapi tidak ada token yang dibuat",
+              blockchainResult 
+            });
+          }
+        } else {
+          console.error("Transaksi blockchain gagal:", blockchainResult.error);
+          return res.status(500).json({ 
+            message: "Gagal menerbitkan sertifikat di blockchain", 
+            error: blockchainResult.error 
+          });
+        }
+      } catch (error) {
+        console.error("Error dalam proses blockchain:", error);
+        return res.status(500).json({ 
+          message: "Terjadi kesalahan saat memproses blockchain", 
+          error: error.message 
         });
       }
     } else {
@@ -97,7 +120,7 @@ const updateStatus = async (req, res) => {
     }
   } catch (error) {
     console.error("Error updating status:", error);
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 

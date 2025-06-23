@@ -32,10 +32,10 @@ const { ethers } = require("ethers");
 if (!process.env.BESU_RPC_URL) {
   throw new Error("Api Url is not defined in the environment variables.");
 }
-if (!process.env.PRIVATE_KEY) {
+if (!process.env.PRIVATE_KEY_BLOCKCHAIN) {
   throw new Error("Private key is not defined in the environment variables.");
 }
-if (!process.env.CONTRACT_ADDRESS) {
+if (!process.env.CONTRACT_ADDRESS_SMARTCONTRACT) {
   throw new Error("Contract address is not defined in the environment variables.");
 }
 
@@ -43,9 +43,9 @@ if (!process.env.CONTRACT_ADDRESS) {
 // const privateKey: string = process.env.PRIVATE_KEY;
 // const contractAddress: string = process.env.CONTRACT_ADDRESS;
 
-const apiUrl = process.env.API_URL;
-const privateKey = process.env.PRIVATE_KEY;
-const contractAddress = process.env.CONTRACT_ADDRESS;
+const apiUrl = process.BESU_RPC_URL
+const privateKey = process.env.PRIVATE_KEY_BLOCKCHAIN;
+const contractAddress = process.env.CONTRACT_ADDRESS_SMARTCONTRACT;
 
 // 
 // 

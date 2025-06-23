@@ -3,6 +3,7 @@ import React, { useState } from "react";
 const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
   const [loading, setLoading] = useState({});
   const [error, setError] = useState(null);
+  const [lastClickTime, setLastClickTime] = useState({});
   
   const user = JSON.parse(localStorage.getItem("user"));
   const userRole = user?.role;
@@ -24,13 +25,33 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
     refreshCases?.();
   };
   
+  // Tambahkan state terpisah untuk melacak proses yang sedang berjalan
+  const [processingIds, setProcessingIds] = useState(new Set());
+
   // Fungsi update status pengajuan
   const handleStatusUpdate = async (id, newStatus) => {
-    const token = localStorage.getItem("token");
-    setLoading({...loading, [id]: true});
-    setError(null);
+  
+  const now = Date.now();
+  if (lastClickTime[id] && now - lastClickTime[id] < 2000) { // 2 detik cooldown
+    console.log("Terlalu cepat klik, mohon tunggu...");
+    return;
+  }
+  
+  setLastClickTime(prev => ({...prev, [id]: now}));
+
+  // Jika ID sudah sedang diproses, jangan lakukan apa-apa
+  if (processingIds.has(id)) return;
+  
+  const token = localStorage.getItem("token");
+  
+  // Tambahkan ID ke daftar yang sedang diproses
+  setProcessingIds(prev => new Set(prev).add(id));
+  setLoading(prev => ({...prev, [id]: true}));
+  setError(null);
     
     try {
+      console.log(`Memperbarui status ${id} menjadi ${newStatus}...`);
+      
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/cases/${id}/status`,
         {
@@ -42,24 +63,39 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
           body: JSON.stringify({ statusPengajuan: newStatus }),
         }
       );
-
+  
       const data = await response.json();
       
       if (response.ok) {
         console.log(`Status berhasil diubah menjadi ${newStatus}`);
+        
         if (newStatus === 'Diterima' && data.blockchain) {
           console.log('Sertifikat berhasil diterbitkan:', data.blockchain);
         }
-        refreshCases?.();
+        
+        // Pastikan refresh dipanggil sebelum state loading diubah
+        if (refreshCases) {
+          await refreshCases();
+        }
       } else {
         setError(data.message || "Gagal mengubah status pengajuan");
         console.error("Gagal mengubah status pengajuan:", data.message);
       }
     } catch (error) {
+      console.error("Error updating status:", error);
       setError(error.message);
-      console.error("Error:", error.message);
     } finally {
-      setLoading({...loading, [id]: false});
+    // Hapus ID dari daftar yang sedang diproses
+    setProcessingIds(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(id);
+      return newSet;
+    });
+    setLoading(prev => {
+      const newLoading = {...prev};
+      delete newLoading[id];
+      return newLoading;
+    });
     }
   };
 
@@ -260,23 +296,27 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
               {showApprovalColumn && (
                 <td className="border border-gray-300 px-4 py-2">
                   <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleStatusUpdate(item._id, "Diterima")}
-                      className={`${
-                        loading[item._id] 
-                          ? "bg-gray-400" 
-                          : "bg-green-500 hover:bg-green-600"
-                      } text-white px-3 py-1 rounded flex items-center justify-center`}
-                      disabled={loading[item._id]}
-                    >
-                      {loading[item._id] ? (
-                        <svg className="animate-spin h-4 w-4 mr-1" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                      ) : null}
-                      Terima
-                    </button>
+<button
+  onClick={() => handleStatusUpdate(item._id, "Diterima")}
+  className={`${
+    loading[item._id] 
+      ? "bg-gray-400 cursor-not-allowed" 
+      : "bg-green-500 hover:bg-green-600"
+  } text-white px-3 py-1 rounded flex items-center justify-center min-w-[80px]`}
+  disabled={loading[item._id] || processingIds.has(item._id)}
+>
+  {loading[item._id] ? (
+    <>
+      <svg className="animate-spin h-4 w-4 mr-1" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>Memproses...</span>
+    </>
+  ) : (
+    "Terima"
+  )}
+</button>
                     <button
                       onClick={() => handleStatusUpdate(item._id, "Ditolak")}
                       className={`${

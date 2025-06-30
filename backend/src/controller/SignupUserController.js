@@ -10,7 +10,7 @@ async function signupUser(req, res) {
             lastName,
             email,
             password: hashedPassword,
-            role: "user"
+            role: "seller"
         })
         const savedUser = await newUser.save();
         res.status(201).json({ message: "A user created successfully", user: savedUser });

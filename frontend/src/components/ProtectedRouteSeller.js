@@ -17,7 +17,7 @@ const ProtectedRoute = ({ element, ...rest }) => {
     }
 
     // Cek apakah role user adalah 'superadmin' atau 'admin'
-    if (token.role !== 'user') {
+    if (token.role !== 'seller' && token.role !== 'superadmin') {
       navigate('/');
       return;
     }

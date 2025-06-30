@@ -18,6 +18,13 @@ const Dashboard = () => {
     lokasiGeografis: "",
     kepemilikanLahan: "",
   });
+
+  const [user, setUser] = useState(null);
+  
+useEffect(() => {
+  const loggedInUser = JSON.parse(localStorage.getItem('user'));
+  setUser(loggedInUser);
+}, []);
   const [editMode, setEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false); // State untuk modal
   const fileInputRef = useRef(null);
@@ -201,16 +208,17 @@ const Dashboard = () => {
         )}
 
         {/* Form untuk menambah atau mengedit kasus */}
-        <CaseForm
-          initialFormState={initialFormState}
-          formData={formData}
-          setFormData={setFormData}
-          editMode={editMode}
-          handleUpdate={handleUpdate}
-          refreshCases={fetchCases}
-          setEditMode={setEditMode}
-          setShowModal={setShowModal} // Kirim setShowModal ke CaseForm
-        />
+        {(user?.role === 'seller' || user?.role === 'superadmin') && (
+  <CaseForm 
+    initialFormState={formData}
+    refreshCases={fetchCases}
+    editMode={editMode}
+    formData={formData}
+    setFormData={setFormData}
+    handleUpdate={handleUpdate}
+    setEditMode={setEditMode}
+  />
+)}
 
         {/* Search bar */}
         <div className="mb-6 flex items-center space-x-4">

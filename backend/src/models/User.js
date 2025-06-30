@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({ // Mendefinisikan skema (struktur) untu
     lastName: String, // Mendefinisikan field "lastName" dengan tipe data String
     email: {type: String, unique: true}, // Mendefinisikan field "email" dengan tipe data String, yang harus unik
     password: String, // Mendefinisikan field "password" dengan tipe data String
-    role: {type: String, enum: ["superadmin", "validator", "user"], default: "guest"}, // Mendefinisikan field "role" dengan nilai terbatas pada "superadmin", "admin", atau "guest" dan nilai default "guest"
+    role: {type: String, enum: ["superadmin", "validator", "seller", "buyer", "guest"], default: "guest"}, // Mendefinisikan field "role" dengan nilai terbatas pada "superadmin", "admin", atau "guest" dan nilai default "guest"
     cases: [{ type: mongoose.Schema.Types.ObjectId, ref: "Case" }] // Menyimpan banyak kasus yang dimiliki user
 });
 

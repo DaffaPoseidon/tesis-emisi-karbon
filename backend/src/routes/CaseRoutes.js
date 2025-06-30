@@ -5,31 +5,29 @@ const {
   updateCase, 
   upload, 
   getFile,
-  getFileByIndex, // Tambahkan ini
-  deleteCase, // Tambahkan fungsi deleteCase dari controller
+  getFileByIndex,
+  deleteCase,
   updateStatus,
   getCertificateByTokenId,
   verifyCertificate
 } = require('../controller/CaseController');
 
 const { authenticateToken } = require("../utils/authMiddleware");
+const isSellerMiddleware = require('../middleware/isSellerMiddleware'); // Tambahkan import
 
 const router = express.Router();
 
-// Rute untuk kasus
-router.post("/", authenticateToken, upload.array("files", 100), createCase); // Menambahkan kasus baru hingga 10 file
-// router.post("/", authenticateToken, upload.single("file"), createCase); // Menambahkan kasus baru
-router.get("/", getAllCases); // Mengambil daftar kasus
-router.put("/:id", authenticateToken, upload.array("files", 100), updateCase);
-// router.put("/:id", authenticateToken, upload.single("file"), updateCase); // Mengedit kasus
-router.get("/:id/file", getFile); // Tidak menggunakan `authenticateToken`
-router.get("/:caseId/files/:fileIndex", getFileByIndex); // Rute baru untuk mengunduh file berdasarkan index
-router.delete("/:id", authenticateToken, deleteCase); // Menambahkan route untuk menghapus kasus
+// Tambahkan isSellerMiddleware ke routes yang perlu dilindungi
+router.post("/", authenticateToken, isSellerMiddleware, upload.array("files", 100), createCase); 
+router.put("/:id", authenticateToken, isSellerMiddleware, upload.array("files", 100), updateCase);
+router.delete("/:id", authenticateToken, isSellerMiddleware, deleteCase);
 
+// Routes lainnya yang tidak perlu isSellerMiddleware
+router.get("/", getAllCases);
+router.get("/:id/files/:fileIndex", getFileByIndex);
+router.get("/:id/files", getFile);
 router.patch("/:id/status", authenticateToken, updateStatus);
-router.get("/certificate/:tokenId", authenticateToken, getCertificateByTokenId);
-
-// Rute untuk verifikasi sertifikat berdasarkan hash unik
-router.get("/certificates/verify/:uniqueHash", authenticateToken, verifyCertificate);
+router.get("/certificate/:tokenId", getCertificateByTokenId);
+router.get("/verify/:hash", verifyCertificate);
 
 module.exports = router;

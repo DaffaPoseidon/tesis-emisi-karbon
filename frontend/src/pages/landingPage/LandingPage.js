@@ -8,6 +8,9 @@ const LandingPage = () => {
   const [carbonProducts, setCarbonProducts] = useState([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userRole = user?.role;
+  const canPurchase = userRole === "buyer" || userRole === "superadmin";
 
   // Tambahkan di useEffect
   useEffect(() => {
@@ -244,6 +247,14 @@ const LandingPage = () => {
                           >
                             Lihat Detail
                           </button>
+                          {canPurchase && (
+                            <button
+                              onClick={() => navigate(`/buy/${product._id}`)}
+                              className="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm transition"
+                            >
+                              Beli Sekarang
+                            </button>
+                          )}
                         </div>
                       </div>
 

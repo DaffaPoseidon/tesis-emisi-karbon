@@ -15,7 +15,16 @@ async function login(req, res) {
             throw new Error("Invalid password")
         }
         const token = generateToken(user)
-        res.status(200).json({ user: user, token: token })
+        res.status(200).json({ 
+            user: {
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                role: user.role
+            }, 
+            token: token 
+        })
     } catch (error) {
         res.status(401).json({ message: "Invalid credentials" })
     }

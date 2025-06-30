@@ -206,12 +206,16 @@ const getCertificateByTokenId = async (req, res) => {
 const createCase = async (req, res) => {
   try {
     const userId = req.user.id;
-    
+
+    if (req.user.role !== "seller" && req.user.role !== "superadmin") {
+      return res.status(403).json({ message: "Hanya seller yang dapat menambahkan data" });
+    }
+
     // Validasi apakah ada file yang diunggah
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: "File harus diunggah." });
     }
-    
+
     const {
       luasTanah,
       jenisPohon,
@@ -240,16 +244,20 @@ const createCase = async (req, res) => {
       kepemilikanLahan,
       penggugah: userId,
       files: uploadedFiles,
-      statusPengajuan: "Diajukan"
+      statusPengajuan: "Diajukan",
     });
 
     await newCase.save();
     console.log("Case saved with files:", uploadedFiles.length);
-    
-    res.status(201).json({ message: "Data berhasil ditambahkan", case: newCase });
+
+    res
+      .status(201)
+      .json({ message: "Data berhasil ditambahkan", case: newCase });
   } catch (error) {
     console.error("Error creating case:", error);
-    res.status(500).json({ message: "Terjadi kesalahan server", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Terjadi kesalahan server", error: error.message });
   }
 };
 
@@ -377,18 +385,18 @@ const getFileByIndex = async (req, res) => {
 
 // Fungsi untuk menentukan MIME type berdasarkan ekstensi file
 const getMimeType = (fileName) => {
-  const ext = fileName.split('.').pop().toLowerCase();
+  const ext = fileName.split(".").pop().toLowerCase();
   const mimeTypes = {
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
-    'png': 'image/png',
-    'gif': 'image/gif',
-    'pdf': 'application/pdf',
-    'doc': 'application/msword',
-    'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+    gif: "image/gif",
+    pdf: "application/pdf",
+    doc: "application/msword",
+    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   };
-  
-  return mimeTypes[ext] || 'application/octet-stream';
+
+  return mimeTypes[ext] || "application/octet-stream";
 };
 
 const deleteCase = async (req, res) => {
@@ -411,6 +419,48 @@ const deleteCase = async (req, res) => {
   }
 };
 
+const purchaseProduct = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const userRole = req.user.role;
+    
+    // Validasi role user
+    if (userRole !== 'buyer' && userRole !== 'superadmin') {
+      return res.status(403).json({
+        message: "Akses ditolak. Hanya buyer yang dapat melakukan pembelian."
+      });
+    }
+    
+    // Lanjutkan dengan proses pembelian
+    const { productId, quantity, totalPrice } = req.body;
+    
+    // Validasi data pembelian
+    if (!productId || !quantity || !totalPrice) {
+      return res.status(400).json({
+        message: "Data pembelian tidak lengkap."
+      });
+    }
+    
+    // Implementasi logika pembelian
+    // ...
+    
+    res.status(200).json({
+      message: "Pembelian berhasil",
+      data: {
+        productId,
+        quantity,
+        totalPrice,
+        purchaseDate: new Date()
+      }
+    });
+  } catch (error) {
+    console.error("Error during purchase:", error);
+    res.status(500).json({
+      message: "Terjadi kesalahan saat melakukan pembelian."
+    });
+  }
+};
+
 module.exports = {
   createCase,
   getAllCases,
@@ -423,4 +473,5 @@ module.exports = {
   updateStatus,
   getCertificateByTokenId,
   verifyCertificate,
+  purchaseProduct,
 };

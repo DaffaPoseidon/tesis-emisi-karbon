@@ -4,54 +4,55 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
   const [loading, setLoading] = useState({});
   const [error, setError] = useState(null);
   const [lastClickTime, setLastClickTime] = useState({});
-  
+
   const user = JSON.parse(localStorage.getItem("user"));
   const userRole = user?.role;
   const userId = user?._id;
 
   // Filter data berdasarkan role
-  const filteredCases = 
-    userRole === "user"
+  const filteredCases =
+    userRole === "seller"
       ? cases.filter((caseItem) => caseItem.penggugah?._id === userId)
       : userRole === "validator" || userRole === "superadmin"
-        ? cases.filter((caseItem) => 
+      ? cases.filter(
+          (caseItem) =>
             !caseItem.statusPengajuan || caseItem.statusPengajuan === "Diajukan"
-          )
-        : cases;
+        )
+      : cases;
 
   const handleDelete = async (id) => {
     if (!onDelete) return;
     await onDelete(id);
     refreshCases?.();
   };
-  
+
   // Tambahkan state terpisah untuk melacak proses yang sedang berjalan
   const [processingIds, setProcessingIds] = useState(new Set());
 
   // Fungsi update status pengajuan
   const handleStatusUpdate = async (id, newStatus) => {
-  
-  const now = Date.now();
-  if (lastClickTime[id] && now - lastClickTime[id] < 2000) { // 2 detik cooldown
-    console.log("Terlalu cepat klik, mohon tunggu...");
-    return;
-  }
-  
-  setLastClickTime(prev => ({...prev, [id]: now}));
+    const now = Date.now();
+    if (lastClickTime[id] && now - lastClickTime[id] < 2000) {
+      // 2 detik cooldown
+      console.log("Terlalu cepat klik, mohon tunggu...");
+      return;
+    }
 
-  // Jika ID sudah sedang diproses, jangan lakukan apa-apa
-  if (processingIds.has(id)) return;
-  
-  const token = localStorage.getItem("token");
-  
-  // Tambahkan ID ke daftar yang sedang diproses
-  setProcessingIds(prev => new Set(prev).add(id));
-  setLoading(prev => ({...prev, [id]: true}));
-  setError(null);
-    
+    setLastClickTime((prev) => ({ ...prev, [id]: now }));
+
+    // Jika ID sudah sedang diproses, jangan lakukan apa-apa
+    if (processingIds.has(id)) return;
+
+    const token = localStorage.getItem("token");
+
+    // Tambahkan ID ke daftar yang sedang diproses
+    setProcessingIds((prev) => new Set(prev).add(id));
+    setLoading((prev) => ({ ...prev, [id]: true }));
+    setError(null);
+
     try {
       console.log(`Memperbarui status ${id} menjadi ${newStatus}...`);
-      
+
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/cases/${id}/status`,
         {
@@ -63,16 +64,16 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
           body: JSON.stringify({ statusPengajuan: newStatus }),
         }
       );
-  
+
       const data = await response.json();
-      
+
       if (response.ok) {
         console.log(`Status berhasil diubah menjadi ${newStatus}`);
-        
-        if (newStatus === 'Diterima' && data.blockchain) {
-          console.log('Sertifikat berhasil diterbitkan:', data.blockchain);
+
+        if (newStatus === "Diterima" && data.blockchain) {
+          console.log("Sertifikat berhasil diterbitkan:", data.blockchain);
         }
-        
+
         // Pastikan refresh dipanggil sebelum state loading diubah
         if (refreshCases) {
           await refreshCases();
@@ -85,23 +86,26 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
       console.error("Error updating status:", error);
       setError(error.message);
     } finally {
-    // Hapus ID dari daftar yang sedang diproses
-    setProcessingIds(prev => {
-      const newSet = new Set(prev);
-      newSet.delete(id);
-      return newSet;
-    });
-    setLoading(prev => {
-      const newLoading = {...prev};
-      delete newLoading[id];
-      return newLoading;
-    });
+      // Hapus ID dari daftar yang sedang diproses
+      setProcessingIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+      setLoading((prev) => {
+        const newLoading = { ...prev };
+        delete newLoading[id];
+        return newLoading;
+      });
     }
   };
 
   // Cek visibility kolom
   const showUploaderColumn = ["superadmin", "validator"].includes(userRole);
-  const showActionColumn = ["superadmin", "validator", "user"].includes(userRole);
+  const showActionColumn = ["superadmin", "validator", "seller"].includes(
+    userRole
+  );
+  const canPurchase = userRole === "buyer" || userRole === "superadmin";
   const showApprovalColumn = ["superadmin", "validator"].includes(userRole);
   const showStatusColumn = userRole === "user";
   const showBlockchainColumn = userRole === "user" || userRole === "superadmin";
@@ -144,26 +148,24 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                 Akun Pengunggah
               </th>
             )}
-            
+
             {/* Kolom status pengajuan untuk user */}
             {showStatusColumn && (
               <th className="border border-gray-300 px-4 py-2">
                 Status Pengajuan
               </th>
             )}
-            
+
             {/* Kolom data blockchain */}
             {showBlockchainColumn && (
               <th className="border border-gray-300 px-4 py-2">
                 Data Blockchain
               </th>
             )}
-            
+
             {/* Kolom penerimaan untuk validator/superadmin */}
             {showApprovalColumn && (
-              <th className="border border-gray-300 px-4 py-2">
-                Penerimaan
-              </th>
+              <th className="border border-gray-300 px-4 py-2">Penerimaan</th>
             )}
 
             <th className="border border-gray-300 px-4 py-2">Download</th>
@@ -209,11 +211,12 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                     : "Tidak Diketahui"}
                 </td>
               )}
-              
+
               {/* Status pengajuan untuk user */}
               {showStatusColumn && (
                 <td className="border border-gray-300 px-4 py-2">
-                  {!item.statusPengajuan || item.statusPengajuan === "Diajukan" ? (
+                  {!item.statusPengajuan ||
+                  item.statusPengajuan === "Diajukan" ? (
                     <span className="inline-block px-3 py-1 rounded bg-yellow-500 text-white">
                       Diajukan
                     </span>
@@ -228,100 +231,126 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                   )}
                 </td>
               )}
-              
+
               {/* Data blockchain */}
-{showBlockchainColumn && (
-  <td className="border border-gray-300 px-4 py-2 text-sm">
-    {item.blockchainData && item.blockchainData.transactionHash ? (
-      <div className="flex flex-col space-y-1">
-        <div>
-          <span className="font-semibold">TX:</span>{" "}
-          <a 
-            href={`${process.env.REACT_APP_BESU_EXPLORER_URL}/tx/${item.blockchainData.transactionHash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline truncate block max-w-[120px]"
-          >
-            {item.blockchainData.transactionHash.substring(0, 10)}...
-          </a>
-        </div>
-        
-        {/* Token count - versi baru */}
-        {item.blockchainData.tokens && (
-          <div>
-            <span className="font-semibold">Tokens:</span>{" "}
-            <span className="text-gray-600">
-              {item.blockchainData.tokens.length} tokens
-            </span>
-          </div>
-        )}
-        
-        {/* Token count - versi lama (kompatibilitas) */}
-        {!item.blockchainData.tokens && item.blockchainData.tokenIds && (
-          <div>
-            <span className="font-semibold">Tokens:</span>{" "}
-            <span className="text-gray-600">
-              {item.blockchainData.tokenIds.length} tokens
-            </span>
-          </div>
-        )}
-        
-        {/* Contoh hash token - versi baru */}
-        {item.blockchainData.tokens && item.blockchainData.tokens.length > 0 && (
-          <div>
-            <span className="font-semibold">Sample Hash:</span>{" "}
-            <span className="text-green-600 font-mono text-xs" 
-                  title={item.blockchainData.tokens[0].uniqueHash}>
-              {item.blockchainData.tokens[0].uniqueHash.substring(0, 8)}...
-            </span>
-          </div>
-        )}
-        
-        <div>
-          <span className="font-semibold">Block:</span>{" "}
-          <span className="text-gray-600">
-            {item.blockchainData.blockNumber}
-          </span>
-        </div>
-      </div>
-    ) : (
-      <span className="text-gray-400">
-        Belum tersimpan di blockchain
-      </span>
-    )}
-  </td>
-)}
-              
+              {showBlockchainColumn && (
+                <td className="border border-gray-300 px-4 py-2 text-sm">
+                  {item.blockchainData &&
+                  item.blockchainData.transactionHash ? (
+                    <div className="flex flex-col space-y-1">
+                      <div>
+                        <span className="font-semibold">TX:</span>{" "}
+                        <a
+                          href={`${process.env.REACT_APP_BESU_EXPLORER_URL}/tx/${item.blockchainData.transactionHash}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline truncate block max-w-[120px]"
+                        >
+                          {item.blockchainData.transactionHash.substring(0, 10)}
+                          ...
+                        </a>
+                      </div>
+
+                      {/* Token count - versi baru */}
+                      {item.blockchainData.tokens && (
+                        <div>
+                          <span className="font-semibold">Tokens:</span>{" "}
+                          <span className="text-gray-600">
+                            {item.blockchainData.tokens.length} tokens
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Token count - versi lama (kompatibilitas) */}
+                      {!item.blockchainData.tokens &&
+                        item.blockchainData.tokenIds && (
+                          <div>
+                            <span className="font-semibold">Tokens:</span>{" "}
+                            <span className="text-gray-600">
+                              {item.blockchainData.tokenIds.length} tokens
+                            </span>
+                          </div>
+                        )}
+
+                      {/* Contoh hash token - versi baru */}
+                      {item.blockchainData.tokens &&
+                        item.blockchainData.tokens.length > 0 && (
+                          <div>
+                            <span className="font-semibold">Sample Hash:</span>{" "}
+                            <span
+                              className="text-green-600 font-mono text-xs"
+                              title={item.blockchainData.tokens[0].uniqueHash}
+                            >
+                              {item.blockchainData.tokens[0].uniqueHash.substring(
+                                0,
+                                8
+                              )}
+                              ...
+                            </span>
+                          </div>
+                        )}
+
+                      <div>
+                        <span className="font-semibold">Block:</span>{" "}
+                        <span className="text-gray-600">
+                          {item.blockchainData.blockNumber}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <span className="text-gray-400">
+                      Belum tersimpan di blockchain
+                    </span>
+                  )}
+                </td>
+              )}
+
               {/* Tombol penerimaan untuk validator/superadmin */}
               {showApprovalColumn && (
                 <td className="border border-gray-300 px-4 py-2">
                   <div className="flex space-x-2">
-<button
-  onClick={() => handleStatusUpdate(item._id, "Diterima")}
-  className={`${
-    loading[item._id] 
-      ? "bg-gray-400 cursor-not-allowed" 
-      : "bg-green-500 hover:bg-green-600"
-  } text-white px-3 py-1 rounded flex items-center justify-center min-w-[80px]`}
-  disabled={loading[item._id] || processingIds.has(item._id)}
->
-  {loading[item._id] ? (
-    <>
-      <svg className="animate-spin h-4 w-4 mr-1" viewBox="0 0 24 24">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      <span>Memproses...</span>
-    </>
-  ) : (
-    "Terima"
-  )}
-</button>
+                    <button
+                      onClick={() => handleStatusUpdate(item._id, "Diterima")}
+                      className={`${
+                        loading[item._id]
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-green-500 hover:bg-green-600"
+                      } text-white px-3 py-1 rounded flex items-center justify-center min-w-[80px]`}
+                      disabled={
+                        loading[item._id] || processingIds.has(item._id)
+                      }
+                    >
+                      {loading[item._id] ? (
+                        <>
+                          <svg
+                            className="animate-spin h-4 w-4 mr-1"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          <span>Memproses...</span>
+                        </>
+                      ) : (
+                        "Terima"
+                      )}
+                    </button>
                     <button
                       onClick={() => handleStatusUpdate(item._id, "Ditolak")}
                       className={`${
-                        loading[item._id] 
-                          ? "bg-gray-400" 
+                        loading[item._id]
+                          ? "bg-gray-400"
                           : "bg-red-500 hover:bg-red-600"
                       } text-white px-3 py-1 rounded`}
                       disabled={loading[item._id]}

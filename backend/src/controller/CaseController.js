@@ -10,7 +10,7 @@ const upload = multer({ storage }); // Buat instance multer dengan penyimpanan m
 const headers = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-  "Access-Control-Allow-Headers, Content-Type, Authorization",
+    "Access-Control-Allow-Headers, Content-Type, Authorization",
   "Access-Control-Allow-Methods": "*",
   "Content-Type": "application/json",
 };
@@ -26,12 +26,12 @@ const updateStatus = async (req, res) => {
     const { statusPengajuan } = req.body;
 
     // Validasi status
-    if (!['Diajukan', 'Diterima', 'Ditolak'].includes(statusPengajuan)) {
+    if (!["Diajukan", "Diterima", "Ditolak"].includes(statusPengajuan)) {
       return res.status(400).json({ message: "Status pengajuan tidak valid" });
     }
 
     // Ambil data kasus
-    const caseData = await Case.findById(id).populate('penggugah');
+    const caseData = await Case.findById(id).populate("penggugah");
     if (!caseData) {
       return res.status(404).json({ message: "Case not found" });
     }
@@ -40,20 +40,22 @@ const updateStatus = async (req, res) => {
     caseData.statusPengajuan = statusPengajuan;
 
     // Jika status "Diterima", kirim data ke blockchain
-    if (statusPengajuan === 'Diterima') {
+    if (statusPengajuan === "Diterima") {
       try {
         // Alamat penerima (bisa dari user.walletAddress jika ada, atau gunakan default)
         const recipientAddress = process.env.DEFAULT_RECIPIENT_ADDRESS;
-        
+
         // Jumlah karbon dalam ton
         const carbonAmount = parseInt(caseData.jumlahKarbon);
-        
+
         // Gunakan ID kasus sebagai projectId
         const projectId = caseData._id.toString();
 
-        console.log(`Status: ${statusPengajuan}, Carbon Amount: ${carbonAmount}, Project ID: ${projectId}`);
+        console.log(
+          `Status: ${statusPengajuan}, Carbon Amount: ${carbonAmount}, Project ID: ${projectId}`
+        );
         console.log(`Recipient Address: ${recipientAddress}`);
-        
+
         // Tambahkan timeout untuk memastikan transaksi diproses
         console.log("Menunggu transaksi blockchain...");
         const blockchainResult = await issueCarbonCertificate(
@@ -61,61 +63,69 @@ const updateStatus = async (req, res) => {
           carbonAmount,
           projectId
         );
-        
+
         // Logging detail untuk debugging
-        console.log("Hasil blockchain:", JSON.stringify(blockchainResult, null, 2));
-        
+        console.log(
+          "Hasil blockchain:",
+          JSON.stringify(blockchainResult, null, 2)
+        );
+
         if (blockchainResult.success) {
           // Tambahkan pemeriksaan token yang lebih robust
           if (blockchainResult.tokens && blockchainResult.tokens.length > 0) {
-            console.log(`${blockchainResult.tokens.length} token berhasil dibuat`);
-            
+            console.log(
+              `${blockchainResult.tokens.length} token berhasil dibuat`
+            );
+
             // Simpan hasil blockchain ke data kasus
             caseData.blockchainData = {
               issuedOn: new Date(),
               transactionHash: blockchainResult.transactionHash,
               blockNumber: blockchainResult.blockNumber,
               tokens: blockchainResult.tokens, // Array yang berisi tokenId dan uniqueHash
-              recipientAddress: recipientAddress
+              recipientAddress: recipientAddress,
             };
-            
+
             // Simpan perubahan ke database
             await caseData.save();
-            
+
             // Kirim response ke client dengan data lengkap
             return res.status(200).json({
               message: `Status pengajuan diperbarui dan ${carbonAmount} sertifikat karbon telah diterbitkan di blockchain`,
               case: caseData,
-              blockchain: blockchainResult
+              blockchain: blockchainResult,
             });
           } else {
-            console.error("Tidak ada token yang dibuat meskipun transaksi berhasil!");
-            return res.status(500).json({ 
-              message: "Transaksi blockchain berhasil tetapi tidak ada token yang dibuat",
-              blockchainResult 
+            console.error(
+              "Tidak ada token yang dibuat meskipun transaksi berhasil!"
+            );
+            return res.status(500).json({
+              message:
+                "Transaksi blockchain berhasil tetapi tidak ada token yang dibuat",
+              blockchainResult,
             });
           }
         } else {
           console.error("Transaksi blockchain gagal:", blockchainResult.error);
-          return res.status(500).json({ 
-            message: "Gagal menerbitkan sertifikat di blockchain", 
-            error: blockchainResult.error 
+          return res.status(500).json({
+            message: "Gagal menerbitkan sertifikat di blockchain",
+            error: blockchainResult.error,
           });
         }
       } catch (error) {
         console.error("Error dalam proses blockchain:", error);
-        return res.status(500).json({ 
-          message: "Terjadi kesalahan saat memproses blockchain", 
-          error: error.message 
+        return res.status(500).json({
+          message: "Terjadi kesalahan saat memproses blockchain",
+          error: error.message,
         });
       }
     } else {
       // Jika status bukan "Diterima", cukup simpan perubahan status
       await caseData.save();
-      
+
       return res.status(200).json({
         message: "Status pengajuan berhasil diperbarui",
-        case: caseData
+        case: caseData,
       });
     }
   } catch (error) {
@@ -127,39 +137,39 @@ const updateStatus = async (req, res) => {
 const verifyCertificate = async (req, res) => {
   try {
     const { uniqueHash } = req.params;
-    
+
     if (!uniqueHash) {
       return res.status(400).json({ message: "Hash unik tidak diberikan" });
     }
-    
+
     const { verifyCertificate } = require("../services/blockchainService");
     const verificationResult = await verifyCertificate(uniqueHash);
-    
+
     if (verificationResult.success && verificationResult.isValid) {
       // Jika hash valid, ambil data sertifikat lengkap
       const { getCertificateByHash } = require("../services/blockchainService");
       const certificateDetails = await getCertificateByHash(uniqueHash);
-      
+
       // Cari data case terkait di MongoDB
       const caseData = await Case.findOne({
-        'blockchainData.tokens.uniqueHash': uniqueHash
+        "blockchainData.tokens.uniqueHash": uniqueHash,
       });
-      
+
       res.status(200).json({
         message: "Sertifikat terverifikasi dan valid",
         isValid: true,
         certificate: certificateDetails,
-        caseData: caseData
+        caseData: caseData,
       });
     } else if (verificationResult.success) {
       res.status(200).json({
         message: "Sertifikat tidak valid atau tidak ditemukan",
-        isValid: false
+        isValid: false,
       });
     } else {
       res.status(500).json({
         message: "Gagal memverifikasi sertifikat",
-        error: verificationResult.error
+        error: verificationResult.error,
       });
     }
   } catch (error) {
@@ -173,18 +183,18 @@ const getCertificateByTokenId = async (req, res) => {
   try {
     const { tokenId } = req.params;
     const { getCertificateDetails } = require("../services/blockchainService");
-    
+
     const certificateDetails = await getCertificateDetails(tokenId);
-    
+
     if (certificateDetails.success) {
       res.status(200).json({
         message: "Certificate details retrieved successfully",
-        certificate: certificateDetails
+        certificate: certificateDetails,
       });
     } else {
       res.status(404).json({
         message: "Failed to retrieve certificate details",
-        error: certificateDetails.error
+        error: certificateDetails.error,
       });
     }
   } catch (error) {
@@ -196,7 +206,12 @@ const getCertificateByTokenId = async (req, res) => {
 const createCase = async (req, res) => {
   try {
     const userId = req.user.id;
-
+    
+    // Validasi apakah ada file yang diunggah
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "File harus diunggah." });
+    }
+    
     const {
       luasTanah,
       jenisPohon,
@@ -223,19 +238,18 @@ const createCase = async (req, res) => {
       jenisTanah,
       lokasiGeografis,
       kepemilikanLahan,
-      penggugah: userId, // Simpan ID user yang mengunggah kasus
-      files: uploadedFiles, // Simpan banyak file,
-      statusPengajuan: "Diajukan" // Default status pengajuan
-      // file: req.file ? req.file.buffer : null,
-      // fileName: req.file ? req.file.originalname : null,
+      penggugah: userId,
+      files: uploadedFiles,
+      statusPengajuan: "Diajukan"
     });
 
-    const savedCase = await newCase.save();
-    res.status(201).json(savedCase);
+    await newCase.save();
+    console.log("Case saved with files:", uploadedFiles.length);
+    
+    res.status(201).json({ message: "Data berhasil ditambahkan", case: newCase });
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Gagal menambahkan data", error: error.message });
+    console.error("Error creating case:", error);
+    res.status(500).json({ message: "Terjadi kesalahan server", error: error.message });
   }
 };
 
@@ -343,21 +357,38 @@ const getFileByIndex = async (req, res) => {
     const { caseId, fileIndex } = req.params;
     const caseData = await Case.findById(caseId);
 
-    if (!caseData || !caseData.files[fileIndex]) {
-      return res.status(404).json({ message: "Data tidak ditemukan." });
+    if (!caseData || !caseData.files || !caseData.files[fileIndex]) {
+      return res.status(404).json({ message: "File tidak ditemukan." });
     }
 
     const file = caseData.files[fileIndex]; // Ambil file berdasarkan indeks
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${file.fileName}"`
-    );
-    res.setHeader("Content-Type", "application/octet-stream");
-    res.send(file.fileData); // Kirim file dalam bentuk buffer
+
+    // Atur header response untuk gambar
+    const mimeType = getMimeType(file.fileName);
+    res.setHeader("Content-Type", mimeType);
+
+    // Kirim file dalam bentuk buffer
+    res.send(file.fileData);
   } catch (err) {
     console.error("Error fetching file:", err.message);
     res.status(500).json({ message: "Terjadi kesalahan server" });
   }
+};
+
+// Fungsi untuk menentukan MIME type berdasarkan ekstensi file
+const getMimeType = (fileName) => {
+  const ext = fileName.split('.').pop().toLowerCase();
+  const mimeTypes = {
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'png': 'image/png',
+    'gif': 'image/gif',
+    'pdf': 'application/pdf',
+    'doc': 'application/msword',
+    'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  };
+  
+  return mimeTypes[ext] || 'application/octet-stream';
 };
 
 const deleteCase = async (req, res) => {
@@ -386,9 +417,10 @@ module.exports = {
   updateCase,
   getFile, // Tambahkan fungsi getFile
   getFileByIndex,
+  getMimeType,
   deleteCase, // Menambahkan fungsi delete
   upload,
   updateStatus,
   getCertificateByTokenId,
-  verifyCertificate
+  verifyCertificate,
 };

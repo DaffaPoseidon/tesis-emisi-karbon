@@ -16,7 +16,7 @@ const caseSchema = new mongoose.Schema({
   },
   files: [{
     fileName: String,
-    filePath: String
+    fileData: Buffer
   }],
   statusPengajuan: {
     type: String,

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from '../../components/Header';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "../../components/Header";
 
 const LandingPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -9,12 +9,16 @@ const LandingPage = () => {
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   const navigate = useNavigate();
 
+  // Tambahkan di useEffect
   useEffect(() => {
+    console.log("Backend URL:", process.env.REACT_APP_BACKEND_BASEURL);
+    console.log("API URL:", process.env.REACT_APP_API_BASE_URL);
+
     // Check login status
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(localStorage.getItem("user"));
     setIsLoggedIn(!!user);
     setIsLoading(false);
-    
+
     // Fetch carbon products
     fetchCarbonProducts();
   }, []);
@@ -23,22 +27,24 @@ const LandingPage = () => {
     setIsLoadingProducts(true);
     try {
       // Ambil semua data kasus
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/cases`);
-      
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/cases`
+      );
+
       if (response.ok) {
         const data = await response.json();
-        
+
         // Filter hanya kasus dengan status "Diterima"
         const approvedCases = data.cases.filter(
-          item => item.statusPengajuan === "Diterima"
+          (item) => item.statusPengajuan === "Diterima"
         );
-        
+
         // Set harga tetap 100.000 per ton
-        const productsWithPrice = approvedCases.map(caseItem => ({
+        const productsWithPrice = approvedCases.map((caseItem) => ({
           ...caseItem,
-          hargaPerTon: 100000 // Harga tetap 100.000 per ton
+          hargaPerTon: 100000, // Harga tetap 100.000 per ton
         }));
-        
+
         setCarbonProducts(productsWithPrice);
         console.log("Produk karbon yang disetujui:", productsWithPrice.length);
       } else {
@@ -54,11 +60,11 @@ const LandingPage = () => {
   };
 
   const handleDashboardClick = () => {
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
 
   const handleLoginClick = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
   const handleProductClick = (productId) => {
@@ -82,9 +88,10 @@ const LandingPage = () => {
             BLOCKCHAIN MARKETPLACE EMISI KARBON!
           </h1>
           <p className="text-xl sm:text-2xl text-gray-700 mb-6">
-            Jelajahi dan investasikan pada proyek penyerapan karbon terverifikasi.
+            Jelajahi dan investasikan pada proyek penyerapan karbon
+            terverifikasi.
           </p>
-          
+
           {isLoggedIn ? (
             <button
               onClick={handleDashboardClick}
@@ -111,10 +118,14 @@ const LandingPage = () => {
         <div className="w-full bg-white py-12 px-4 mt-10">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">Marketplace Emisi Karbon</h2>
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                Marketplace Emisi Karbon
+              </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Jelajahi dan dapatkan kredit karbon terverifikasi yang telah divalidasi oleh validator terpercaya. 
-                Setiap produk mewakili proyek penyerapan karbon dengan blockchain sebagai jaminan keaslian.
+                Jelajahi dan dapatkan kredit karbon terverifikasi yang telah
+                divalidasi oleh validator terpercaya. Setiap produk mewakili
+                proyek penyerapan karbon dengan blockchain sebagai jaminan
+                keaslian.
               </p>
             </div>
 
@@ -126,25 +137,28 @@ const LandingPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {carbonProducts.length > 0 ? (
                   carbonProducts.map((product) => (
-                    <div 
-                      key={product._id} 
+                    <div
+                      key={product._id}
                       className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300"
                     >
                       <div className="relative h-48 bg-gray-200">
                         {product.files && product.files.length > 0 ? (
                           <div className="w-full h-full">
-                            <img 
-                              src={`${process.env.REACT_APP_API_BASE_URL}/api/cases/${product._id}/files/0`}
+                            <img
+                              src={`${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${product._id}/files/0`}
                               alt={product.kepemilikanLahan}
                               className="w-full h-full object-cover"
                               onError={(e) => {
                                 // Perbaikan error handler
-                                e.target.style.display = 'none';
+                                e.target.style.display = "none";
                                 const container = e.target.parentNode;
                                 if (container) {
-                                  const fallbackDiv = document.createElement('div');
-                                  fallbackDiv.className = 'w-full h-full flex items-center justify-center bg-gray-300';
-                                  fallbackDiv.innerHTML = '<span class="text-gray-500">Gambar tidak tersedia</span>';
+                                  const fallbackDiv =
+                                    document.createElement("div");
+                                  fallbackDiv.className =
+                                    "w-full h-full flex items-center justify-center bg-gray-300";
+                                  fallbackDiv.innerHTML =
+                                    '<span class="text-gray-500">Gambar tidak tersedia</span>';
                                   container.appendChild(fallbackDiv);
                                 }
                               }}
@@ -158,44 +172,73 @@ const LandingPage = () => {
                         <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                           Terverifikasi
                         </div>
-                        {product.blockchainData && product.blockchainData.transactionHash && (
-                          <div className="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                            Blockchain
-                          </div>
-                        )}
+                        {product.blockchainData &&
+                          product.blockchainData.transactionHash && (
+                            <div className="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-3 w-3 mr-1"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                              Blockchain
+                            </div>
+                          )}
                       </div>
-                      
+
                       <div className="p-4">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate">{product.kepemilikanLahan}</h3>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate">
+                          {product.kepemilikanLahan}
+                        </h3>
                         <p className="text-sm text-gray-600 mb-2">
-                          <span className="font-medium">Jenis Pohon:</span> {product.jenisPohon}
+                          <span className="font-medium">Jenis Pohon:</span>{" "}
+                          {product.jenisPohon}
                         </p>
-                        
+
                         <div className="flex justify-between mb-3">
                           <div>
-                            <span className="text-sm text-gray-500">Luas Tanah</span>
-                            <p className="font-medium">{product.luasTanah} Ha</p>
+                            <span className="text-sm text-gray-500">
+                              Luas Tanah
+                            </span>
+                            <p className="font-medium">
+                              {product.luasTanah} Ha
+                            </p>
                           </div>
                           <div>
-                            <span className="text-sm text-gray-500">Jumlah Karbon</span>
-                            <p className="font-medium">{product.jumlahKarbon} Ton</p>
+                            <span className="text-sm text-gray-500">
+                              Jumlah Karbon
+                            </span>
+                            <p className="font-medium">
+                              {product.jumlahKarbon} Ton
+                            </p>
                           </div>
                         </div>
-                        
+
                         <div className="mb-3">
-                          <span className="text-sm text-gray-500">Lembaga Sertifikasi</span>
-                          <p className="text-sm font-medium truncate">{product.lembagaSertifikasi}</p>
+                          <span className="text-sm text-gray-500">
+                            Lembaga Sertifikasi
+                          </span>
+                          <p className="text-sm font-medium truncate">
+                            {product.lembagaSertifikasi}
+                          </p>
                         </div>
-                        
+
                         <div className="flex justify-between items-end">
                           <div>
-                            <span className="text-sm text-gray-500">Harga Per Ton</span>
-                            <p className="text-lg font-bold text-green-600">Rp {product.hargaPerTon.toLocaleString()}</p>
+                            <span className="text-sm text-gray-500">
+                              Harga Per Ton
+                            </span>
+                            <p className="text-lg font-bold text-green-600">
+                              Rp {product.hargaPerTon.toLocaleString()}
+                            </p>
                           </div>
-                          <button 
+                          <button
                             onClick={() => handleProductClick(product._id)}
                             className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm transition"
                           >
@@ -203,33 +246,52 @@ const LandingPage = () => {
                           </button>
                         </div>
                       </div>
-                      
+
                       <div className="px-4 py-2 bg-gray-50 border-t border-gray-200">
                         <div className="flex items-center justify-between text-xs text-gray-500">
-                          <div>Tervalidasi: {new Date(product.blockchainData?.issuedOn || product.updatedAt).toLocaleDateString()}</div>
-                          {product.blockchainData && product.blockchainData.tokens && (
-                            <div className="flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                              </svg>
-                              <span>{product.blockchainData.tokens.length} Token</span>
-                            </div>
-                          )}
+                          <div>
+                            Tervalidasi:{" "}
+                            {new Date(
+                              product.blockchainData?.issuedOn ||
+                                product.updatedAt
+                            ).toLocaleDateString()}
+                          </div>
+                          {product.blockchainData &&
+                            product.blockchainData.tokens && (
+                              <div className="flex items-center">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-4 w-4 text-green-500 mr-1"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                <span>
+                                  {product.blockchainData.tokens.length} Token
+                                </span>
+                              </div>
+                            )}
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
                   <div className="col-span-full text-center py-10 text-gray-500">
-                    Tidak ada produk karbon yang tersedia saat ini. Silakan tunggu validator menyetujui pengajuan.
+                    Tidak ada produk karbon yang tersedia saat ini. Silakan
+                    tunggu validator menyetujui pengajuan.
                   </div>
                 )}
               </div>
             )}
-            
+
             <div className="mt-10 text-center">
               <button
-                onClick={() => navigate('/marketplace')}
+                onClick={() => navigate("/marketplace")}
                 className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300"
               >
                 Lihat Semua Produk

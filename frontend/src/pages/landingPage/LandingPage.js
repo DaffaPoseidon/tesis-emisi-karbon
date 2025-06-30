@@ -10,12 +10,17 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const userRole = user?.role;
+  const [imageError, setImageError] = useState(false);
   const canPurchase = userRole === "buyer" || userRole === "superadmin";
 
   // Tambahkan di useEffect
   useEffect(() => {
     console.log("Backend URL:", process.env.REACT_APP_BACKEND_BASEURL);
     console.log("API URL:", process.env.REACT_APP_API_BASE_URL);
+    console.log(
+      "Image URL Example:",
+      `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/[product-id]/files/0`
+    );
 
     // Check login status
     const user = JSON.parse(localStorage.getItem("user"));
@@ -42,14 +47,37 @@ const LandingPage = () => {
           (item) => item.statusPengajuan === "Diterima"
         );
 
-        // Set harga tetap 100.000 per ton
-        const productsWithPrice = approvedCases.map((caseItem) => ({
-          ...caseItem,
-          hargaPerTon: 100000, // Harga tetap 100.000 per ton
-        }));
+        // Load images for each product
+        const productsWithImages = await Promise.all(
+          approvedCases.map(async (caseItem) => {
+            try {
+              // Pre-check image availability with HEAD request
+              const imgUrl = `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${caseItem._id}/files/0`;
+              console.log("Trying to fetch image from:", imgUrl);
 
-        setCarbonProducts(productsWithPrice);
-        console.log("Produk karbon yang disetujui:", productsWithPrice.length);
+              return {
+                ...caseItem,
+                hargaPerTon: 100000, // Harga tetap 100.000 per ton
+                imageUrl: imgUrl,
+                // Use timestamp to prevent caching
+                imageUrlWithTimestamp: `${imgUrl}?t=${new Date().getTime()}`,
+              };
+            } catch (imgError) {
+              console.error(
+                `Failed to load image for ${caseItem._id}:`,
+                imgError
+              );
+              return {
+                ...caseItem,
+                hargaPerTon: 100000,
+                imageUrl: null,
+              };
+            }
+          })
+        );
+
+        setCarbonProducts(productsWithImages);
+        console.log("Produk karbon yang disetujui:", productsWithImages);
       } else {
         console.error("Gagal mengambil data produk karbon");
         setCarbonProducts([]);
@@ -146,30 +174,31 @@ const LandingPage = () => {
                     >
                       <div className="relative h-48 bg-gray-200">
                         {product.files && product.files.length > 0 ? (
-                          <div className="w-full h-full">
-                            <img
-                              src={`${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${product._id}/files/0`}
-                              alt={product.kepemilikanLahan}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                // Perbaikan error handler
-                                e.target.style.display = "none";
-                                const container = e.target.parentNode;
-                                if (container) {
-                                  const fallbackDiv =
-                                    document.createElement("div");
-                                  fallbackDiv.className =
-                                    "w-full h-full flex items-center justify-center bg-gray-300";
-                                  fallbackDiv.innerHTML =
-                                    '<span class="text-gray-500">Gambar tidak tersedia</span>';
-                                  container.appendChild(fallbackDiv);
-                                }
-                              }}
-                            />
+                          <div className="relative">
+                            {imageError ? (
+                              <div className="w-full h-64 bg-gray-200 flex items-center justify-center rounded-md">
+                                <span className="text-gray-500">
+                                  Gambar tidak tersedia
+                                </span>
+                              </div>
+                            ) : (
+                              <img
+                                src={`${
+                                  process.env.REACT_APP_BACKEND_BASEURL
+                                }/api/cases/${
+                                  product._id
+                                }/files/0?t=${Date.now()}`}
+                                alt={product.kepemilikanLahan}
+                                className="w-full h-64 object-cover rounded-md"
+                                onError={() => setImageError(true)}
+                              />
+                            )}
                           </div>
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-500">
-                            <span>Tidak ada gambar</span>
+                          <div className="w-full h-64 bg-gray-200 flex items-center justify-center rounded-md">
+                            <span className="text-gray-500">
+                              Tidak ada gambar
+                            </span>
                           </div>
                         )}
                         <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">

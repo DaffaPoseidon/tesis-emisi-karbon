@@ -1,8 +1,7 @@
-// src/components/ProtectedRoute.js
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // For React Router v6
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ element, ...rest }) => {
+const ProtectedRouteSeller = ({ element }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,15 +15,15 @@ const ProtectedRoute = ({ element, ...rest }) => {
       return;
     }
 
-    // Cek apakah role user adalah 'superadmin' atau 'admin'
-    if (token.role !== 'seller' && token.role !== 'superadmin') {
+    // Ubah untuk mengizinkan validator juga mengakses Dashboard
+    if (token.role !== 'seller' && token.role !== 'superadmin' && token.role !== 'validator') {
       navigate('/');
       return;
     }
-  }, [navigate]); // Menjalankan efek hanya pada mount dan ketika `navigate` berubah
+  }, [navigate]);
 
   // Jika role sesuai, tampilkan halaman yang diminta
   return element;
 };
 
-export default ProtectedRoute;
+export default ProtectedRouteSeller;

@@ -4,6 +4,7 @@ const {
   getAllCases, 
   updateCase, 
   upload, 
+  getCase,
   getFile,
   getFileByIndex,
   deleteCase,
@@ -23,6 +24,7 @@ router.put("/:id", authenticateToken, isSellerMiddleware, upload.array("files", 
 router.delete("/:id", authenticateToken, isSellerMiddleware, deleteCase);
 
 // Routes lainnya yang tidak perlu isSellerMiddleware
+router.get("/:id", getCase);
 router.get("/", getAllCases);
 router.get("/:id/files/:fileIndex", getFileByIndex);
 router.get("/:id/files", getFile);

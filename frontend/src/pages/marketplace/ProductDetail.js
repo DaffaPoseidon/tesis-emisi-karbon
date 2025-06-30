@@ -21,19 +21,38 @@ const ProductDetail = () => {
   const fetchProductDetails = async () => {
     try {
       setLoading(true);
+      console.log('Fetching product details from:', `${process.env.REACT_APP_API_BASE_URL}/cases/${productId}`);
+      
+      // Periksa apakah productId valid
+      if (!productId) {
+        throw new Error('ID produk tidak valid');
+      }
+      
       const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/cases/${productId}`);
       
+      // Log informasi response untuk debugging
+      console.log('Response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Gagal mengambil data produk');
+        if (response.status === 404) {
+          throw new Error('Produk tidak ditemukan');
+        } else {
+          const errorText = await response.text();
+          console.error('Error response:', errorText);
+          throw new Error(`Gagal mengambil data produk (${response.status})`);
+        }
       }
       
       const data = await response.json();
-      // Set harga
+      console.log('Product data received:', data);
+      
+      // Set data produk dengan harga
       setProduct({
         ...data,
         hargaPerTon: 100000
       });
     } catch (error) {
+      console.error('Error fetching product details:', error);
       setError(error.message);
     } finally {
       setLoading(false);

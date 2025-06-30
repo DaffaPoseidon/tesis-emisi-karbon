@@ -261,6 +261,28 @@ const createCase = async (req, res) => {
   }
 };
 
+const getCase = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(`Fetching case with ID: ${id}`);
+    
+    const caseData = await Case.findById(id).populate("penggugah");
+    
+    if (!caseData) {
+      console.log(`Case not found with ID: ${id}`);
+      return res.status(404).json({ message: "Kasus tidak ditemukan" });
+    }
+    
+    console.log(`Case found: ${caseData._id}`);
+    
+    // Kirim data kasus sebagai response
+    res.status(200).json(caseData);
+  } catch (error) {
+    console.error(`Error fetching case: ${error.message}`);
+    res.status(500).json({ message: "Terjadi kesalahan server", error: error.message });
+  }
+};
+
 const getAllCases = async (req, res) => {
   try {
     const { page = 1, filter = "" } = req.query;
@@ -337,6 +359,26 @@ const updateCase = async (req, res) => {
   }
 };
 
+const deleteCase = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedCase = await Case.findByIdAndDelete(id);
+
+    if (!deletedCase) {
+      return res.status(404).json({ message: "Data tidak ditemukan." });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Data berhasil dihapus", case: deletedCase });
+  } catch (error) {
+    console.error("Gagal menghapus data:", error.message);
+    res
+      .status(500)
+      .json({ message: "Gagal menghapus data", error: error.message });
+  }
+};
+
 const getFile = async (req, res) => {
   try {
     const { id } = req.params;
@@ -362,60 +404,39 @@ const getFile = async (req, res) => {
 
 const getFileByIndex = async (req, res) => {
   try {
-    const { caseId, fileIndex } = req.params;
-    const caseData = await Case.findById(caseId);
-
-    if (!caseData || !caseData.files || !caseData.files[fileIndex]) {
-      return res.status(404).json({ message: "File tidak ditemukan." });
+    const { id, fileIndex } = req.params;
+    console.log(`Request for file at index ${fileIndex} for case ${id}`);
+    
+    const caseData = await Case.findById(id);
+    
+    if (!caseData) {
+      console.log(`Case not found: ${id}`);
+      return res.status(404).json({ message: "Kasus tidak ditemukan" });
     }
-
-    const file = caseData.files[fileIndex]; // Ambil file berdasarkan indeks
-
-    // Atur header response untuk gambar
-    const mimeType = getMimeType(file.fileName);
-    res.setHeader("Content-Type", mimeType);
-
-    // Kirim file dalam bentuk buffer
+    
+    console.log(`Case found: ${id}, files count: ${caseData.files?.length || 0}`);
+    
+    if (!caseData.files || !caseData.files[fileIndex]) {
+      console.log(`File at index ${fileIndex} not found for case ${id}`);
+      return res.status(404).json({ message: "File tidak ditemukan" });
+    }
+    
+    const file = caseData.files[fileIndex];
+    console.log(`Sending file: ${file.fileName}, size: ${file.fileData?.length || 0} bytes`);
+    
+    // Tambahkan header untuk cache control
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    
+    // Set Content-Type dan kirim file
+    const contentType = file.contentType || 'application/octet-stream';
+    res.set('Content-Type', contentType);
     res.send(file.fileData);
-  } catch (err) {
-    console.error("Error fetching file:", err.message);
-    res.status(500).json({ message: "Terjadi kesalahan server" });
-  }
-};
-
-// Fungsi untuk menentukan MIME type berdasarkan ekstensi file
-const getMimeType = (fileName) => {
-  const ext = fileName.split(".").pop().toLowerCase();
-  const mimeTypes = {
-    jpg: "image/jpeg",
-    jpeg: "image/jpeg",
-    png: "image/png",
-    gif: "image/gif",
-    pdf: "application/pdf",
-    doc: "application/msword",
-    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  };
-
-  return mimeTypes[ext] || "application/octet-stream";
-};
-
-const deleteCase = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedCase = await Case.findByIdAndDelete(id);
-
-    if (!deletedCase) {
-      return res.status(404).json({ message: "Data tidak ditemukan." });
-    }
-
-    res
-      .status(200)
-      .json({ message: "Data berhasil dihapus", case: deletedCase });
+    
   } catch (error) {
-    console.error("Gagal menghapus data:", error.message);
-    res
-      .status(500)
-      .json({ message: "Gagal menghapus data", error: error.message });
+    console.error("Error fetching file:", error);
+    res.status(500).json({ message: "Error fetching file", error: error.message });
   }
 };
 
@@ -464,10 +485,10 @@ const purchaseProduct = async (req, res) => {
 module.exports = {
   createCase,
   getAllCases,
+  getCase,
   updateCase,
   getFile, // Tambahkan fungsi getFile
   getFileByIndex,
-  getMimeType,
   deleteCase, // Menambahkan fungsi delete
   upload,
   updateStatus,

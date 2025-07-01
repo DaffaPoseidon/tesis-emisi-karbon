@@ -1,7 +1,7 @@
 // src/components/Header.js
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Gunakan Link untuk routing dan useNavigate untuk navigasi
-import logo from "../images/Logo-Kementerian-Dalam-Negeri.png"; // Import gambar logo
+import logo from "../images/Logo-Polinema.webp"; // Import gambar logo
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -59,7 +59,7 @@ const Header = () => {
             <Link to="/">
               <img
                 src={logo}
-                alt="Logo Kementerian Dalam Negeri"
+                alt="Logo Polinema"
                 className="h-20 w-20"
               />
             </Link>

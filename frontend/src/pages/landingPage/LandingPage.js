@@ -251,7 +251,14 @@ const LandingPage = () => {
                             </p>
                           </div>
                         </div>
-
+                        <div className="mb-3">
+                          <span className="text-sm text-gray-500">
+                            Jumlah Sertifikat
+                          </span>
+                          <p className="font-medium">
+                            {product.jumlahKarbon} Sertifikat
+                          </p>
+                        </div>
                         <div className="mb-3">
                           <span className="text-sm text-gray-500">
                             Lembaga Sertifikasi
@@ -264,10 +271,13 @@ const LandingPage = () => {
                         <div className="flex justify-between items-end">
                           <div>
                             <span className="text-sm text-gray-500">
-                              Harga Per Ton
+                              Total Harga
                             </span>
                             <p className="text-lg font-bold text-green-600">
-                              Rp {product.hargaPerTon.toLocaleString()}
+                              Rp{" "}
+                              {(
+                                product.hargaPerTon * product.jumlahKarbon
+                              ).toLocaleString()}
                             </p>
                           </div>
                           <button

@@ -133,7 +133,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
               Jumlah Karbon (Ton)
             </th>
             <th className="border border-gray-300 px-4 py-2">
-              Metode Pengukuran
+              Jumlah Sertifikat
             </th>
             <th className="border border-gray-300 px-4 py-2">Jenis Tanah</th>
             <th className="border border-gray-300 px-4 py-2">
@@ -143,6 +143,9 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
               Kepemilikan Lahan
             </th>
 
+            <th className="border border-gray-300 px-4 py-2">
+              Metode Pengukuran
+            </th>
             {showUploaderColumn && (
               <th className="border border-gray-300 px-4 py-2">
                 Akun Pengunggah
@@ -190,6 +193,9 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
               </td>
               <td className="border border-gray-300 px-4 py-2">
                 {item.jumlahKarbon}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {item.jumlahSertifikat || item.jumlahKarbon} Sertifikat
               </td>
               <td className="border border-gray-300 px-4 py-2">
                 {item.metodePengukuran}

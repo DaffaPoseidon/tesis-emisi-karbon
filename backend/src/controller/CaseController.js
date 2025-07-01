@@ -38,6 +38,11 @@ const updateStatus = async (req, res) => {
 
     // Update status pengajuan
     caseData.statusPengajuan = statusPengajuan;
+    
+    // Pastikan jumlahSertifikat sama dengan jumlahKarbon
+    if (caseData.jumlahKarbon && (!caseData.jumlahSertifikat || caseData.isModified('jumlahKarbon'))) {
+      caseData.jumlahSertifikat = caseData.jumlahKarbon;
+    }
 
     // Jika status "Diterima", kirim data ke blockchain
     if (statusPengajuan === "Diterima") {
@@ -45,37 +50,35 @@ const updateStatus = async (req, res) => {
         // Alamat penerima (bisa dari user.walletAddress jika ada, atau gunakan default)
         const recipientAddress = process.env.DEFAULT_RECIPIENT_ADDRESS;
 
-        // Jumlah karbon dalam ton
+        // Jumlah karbon dalam ton - pastikan ini adalah number
         const carbonAmount = parseInt(caseData.jumlahKarbon);
+        if (isNaN(carbonAmount) || carbonAmount <= 0) {
+          return res.status(400).json({ 
+            message: "Jumlah karbon tidak valid. Harus berupa angka positif." 
+          });
+        }
 
-        // Gunakan ID kasus sebagai projectId
-        const projectId = caseData._id.toString();
+        // Pastikan jumlahSertifikat sudah diisi
+        if (!caseData.jumlahSertifikat) {
+          caseData.jumlahSertifikat = caseData.jumlahKarbon;
+        }
 
-        console.log(
-          `Status: ${statusPengajuan}, Carbon Amount: ${carbonAmount}, Project ID: ${projectId}`
-        );
+        console.log(`Menerbitkan ${caseData.jumlahSertifikat} sertifikat untuk project ${id}`);
         console.log(`Recipient Address: ${recipientAddress}`);
 
-        // Tambahkan timeout untuk memastikan transaksi diproses
-        console.log("Menunggu transaksi blockchain...");
+        // Panggil service blockchain untuk menerbitkan sertifikat dengan seluruh data case
         const blockchainResult = await issueCarbonCertificate(
           recipientAddress,
-          carbonAmount,
-          projectId
+          caseData // Kirim seluruh objek case
         );
 
         // Logging detail untuk debugging
-        console.log(
-          "Hasil blockchain:",
-          JSON.stringify(blockchainResult, null, 2)
-        );
+        console.log("Hasil blockchain:", JSON.stringify(blockchainResult, null, 2));
 
         if (blockchainResult.success) {
-          // Tambahkan pemeriksaan token yang lebih robust
+          // Periksa apakah tokens berhasil dibuat
           if (blockchainResult.tokens && blockchainResult.tokens.length > 0) {
-            console.log(
-              `${blockchainResult.tokens.length} token berhasil dibuat`
-            );
+            console.log(`${blockchainResult.tokens.length} sertifikat berhasil dibuat`);
 
             // Simpan hasil blockchain ke data kasus
             caseData.blockchainData = {
@@ -91,17 +94,14 @@ const updateStatus = async (req, res) => {
 
             // Kirim response ke client dengan data lengkap
             return res.status(200).json({
-              message: `Status pengajuan diperbarui dan ${carbonAmount} sertifikat karbon telah diterbitkan di blockchain`,
+              message: `Status pengajuan diperbarui dan ${caseData.jumlahSertifikat} sertifikat karbon telah diterbitkan di blockchain`,
               case: caseData,
               blockchain: blockchainResult,
             });
           } else {
-            console.error(
-              "Tidak ada token yang dibuat meskipun transaksi berhasil!"
-            );
+            console.error("Tidak ada token yang dibuat meskipun transaksi berhasil!");
             return res.status(500).json({
-              message:
-                "Transaksi blockchain berhasil tetapi tidak ada token yang dibuat",
+              message: "Transaksi blockchain berhasil tetapi tidak ada token yang dibuat",
               blockchainResult,
             });
           }
@@ -238,6 +238,7 @@ const createCase = async (req, res) => {
       jenisPohon,
       lembagaSertifikasi,
       jumlahKarbon,
+      jumlahSertifikat: jumlahKarbon,
       metodePengukuran,
       jenisTanah,
       lokasiGeografis,
@@ -405,7 +406,6 @@ const getFile = async (req, res) => {
 const getFileByIndex = async (req, res) => {
   try {
     const { id, fileIndex } = req.params;
-    console.log(`Request for file at index ${fileIndex} for case ${id}`);
     
     const caseData = await Case.findById(id);
     
@@ -414,15 +414,12 @@ const getFileByIndex = async (req, res) => {
       return res.status(404).json({ message: "Kasus tidak ditemukan" });
     }
     
-    console.log(`Case found: ${id}, files count: ${caseData.files?.length || 0}`);
-    
     if (!caseData.files || !caseData.files[fileIndex]) {
       console.log(`File at index ${fileIndex} not found for case ${id}`);
       return res.status(404).json({ message: "File tidak ditemukan" });
     }
     
     const file = caseData.files[fileIndex];
-    console.log(`Sending file: ${file.fileName}, size: ${file.fileData?.length || 0} bytes`);
     
     // Tambahkan header untuk cache control
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');

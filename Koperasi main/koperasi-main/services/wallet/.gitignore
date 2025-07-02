@@ -1,0 +1,24 @@
+# code editor settings
+/.idea
+/.vscode
+
+# dependencies
+/node_modules
+
+# dotenv environment variables file
+.env
+
+# build / generate output
+dist
+
+# drizzle migrations
+/src/drizzle/migrations/
+
+# user uploaded files
+/assets/uploads/bukti_pembayaran/*
+
+# not ignore empty directories when have .gitkeep file
+!/**/.gitkeep
+
+# auth baileys
+/auth_baileys

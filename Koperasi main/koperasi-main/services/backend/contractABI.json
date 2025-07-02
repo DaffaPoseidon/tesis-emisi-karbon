@@ -1,0 +1,2031 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "namaProyek",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "namaPetugas",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "alamatPetugas",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "namaPemilikProyek",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "nik",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "noHp",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "alamat",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "signature",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "tandaTangan",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "nominalDisetujui",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "createdAt",
+        "type": "uint256"
+      }
+    ],
+    "name": "AgreementCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "Approval",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "chartTokenId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "nominal",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "createdAt",
+        "type": "uint256"
+      }
+    ],
+    "name": "ChartTokenCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "pelaksana",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "pemilik",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "koperasi",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "pendana",
+        "type": "int256"
+      }
+    ],
+    "name": "DividenProfitAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "pelaksana",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "pemilik",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "koperasi",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "pendana",
+        "type": "int256"
+      }
+    ],
+    "name": "DividenProfitUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "historyTokenId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "chartTokenId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "totalNilai",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "createdAt",
+        "type": "uint256"
+      }
+    ],
+    "name": "HistoryTokenCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "tokenId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "nilai",
+        "type": "int256"
+      }
+    ],
+    "name": "TokenCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "tokenId",
+        "type": "string"
+      }
+    ],
+    "name": "TokenNominalReset",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "tokenId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newIdUser",
+        "type": "string"
+      }
+    ],
+    "name": "TokenUserUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "Transfer",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "nominal",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "totalNilai",
+        "type": "int256"
+      }
+    ],
+    "name": "addChartToken",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "chartTokenId",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "pelaksana",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "pemilik",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "koperasi",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "pendana",
+        "type": "int256"
+      }
+    ],
+    "name": "addDividenProfit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "namaUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "judulProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "ownerProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "jumlahToken",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "totalNominal",
+        "type": "int256"
+      }
+    ],
+    "name": "addTransaction",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "agreementCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "agreements",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "namaProyek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "namaPetugas",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "alamatPetugas",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "namaPemilikProyek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "nik",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "noHp",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "alamat",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "signature",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "tandaTangan",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "nominalDisetujui",
+        "type": "int256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "createdAt",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "allChartTokenIds",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "allHistoryTokenIds",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "allTokenIds",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      }
+    ],
+    "name": "allowance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "approve",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "chartTokens",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "chartTokenId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "nominal",
+        "type": "int256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "createdAt",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_namaProyek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_namaPetugas",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_alamatPetugas",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_namaPemilikProyek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_nik",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_noHp",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_alamat",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_signature",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_tandaTangan",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "_nominalDisetujui",
+        "type": "int256"
+      }
+    ],
+    "name": "createAgreementLetter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "nilai",
+        "type": "int256"
+      }
+    ],
+    "name": "createToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "subtractedValue",
+        "type": "uint256"
+      }
+    ],
+    "name": "decreaseAllowance",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "dividenProfit",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "pelaksana",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "pemilik",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "koperasi",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "pendana",
+        "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      }
+    ],
+    "name": "getAgreementByProjectId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "namaProyek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "namaPetugas",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "alamatPetugas",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "namaPemilikProyek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "nik",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "noHp",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "alamat",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "signature",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "tandaTangan",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "nominalDisetujui",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ProjectToken.Agreement[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllAgreement",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "namaProyek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "namaPetugas",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "alamatPetugas",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "namaPemilikProyek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "nik",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "noHp",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "alamat",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "signature",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "tandaTangan",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "nominalDisetujui",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ProjectToken.Agreement[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      }
+    ],
+    "name": "getAllChartTokensByUserId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "chartTokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "nominal",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ProjectToken.ChartToken[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllTokens",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "tokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "nilai",
+            "type": "int256"
+          }
+        ],
+        "internalType": "struct ProjectToken.TokenDetail[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllTransaction",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "namaUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "judulProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "ownerProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "jumlahToken",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "totalNominal",
+            "type": "int256"
+          }
+        ],
+        "internalType": "struct ProjectToken.Transaksi[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      }
+    ],
+    "name": "getChartTokensByUserIdAndProjectId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "chartTokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "nominal",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ProjectToken.ChartToken[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      }
+    ],
+    "name": "getDividenProfitByProjectId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "pelaksana",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "pemilik",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "koperasi",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "pendana",
+            "type": "int256"
+          }
+        ],
+        "internalType": "struct ProjectToken.DividenProfit",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "chartTokenId",
+        "type": "string"
+      }
+    ],
+    "name": "getHistoryTokenByChartTokenId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "historyTokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "chartTokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "totalNilai",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ProjectToken.HistoryToken",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      }
+    ],
+    "name": "getHistoryTokensByUserIdAndProjectId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "historyTokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "chartTokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "totalNilai",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ProjectToken.HistoryToken[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      }
+    ],
+    "name": "getLatestChartTokenByUserIdAndProjectId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "chartTokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "nominal",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ProjectToken.ChartToken",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      }
+    ],
+    "name": "getLatestChartTokensByProjectId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "chartTokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "nominal",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ProjectToken.ChartToken[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "tokenId",
+        "type": "string"
+      }
+    ],
+    "name": "getTokenById",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "tokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "nilai",
+            "type": "int256"
+          }
+        ],
+        "internalType": "struct ProjectToken.TokenDetail",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      }
+    ],
+    "name": "getTokenByProjectId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "tokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "nilai",
+            "type": "int256"
+          }
+        ],
+        "internalType": "struct ProjectToken.TokenDetail[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      }
+    ],
+    "name": "getTokenByUserAndProject",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "tokenId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "nilai",
+            "type": "int256"
+          }
+        ],
+        "internalType": "struct ProjectToken.TokenDetail[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      }
+    ],
+    "name": "getTotalNominalToken",
+    "outputs": [
+      {
+        "internalType": "int256",
+        "name": "",
+        "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalTokens",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      }
+    ],
+    "name": "getTransactionByProjectId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "namaUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "judulProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "ownerProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "jumlahToken",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "totalNominal",
+            "type": "int256"
+          }
+        ],
+        "internalType": "struct ProjectToken.Transaksi[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      }
+    ],
+    "name": "getTransactionByUserId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "idUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "namaUser",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "idProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "judulProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "ownerProjek",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "jumlahToken",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "totalNominal",
+            "type": "int256"
+          }
+        ],
+        "internalType": "struct ProjectToken.Transaksi[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "historyTokens",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "historyTokenId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "chartTokenId",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "totalNilai",
+        "type": "int256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "createdAt",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "addedValue",
+        "type": "uint256"
+      }
+    ],
+    "name": "increaseAllowance",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "tokenId",
+        "type": "string"
+      }
+    ],
+    "name": "resetTokenNominal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "tokenDetails",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "tokenId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "nilai",
+        "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "transaksiList",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "idUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "namaUser",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "judulProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "ownerProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "jumlahToken",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "totalNominal",
+        "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "transfer",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferFrom",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "idProjek",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "newPelaksana",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "newPemilik",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "newKoperasi",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "newPendana",
+        "type": "int256"
+      }
+    ],
+    "name": "updateDividenProfit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "tokenId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "newIdUser",
+        "type": "string"
+      }
+    ],
+    "name": "updateTokenUser",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

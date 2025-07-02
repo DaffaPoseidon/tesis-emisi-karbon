@@ -1,0 +1,3403 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Koperasi Backend API",
+    "description": "Documentation for Koperasi Backend API",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "schemes": ["http"],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "For accessing the API a valid JWT token must be passed in the 'Authorization' header using the Bearer schema. Example: `Bearer xxxxxx.yyyyyyy.zzzzzz`"
+    }
+  },
+  "tags": [
+    {
+      "name": "Welcome",
+      "description": "API for welcome message"
+    },
+    {
+      "name": "Auth",
+      "description": "API for user authentication"
+    },
+    {
+      "name": "User",
+      "description": "API for user management"
+    },
+    {
+      "name": "Project",
+      "description": "API for project management"
+    },
+    {
+      "name": "Project Category",
+      "description": "API for project category management"
+    },
+    {
+      "name": "Agreement Letter",
+      "description": "API for project contract management"
+    },
+    {
+      "name": "Project Report",
+      "description": "API for project report management"
+    },
+    {
+      "name": "Project Wallet",
+      "description": "API for project wallet management"
+    },
+    {
+      "name": "Topup",
+      "description": "Everyting about topup"
+    },
+    {
+      "name": "Token",
+      "description": "API for project token management"
+    },
+    {
+      "name": "Mutation",
+      "description": "API for mutation management"
+    },
+    {
+      "name": "Chart Project",
+      "description": "Visualization of project profit and loss"
+    },
+    {
+      "name": "Chart Token",
+      "description": "Visualization of user token invest profit and loss"
+    },
+    {
+      "name": "History Project Wallet",
+      "description": "API for history project wallet management"
+    },
+    {
+      "name": "History Project",
+      "description": "Tracking project history"
+    },
+    {
+      "name": "History Token",
+      "description": "API for history token management"
+    },
+    {
+      "name": "Transaction",
+      "description": "API for transaction management"
+    },
+    {
+      "name": "Whatsapp",
+      "description": "Access to Whatsapp API for sending OTP"
+    },
+    {
+      "name": "Indonesia Region",
+      "description": "API for Indonesia region management"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Welcome"],
+        "summary": "Hello World",
+        "description": "Returns a welcome message.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register a new user",
+        "description": "Register a new user with the required personal details and upload profile photos.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "nama",
+            "in": "formData",
+            "type": "string",
+            "default": "John Cena"
+          },
+          {
+            "name": "no_hp",
+            "in": "formData",
+            "type": "string",
+            "default": "6281234567899"
+          },
+          {
+            "name": "role",
+            "in": "formData",
+            "type": "string",
+            "default": "BASIC"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "type": "string",
+            "default": "password"
+          },
+          {
+            "name": "tempat_lahir",
+            "in": "formData",
+            "type": "string",
+            "default": "Malang"
+          },
+          {
+            "name": "tanggal_lahir",
+            "in": "formData",
+            "type": "string",
+            "format": "date",
+            "default": "1995-08-15"
+          },
+          {
+            "name": "provinsi",
+            "in": "formData",
+            "type": "string",
+            "default": "Jawa Timur"
+          },
+          {
+            "name": "kota",
+            "in": "formData",
+            "type": "string",
+            "default": "Malang"
+          },
+          {
+            "name": "kecamatan",
+            "in": "formData",
+            "type": "string",
+            "default": "Klojen"
+          },
+          {
+            "name": "alamat",
+            "in": "formData",
+            "type": "string",
+            "default": "Jl. Sudirman No. 123"
+          },
+          {
+            "name": "nik",
+            "in": "formData",
+            "type": "string",
+            "default": "1234567890123456"
+          },
+          {
+            "name": "foto_diri",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload user's profile photo"
+          },
+          {
+            "name": "foto_ktp",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload user's KTP photo"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login",
+        "description": "Logs in the user and generates a JWT token.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "no_hp": {
+                  "type": "string",
+                  "example": "6281234567890"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful. Returns a JWT token."
+          },
+          "401": {
+            "description": "Unauthorized. Invalid credentials."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Logout",
+        "description": "Logs out the user and invalidates the JWT token.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/user/": {
+      "get": {
+        "tags": ["User"],
+        "summary": "List Users",
+        "description": "Retrieves a list of users. Requires a valid JWT token.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string",
+            "description": "Search keyword for filtering users."
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string",
+            "description": "Filter criteria for user listing."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Returns a list of users."
+          },
+          "401": {
+            "description": "Unauthorized. Token is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. You do not have the required permissions."
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server."
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/user/count": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Count Users",
+        "description": "Counts the total number of users.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/user/phone-number": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get Admin Phone Number",
+        "description": "Get admin phone number.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get User by ID",
+        "description": "Retrieves a user by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["User"],
+        "summary": "Update User by ID",
+        "description": "Updates a user by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nama": {
+                  "example": "Budiono Saputro"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["User"],
+        "summary": "Delete User by ID",
+        "description": "Deletes a user by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/user/reject/{id}": {
+      "put": {
+        "tags": ["User"],
+        "summary": "Reject Register User by ID",
+        "description": "Reject register user if the user's data is not valid.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "example": "salah foto coba kirim foto yang lain"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/user/send-otp": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Send OTP via Whatsapp",
+        "description": "Send OTP via Whatsapp to the user's phone number.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "a258fc20-32fd-4bce-9a99-85dd2551fab7"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/user/verify-otp": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Verify OTP",
+        "description": "Verify OTP and activate the user's account.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "otp": {
+                  "example": "8277"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/user/upgrade-platinum": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Upgrade to Platinum",
+        "description": "Upgrade user's role to Platinum.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "nama_bank",
+            "in": "formData",
+            "type": "string",
+            "default": "BCA"
+          },
+          {
+            "name": "nomor_rekening",
+            "in": "formData",
+            "type": "string",
+            "default": "1234567890"
+          },
+          {
+            "name": "nama_pemilik_rekening",
+            "in": "formData",
+            "type": "string",
+            "default": "Budiono Siregar"
+          },
+          {
+            "name": "setoran",
+            "in": "formData",
+            "type": "number",
+            "default": 1000000
+          },
+          {
+            "name": "bukti_pembayaran",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload proof of payment"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/user/acc-upgrade-platinum": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Accept Upgrade to Platinum by Admin",
+        "description": "Accept upgrade to Platinum by admin.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "1d798a08-0602-4030-b8df-b808134ec171"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "Create Project",
+        "description": "Create a new project.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "id_kategori",
+            "in": "formData",
+            "type": "string",
+            "default": "a2269857-dd6e-43bd-9216-f3f617dde418"
+          },
+          {
+            "name": "judul",
+            "in": "formData",
+            "type": "string",
+            "default": "Ternak Buwung Puyuh"
+          },
+          {
+            "name": "deskripsi",
+            "in": "formData",
+            "type": "string",
+            "default": "Ternak buwung puyuh dengan sistem kandang"
+          },
+          {
+            "name": "nominal",
+            "in": "formData",
+            "type": "integer",
+            "default": 10000000
+          },
+          {
+            "name": "asset_jaminan",
+            "in": "formData",
+            "type": "string",
+            "default": "Mobil Rubicon"
+          },
+          {
+            "name": "nilai_jaminan",
+            "in": "formData",
+            "type": "integer",
+            "default": 20000000
+          },
+          {
+            "name": "lokasi_usaha",
+            "in": "formData",
+            "type": "string",
+            "default": "Jl. Sudirman No. 123"
+          },
+          {
+            "name": "detail_lokasi",
+            "in": "formData",
+            "type": "string",
+            "default": "Lokasi usaha berada di belakang rumah"
+          },
+          {
+            "name": "brosur_produk",
+            "in": "formData",
+            "type": "file",
+            "description": "Brosur produk file"
+          },
+          {
+            "name": "pendapatan_perbulan",
+            "in": "formData",
+            "type": "integer",
+            "default": 5000000
+          },
+          {
+            "name": "pengeluaran_perbulan",
+            "in": "formData",
+            "type": "integer",
+            "default": 3000000
+          },
+          {
+            "name": "dokumen_proyeksi",
+            "in": "formData",
+            "type": "file",
+            "description": "Dokumen proyeksi file"
+          },
+          {
+            "name": "dokumen",
+            "in": "formData",
+            "type": "file",
+            "description": "Dokumen pendukung file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "get": {
+        "tags": ["Project"],
+        "summary": "List Projects",
+        "description": "Retrieves a list of projects.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/count": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Count Projects",
+        "description": "Counts the total number of projects.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/user": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "list of projects owned by the user",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/check-funding": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Check if the project is funded",
+        "description": "Check if the project is funded or not.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/update": {
+      "put": {
+        "tags": ["Project"],
+        "summary": "Update Project",
+        "description": "Update a project by ID.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "string",
+            "default": "848fdf64-a0f8-4dc4-8cc3-81678734edca"
+          },
+          {
+            "name": "judul",
+            "in": "formData",
+            "type": "string",
+            "default": "Ternak Buwung Puyuh"
+          },
+          {
+            "name": "deskripsi",
+            "in": "formData",
+            "type": "string",
+            "default": "Ternak buwung puyuh dengan sistem kandang"
+          },
+          {
+            "name": "nominal",
+            "in": "formData",
+            "type": "integer",
+            "default": 10000000
+          },
+          {
+            "name": "asset_jaminan",
+            "in": "formData",
+            "type": "string",
+            "default": "Mobil Rubicon"
+          },
+          {
+            "name": "nilai_jaminan",
+            "in": "formData",
+            "type": "integer",
+            "default": 20000000
+          },
+          {
+            "name": "lokasi_usaha",
+            "in": "formData",
+            "type": "string",
+            "default": "Jl. Sudirman No. 123"
+          },
+          {
+            "name": "detail_lokasi",
+            "in": "formData",
+            "type": "string",
+            "default": "Lokasi usaha berada di belakang rumah"
+          },
+          {
+            "name": "brosur_produk",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload product brochure"
+          },
+          {
+            "name": "pendapatan_perbulan",
+            "in": "formData",
+            "type": "integer",
+            "default": 5000000
+          },
+          {
+            "name": "pengeluaran_perbulan",
+            "in": "formData",
+            "type": "integer",
+            "default": 3000000
+          },
+          {
+            "name": "dokumen_proyeksi",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload projection document"
+          },
+          {
+            "name": "dokumen",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload supporting document"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/publish": {
+      "put": {
+        "tags": ["Project"],
+        "summary": "Publish Project for Crowdfunding",
+        "description": "Publish project for crowdfunding.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "id_projek",
+            "in": "formData",
+            "type": "string",
+            "default": "848fdf64-a0f8-4dc4-8cc3-81678734edca"
+          },
+          {
+            "name": "mulai_penggalangan_dana",
+            "in": "formData",
+            "type": "string",
+            "format": "date",
+            "default": "2024-10-15"
+          },
+          {
+            "name": "selesai_penggalangan_dana",
+            "in": "formData",
+            "type": "string",
+            "format": "date",
+            "default": "2024-12-29"
+          },
+          {
+            "name": "dokumen_prospektus",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload prospectus document"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/accept": {
+      "put": {
+        "tags": ["Project"],
+        "summary": "Accept Project",
+        "description": "Accept project request from user.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "848fdf64-a0f8-4dc4-8cc3-81678734edca"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/complete": {
+      "put": {
+        "tags": ["Project"],
+        "summary": "Complete Project",
+        "description": "Complete project after the project is finished.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "848fdf64-a0f8-4dc4-8cc3-81678734edca"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/share-profit": {
+      "put": {
+        "tags": ["Project"],
+        "summary": "Share Profit",
+        "description": "Share profit to the investors.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "848fdf64-a0f8-4dc4-8cc3-81678734edca"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/{id}/user": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get investors in the project",
+        "description": "Get investors in the project.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/{id}": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get Project by ID",
+        "description": "Retrieves a project by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/keterangan-revisi/{id}": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get project revision detail",
+        "description": "Get project revision detail.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/approve/{id}": {
+      "put": {
+        "tags": ["Project"],
+        "summary": "Approve project for crowdfunding",
+        "description": "Approve nominal and etc project for crowdfunding.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/revise/{id}": {
+      "put": {
+        "tags": ["Project"],
+        "summary": "Revise request project",
+        "description": "Revise request project.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "keterangan": {
+                  "example": "Brosur produk tidak jelas"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/reject/{id}": {
+      "put": {
+        "tags": ["Project"],
+        "summary": "Reject request project",
+        "description": "Reject request project.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "keterangan": {
+                  "example": "Asset jaminan terlalu kecil"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/{id}/dokumen-prospektus": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get dokumen prospektus by Project ID",
+        "description": "Get dokumen prospektus by Project ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/formatan-dokumen-proyeksi": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get Format Dokumen Proyeksi",
+        "description": "Get format dokumen proyeksi for create project.",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/project/agreement-letter": {
+      "post": {
+        "tags": ["Agreement Letter"],
+        "summary": "Upload signature",
+        "description": "Upload signature for agreement letter.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "tanda_tangan",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload signature image"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "get": {
+        "tags": ["Agreement Letter"],
+        "summary": "List agreement letter",
+        "description": "List agreement letter.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project/agreement-letter/{id}": {
+      "get": {
+        "tags": ["Agreement Letter"],
+        "summary": "Get agreement letter by ID",
+        "description": "Get agreement letter by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project-category/": {
+      "post": {
+        "tags": ["Project Category"],
+        "summary": "Create Project Category",
+        "description": "Create a new project category.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "kategori": {
+                  "example": "Jasa"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "get": {
+        "tags": ["Project Category"],
+        "summary": "List Project Categories",
+        "description": "Retrieves a list of project categories.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Project Category"],
+        "summary": "Update Project Category",
+        "description": "Update a project category by ID.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "a2269857-dd6e-43bd-9216-f3f617dde418"
+                },
+                "kategori": {
+                  "example": "Ternak"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Project Category"],
+        "summary": "Delete Project Category",
+        "description": "Delete a project category by ID.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "a2269857-dd6e-43bd-9216-f3f617dde418"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project-category/{id}": {
+      "get": {
+        "tags": ["Project Category"],
+        "summary": "Get Project Category by ID",
+        "description": "Retrieves a project category by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project-report/": {
+      "post": {
+        "tags": ["Project Report"],
+        "summary": "Create Project Report",
+        "description": "Create a new project report.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "id_projek",
+            "in": "formData",
+            "type": "string",
+            "default": "848fdf64-a0f8-4dc4-8cc3-81678734edca"
+          },
+          {
+            "name": "judul",
+            "in": "formData",
+            "type": "string",
+            "default": "Laporan Bulanan Proyek Jual Beli T-Rex"
+          },
+          {
+            "name": "jenis_laporan",
+            "in": "formData",
+            "type": "string",
+            "default": "UNTUNG"
+          },
+          {
+            "name": "nominal",
+            "in": "formData",
+            "type": "integer",
+            "default": 1000000
+          },
+          {
+            "name": "laporan",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload financial report document"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "get": {
+        "tags": ["Project Report"],
+        "summary": "List Project Reports",
+        "description": "Retrieves a list of project reports.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project-report/{id}": {
+      "get": {
+        "tags": ["Project Report"],
+        "summary": "Get Project Report by ID",
+        "description": "Retrieves a project report by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project-report/project/{id}": {
+      "get": {
+        "tags": ["Project Report"],
+        "summary": "Get Project Report by Project ID",
+        "description": "Retrieves a project report by Project ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "jenis",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project-wallet/": {
+      "get": {
+        "tags": ["Project Wallet"],
+        "summary": "List Project Wallet",
+        "description": "Retrieves a list of project wallet.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project-wallet/project/{id}": {
+      "get": {
+        "tags": ["Project Wallet"],
+        "summary": "Get Project Wallet by Project ID",
+        "description": "Retrieves a project wallet by project ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/project-wallet/transfer-saldo": {
+      "post": {
+        "tags": ["Project Wallet"],
+        "summary": "Transfer Saldo for project operations",
+        "description": "Transfer saldo for project operations.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "id_projek",
+            "in": "formData",
+            "type": "string",
+            "default": "848fdf64-a0f8-4dc4-8cc3-81678734edca"
+          },
+          {
+            "name": "amount",
+            "in": "formData",
+            "type": "integer",
+            "default": 1000000
+          },
+          {
+            "name": "deskripsi",
+            "in": "formData",
+            "type": "string",
+            "default": "Pendanaan Bulan 1 untuk Pembelian T-Rex"
+          },
+          {
+            "name": "bukti_transfer",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload proof of transfer document"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/": {
+      "get": {
+        "tags": ["Topup"],
+        "summary": "List Topup",
+        "description": "Retrieves a list of topup.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/{id}": {
+      "get": {
+        "tags": ["Topup"],
+        "summary": "Get Topup by ID",
+        "description": "Retrieves a topup by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/user": {
+      "get": {
+        "tags": ["Topup"],
+        "summary": "List Topup by User",
+        "description": "Retrieves a list of topup by user.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/simpanan_pokok": {
+      "get": {
+        "tags": ["Topup"],
+        "summary": "List Topup Simpanan Pokok",
+        "description": "Retrieves a list of topup simpanan pokok.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/simpanan_wajib": {
+      "get": {
+        "tags": ["Topup"],
+        "summary": "List Topup Simpanan Wajib",
+        "description": "Retrieves a list of topup simpanan wajib.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/saldo": {
+      "get": {
+        "tags": ["Topup"],
+        "summary": "Get Saldo",
+        "description": "Get saldo user.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/saldo/user": {
+      "get": {
+        "tags": ["Topup"],
+        "summary": "Get Saldo by User",
+        "description": "Get saldo user by user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/pay-member": {
+      "post": {
+        "tags": ["Topup"],
+        "summary": "Pay Member",
+        "description": "Pay member for register.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "nama_bank",
+            "in": "formData",
+            "type": "string",
+            "default": "BCA"
+          },
+          {
+            "name": "no_rekening",
+            "in": "formData",
+            "type": "string",
+            "default": "1234567890"
+          },
+          {
+            "name": "nama_pemilik_rekening",
+            "in": "formData",
+            "type": "string",
+            "default": "Budiono Siregar"
+          },
+          {
+            "name": "bukti_pembayaran",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload proof of payment document"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/pay-topup": {
+      "post": {
+        "tags": ["Topup"],
+        "summary": "Topup Saldo",
+        "description": "Topup saldo user.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "nama_bank",
+            "in": "formData",
+            "type": "string",
+            "default": "BCA"
+          },
+          {
+            "name": "no_rekening",
+            "in": "formData",
+            "type": "string",
+            "default": "1234567890"
+          },
+          {
+            "name": "nama_pemilik_rekening",
+            "in": "formData",
+            "type": "string",
+            "default": "Budiono Siregar"
+          },
+          {
+            "name": "nominal",
+            "in": "formData",
+            "type": "integer",
+            "default": 1000000
+          },
+          {
+            "name": "bukti_pembayaran",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload proof of payment document"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/acc-topup": {
+      "post": {
+        "tags": ["Topup"],
+        "summary": "Accept Topup Saldo",
+        "description": "Accept topup saldo user.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/withdraw": {
+      "post": {
+        "tags": ["Topup"],
+        "summary": "Withdraw Saldo",
+        "description": "Withdraw saldo user.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nama_bank": {
+                  "example": "BCA"
+                },
+                "no_rekening": {
+                  "example": "1234567890"
+                },
+                "nama_pemilik_rekening": {
+                  "example": "Budiono Siregar"
+                },
+                "nominal": {
+                  "example": 1000000
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/acc-withdraw": {
+      "post": {
+        "tags": ["Topup"],
+        "summary": "Accept Withdraw Saldo",
+        "description": "Accept withdraw saldo user.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "type": "string",
+            "default": "any"
+          },
+          {
+            "name": "bukti_pembayaran",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload proof of payment document"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/pay-simpanan-wajib": {
+      "post": {
+        "tags": ["Topup"],
+        "summary": "Pay Simpanan Wajib",
+        "description": "Pay simpanan wajib user.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "nama_bank",
+            "in": "formData",
+            "type": "string",
+            "default": "BCA"
+          },
+          {
+            "name": "no_rekening",
+            "in": "formData",
+            "type": "string",
+            "default": "1234567890"
+          },
+          {
+            "name": "nama_pemilik_rekening",
+            "in": "formData",
+            "type": "string",
+            "default": "Budiono Siregar"
+          },
+          {
+            "name": "nominal",
+            "in": "formData",
+            "type": "integer",
+            "default": 1000000
+          },
+          {
+            "name": "bukti_pembayaran",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload proof of payment document"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/topup/acc-simpanan-wajib": {
+      "post": {
+        "tags": ["Topup"],
+        "summary": "Accept Simpanan Wajib",
+        "description": "Accept simpanan wajib user.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/token/": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "List Token",
+        "description": "Retrieves a list of token.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/token/project/{id}": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "Get Token by Project ID",
+        "description": "Retrieves a token by project ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/token/project/{id}/user": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "Get Token by Project ID and User ID",
+        "description": "Retrieves a token by project ID and user ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/token/buy-token": {
+      "post": {
+        "tags": ["Token"],
+        "summary": "Buy Token",
+        "description": "Buy token for invest",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id_projek": {
+                  "example": "848fdf64-a0f8-4dc4-8cc3-81678734edca"
+                },
+                "id_user": {
+                  "example": "1d798a08-0602-4030-b8df-b808134ec171"
+                },
+                "jumlah_token": {
+                  "example": 2
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/token/usage-details": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "List Token Usage Details",
+        "description": "Retrieves a list of token usage details.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/mutation/": {
+      "post": {
+        "tags": ["Mutation"],
+        "summary": "Create Mutation",
+        "description": "Create a new mutation.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "id_projek",
+            "in": "formData",
+            "type": "string",
+            "default": "848fdf64-a0f8-4dc4-8cc3-81678734edca"
+          },
+          {
+            "name": "judul",
+            "in": "formData",
+            "type": "string",
+            "default": "Mutasi Proyek Jual Beli T-Rex"
+          },
+          {
+            "name": "pemasukan",
+            "in": "formData",
+            "type": "integer",
+            "default": 1000000
+          },
+          {
+            "name": "pengeluaran",
+            "in": "formData",
+            "type": "integer",
+            "default": 500000
+          },
+          {
+            "name": "laporan",
+            "in": "formData",
+            "type": "file",
+            "description": "Upload mutation report document"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "get": {
+        "tags": ["Mutation"],
+        "summary": "List Mutation",
+        "description": "Retrieves a list of mutation.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/mutation/{id}": {
+      "get": {
+        "tags": ["Mutation"],
+        "summary": "Get Mutation by ID",
+        "description": "Retrieves a mutation by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/mutation/project/{id}": {
+      "get": {
+        "tags": ["Mutation"],
+        "summary": "Get Mutation by Project ID",
+        "description": "Retrieves a mutation by project ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/chart-project/user": {
+      "get": {
+        "tags": ["Chart Project"],
+        "summary": "List Chart Project by User",
+        "description": "Retrieves a list of chart project by user.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/chart-project/{id}": {
+      "get": {
+        "tags": ["Chart Project"],
+        "summary": "Get Chart Project by ID",
+        "description": "Retrieves a chart project by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/chart-token/user/project/{id}/latest": {
+      "get": {
+        "tags": ["Chart Token"],
+        "summary": "Get Chart Token latest by Project ID and User ID",
+        "description": "Retrieves a chart token latest by project ID and User ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/chart-token/user/project/{id}": {
+      "get": {
+        "tags": ["Chart Token"],
+        "summary": "Get Chart Token by Project ID and User ID",
+        "description": "Retrieves a chart token by project ID and user ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/chart-token/user": {
+      "get": {
+        "tags": ["Chart Token"],
+        "summary": "List Chart Token by User",
+        "description": "Retrieves a list of chart token by user.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/history-token/project/{id}": {
+      "get": {
+        "tags": ["History Token"],
+        "summary": "Get History Token by Project ID",
+        "description": "Retrieves a history token by project ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/history-project-wallet/project-wallet/{id}": {
+      "get": {
+        "tags": ["History Project Wallet"],
+        "summary": "Get History Project Wallet by Project Wallet ID",
+        "description": "Retrieves a history project wallet by project wallet ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/history-project/project/{id}": {
+      "get": {
+        "tags": ["History Project"],
+        "summary": "Get History Project by Project ID",
+        "description": "Retrieves a history project by project ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/transaction/": {
+      "get": {
+        "tags": ["Transaction"],
+        "summary": "List Transaction",
+        "description": "Retrieves a list of transaction.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/transaction/{id}": {
+      "get": {
+        "tags": ["Transaction"],
+        "summary": "Get Transaction by ID",
+        "description": "Retrieves a transaction by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/transaction/user/{id}": {
+      "get": {
+        "tags": ["Transaction"],
+        "summary": "List Transaction by User",
+        "description": "Retrieves a list of transaction by user.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/transaction/project/{id}": {
+      "get": {
+        "tags": ["Transaction"],
+        "summary": "List Transaction by Project",
+        "description": "Retrieves a list of transaction by project.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/whatsapp/qr-code": {
+      "get": {
+        "tags": ["Whatsapp"],
+        "summary": "Get Whatsapp QR Code",
+        "description": "Get whatsapp qr code.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/wilayah/provinces": {
+      "get": {
+        "tags": ["Indonesia Region"],
+        "summary": "List Provinces",
+        "description": "Retrieves a list of provinces.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/wilayah/regencies/{province_code}": {
+      "get": {
+        "tags": ["Indonesia Region"],
+        "summary": "List Regencies",
+        "description": "Retrieves a list of regencies by province code.",
+        "parameters": [
+          {
+            "name": "province_code",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/wilayah/districts/{regency_code}": {
+      "get": {
+        "tags": ["Indonesia Region"],
+        "summary": "List Districts",
+        "description": "Retrieves a list of districts by regency code.",
+        "parameters": [
+          {
+            "name": "regency_code",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/wilayah/villages/{district_code}": {
+      "get": {
+        "tags": ["Indonesia Region"],
+        "summary": "List Villages",
+        "description": "Retrieves a list of villages by district code.",
+        "parameters": [
+          {
+            "name": "district_code",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}

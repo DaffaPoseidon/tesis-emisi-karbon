@@ -1,163 +1,182 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract CarbonCertificate {
-    // Struct to represent a carbon certificate
-    struct Certificate {
-        uint256 carbonAmount; // Amount of carbon in tons
-        string projectId;     // Project identifier
-        uint256 issueDate;    // Timestamp of issuance
-        bytes32 uniqueHash;   // Unique cryptographic hash
-    }
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
-    // Mapping from tokenId to certificate data
-    mapping(uint256 => Certificate) private _certificates;
+contract CarbonCertificate is ERC721Enumerable, Ownable {
+    using Counters for Counters.Counter;
+    using Strings for uint256;
     
-    // Mapping from hash to tokenId
-    mapping(bytes32 => uint256) private _hashToTokenId;
-
-    // Mapping from owner to list of owned token IDs
-    mapping(address => uint256[]) private _ownedTokens;
-
-    // Mapping to check if a token exists
-    mapping(uint256 => bool) private _exists;
-
-    // Variable for tracking the token IDs
-    uint256 private _tokenIds;
-
-    // Event emitted when a certificate is issued
+    Counters.Counter private _tokenIdCounter;
+    
+    // Struktur data sertifikat
+    struct Certificate {
+        uint256 tokenId;
+        uint256 carbonAmount; // 1 token = 1 ton karbon
+        string projectId;
+        uint256 issueDate;
+        string uniqueHash;
+    }
+    
+    // Penyimpanan mapping
+    mapping(uint256 => Certificate) private _certificates;
+    mapping(string => uint256[]) private _projectTokens;
+    mapping(string => uint256) private _hashToToken;
+    
+    // Event yang dipancarkan ketika sertifikat diterbitkan
     event CertificateIssued(
-        uint256 indexed tokenId,
-        address indexed recipient,
+        uint256 tokenId,
+        address recipient,
         uint256 carbonAmount,
         string projectId,
-        bytes32 uniqueHash
+        string uniqueHash
     );
-
-    // Constructor to initialize the contract
-    constructor() {}
-
+    
+    constructor() ERC721("Carbon Credit Certificate", "CARBON") {}
+    
     /**
-     * @notice Generates a unique hash for a carbon certificate
-     * @param recipient Address of the certificate recipient
-     * @param projectId The project identifier
-     * @param nonce A unique number to ensure uniqueness
-     * @return A unique bytes32 hash
-     */
-    function generateUniqueHash(
-        address recipient,
-        string memory projectId,
-        uint256 nonce
-    ) private view returns (bytes32) {
-        return keccak256(
-            abi.encodePacked(
-                recipient,
-                projectId,
-                block.timestamp,
-                nonce,
-                address(this)
-            )
-        );
-    }
-
-    /**
-     * @notice Issues a carbon certificate (one per token)
-     * @param recipient Address of the certificate recipient
-     * @param carbonAmount The number of tons of carbon to issue
-     * @param projectId The project identifier
-     * @return Array of unique hashes for the tokens
+     * Menerbitkan sertifikat karbon untuk suatu proyek
+     * @param recipient Alamat yang akan menerima sertifikat
+     * @param amount Jumlah sertifikat yang akan diterbitkan (1 sertifikat = 1 ton)
+     * @param projectId ID proyek dari MongoDB
      */
     function issueCertificate(
         address recipient,
-        uint256 carbonAmount,
+        uint256 amount,
         string memory projectId
-    ) external returns (bytes32[] memory) {
-        require(carbonAmount > 0, "Carbon amount must be greater than zero");
-
-        bytes32[] memory uniqueHashes = new bytes32[](carbonAmount);
-        uint256[] memory newTokenIds = new uint256[](carbonAmount);
-
-        for (uint256 i = 0; i < carbonAmount; i++) {
-            _tokenIds++;
-            uint256 newTokenId = _tokenIds;
+    ) public onlyOwner returns (bool) {
+        require(amount > 0, "Amount must be greater than zero");
+        require(bytes(projectId).length > 0, "Project ID cannot be empty");
+        
+        // Membuat token sejumlah yang ditentukan
+        for (uint256 i = 0; i < amount; i++) {
+            _tokenIdCounter.increment();
+            uint256 tokenId = _tokenIdCounter.current();
             
-            // Generate a cryptographic unique hash
-            bytes32 uniqueHash = generateUniqueHash(recipient, projectId, newTokenId);
+            // Menghasilkan hash unik untuk token ini
+            string memory uniqueHash = generateUniqueHash(tokenId, projectId, i);
             
-            // Ensure hash is unique by checking if it already exists
-            require(_hashToTokenId[uniqueHash] == 0, "Hash collision detected");
+            // Mint token ke penerima
+            _safeMint(recipient, tokenId);
             
-            // Store the mapping from hash to tokenId
-            _hashToTokenId[uniqueHash] = newTokenId;
-
-            // Store the certificate details
-            _certificates[newTokenId] = Certificate({
-                carbonAmount: 1, // 1 token = 1 ton of carbon
+            // Menyimpan data sertifikat di blockchain
+            Certificate memory newCertificate = Certificate({
+                tokenId: tokenId,
+                carbonAmount: 1, // 1 ton per sertifikat
                 projectId: projectId,
                 issueDate: block.timestamp,
                 uniqueHash: uniqueHash
             });
-
-            // Track the token ownership
-            _ownedTokens[recipient].push(newTokenId);
-            _exists[newTokenId] = true;
-
-            newTokenIds[i] = newTokenId;
-            uniqueHashes[i] = uniqueHash;
-
-            // Emit the certificate issued event
-            emit CertificateIssued(newTokenId, recipient, 1, projectId, uniqueHash);
+            
+            // Memperbarui mapping
+            _certificates[tokenId] = newCertificate;
+            _projectTokens[projectId].push(tokenId);
+            _hashToToken[uniqueHash] = tokenId;
+            
+            // Memancarkan event dengan semua data sertifikat
+            emit CertificateIssued(
+                tokenId,
+                recipient,
+                1,
+                projectId,
+                uniqueHash
+            );
         }
-
-        return uniqueHashes;
+        
+        return true;
     }
-
+    
     /**
-     * @notice Fetches the certificate data associated with a given tokenId
-     * @param tokenId The ID of the token to query
-     * @return The certificate data for the token
+     * Menghasilkan hash unik untuk sertifikat
+     * Membuat hash yang menggabungkan beberapa elemen unik
      */
-    function getCertificate(uint256 tokenId) external view returns (Certificate memory) {
-        require(_exists[tokenId], "Token does not exist");
+    function generateUniqueHash(
+        uint256 tokenId,
+        string memory projectId,
+        uint256 index
+    ) private view returns (string memory) {
+        bytes32 hash = keccak256(
+            abi.encodePacked(
+                tokenId.toString(),
+                projectId,
+                index.toString(),
+                block.timestamp.toString(),
+                block.difficulty,
+                msg.sender
+            )
+        );
+        
+        return bytes32ToString(hash);
+    }
+    
+    /**
+     * Mengonversi bytes32 ke string hex
+     */
+    function bytes32ToString(bytes32 _bytes32) private pure returns (string memory) {
+        bytes memory bytesArray = new bytes(64);
+        for (uint256 i = 0; i < 32; i++) {
+            bytesArray[i*2] = _bytes2char(_bytes32[i] >> 4);
+            bytesArray[i*2+1] = _bytes2char(_bytes32[i] & 0x0f);
+        }
+        return string(bytesArray);
+    }
+    
+    function _bytes2char(bytes1 b) private pure returns (bytes1 c) {
+        if (uint8(b) < 10) return bytes1(uint8(b) + 0x30);
+        else return bytes1(uint8(b) + 0x57);
+    }
+    
+    /**
+     * Mendapatkan detail sertifikat berdasarkan hash unik
+     */
+    function getCertificateByHash(string memory uniqueHash) 
+        public 
+        view 
+        returns (Certificate memory) 
+    {
+        uint256 tokenId = _hashToToken[uniqueHash];
+        require(tokenId > 0, "Certificate not found");
+        
         return _certificates[tokenId];
     }
     
     /**
-     * @notice Fetches the certificate data associated with a unique hash
-     * @param uniqueHash The unique hash of the certificate
-     * @return The certificate data for the token
+     * Memverifikasi apakah sertifikat dengan hash tertentu ada
      */
-    function getCertificateByHash(bytes32 uniqueHash) external view returns (Certificate memory) {
-        uint256 tokenId = _hashToTokenId[uniqueHash];
-        require(tokenId > 0, "Certificate with this hash does not exist");
-        return _certificates[tokenId];
-    }
-
-    /**
-     * @notice Gets the list of token IDs owned by a given address
-     * @param owner The address to query
-     * @return An array of token IDs owned by the address
-     */
-    function getOwnedTokens(address owner) external view returns (uint256[] memory) {
-        return _ownedTokens[owner];
+    function verifyCertificate(string memory uniqueHash) 
+        public 
+        view 
+        returns (bool) 
+    {
+        return _hashToToken[uniqueHash] > 0;
     }
     
     /**
-     * @notice Gets the unique hash for a given tokenId
-     * @param tokenId The ID of the token
-     * @return The unique hash of the token
+     * Mendapatkan semua sertifikat untuk proyek tertentu
      */
-    function getTokenHash(uint256 tokenId) external view returns (bytes32) {
-        require(_exists[tokenId], "Token does not exist");
-        return _certificates[tokenId].uniqueHash;
+    function getProjectCertificates(string memory projectId) 
+        public 
+        view 
+        returns (Certificate[] memory) 
+    {
+        uint256[] memory tokenIds = _projectTokens[projectId];
+        Certificate[] memory certificates = new Certificate[](tokenIds.length);
+        
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            certificates[i] = _certificates[tokenIds[i]];
+        }
+        
+        return certificates;
     }
     
     /**
-     * @notice Verifies if a certificate with a given hash exists
-     * @param uniqueHash The hash to verify
-     * @return True if the certificate exists, false otherwise
+     * Mentransfer sertifikat dari satu pemilik ke pemilik lain (untuk pembelian marketplace)
      */
-    function verifyCertificate(bytes32 uniqueHash) external view returns (bool) {
-        return _hashToTokenId[uniqueHash] > 0;
+    function transferCertificate(uint256 tokenId, address to) public {
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved to transfer");
+        _transfer(ownerOf(tokenId), to, tokenId);
     }
 }

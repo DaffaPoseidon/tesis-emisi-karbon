@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 require("dotenv").config();
 
-// Load ABI dari file JSON yang dihasilkan saat kompilasi kontrak
+// Load ABI from the compiled contract JSON file
 const contractABIPath = path.join(
   __dirname,
   "../../../smart-contract/artifacts/contracts/Contract.sol/CarbonCertificate.json"
@@ -15,102 +15,101 @@ try {
   contractABI = JSON.parse(abiFile).abi;
 } catch (error) {
   console.error(`Error loading ABI file from ${contractABIPath}:`, error);
-  process.exit(1); // Fatal error - exit the application
+  process.exit(1);
 }
 
-// Setup provider dan wallet
+// Environment validation
 if (!process.env.BESU_RPC_URL) {
   console.error("BESU_RPC_URL is not defined in environment variables");
   process.exit(1);
 }
 
 if (!process.env.PRIVATE_KEY_BLOCKCHAIN) {
-  console.error("PRIVATE_KEY_BLOCKCHAIN is not defined in environment variables");
+  console.error(
+    "PRIVATE_KEY_BLOCKCHAIN is not defined in environment variables"
+  );
   process.exit(1);
 }
 
 if (!process.env.CONTRACT_ADDRESS_SMARTCONTRACT) {
-  console.error("CONTRACT_ADDRESS_SMARTCONTRACT is not defined in environment variables");
+  console.error(
+    "CONTRACT_ADDRESS_SMARTCONTRACT is not defined in environment variables"
+  );
   process.exit(1);
 }
 
+// Initialize blockchain connection
 const provider = new ethers.JsonRpcProvider(process.env.BESU_RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY_BLOCKCHAIN, provider);
 const contractAddress = process.env.CONTRACT_ADDRESS_SMARTCONTRACT;
-const carbonContract = new ethers.Contract(contractAddress, contractABI, wallet);
+const carbonContract = new ethers.Contract(
+  contractAddress,
+  contractABI,
+  wallet
+);
 
 console.log(`Blockchain service initialized with:
 - Provider: ${process.env.BESU_RPC_URL}
 - Contract: ${contractAddress}
 - Wallet: ${wallet.address}`);
 
-// Periksa koneksi ke blockchain
-provider.getBlockNumber().then(blockNumber => {
-  console.log(`Successfully connected to blockchain. Current block: ${blockNumber}`);
-}).catch(err => {
-  console.error(`Failed to connect to blockchain: ${err.message}`);
-});
+// Check blockchain connection
+provider
+  .getBlockNumber()
+  .then((blockNumber) => {
+    console.log(
+      `Successfully connected to blockchain. Current block: ${blockNumber}`
+    );
+  })
+  .catch((err) => {
+    console.error(`Failed to connect to blockchain: ${err.message}`);
+  });
 
 /**
- * Menerbitkan sertifikat karbon ke blockchain dengan token unik
- * @param {string} recipientAddress - Alamat penerima sertifikat
- * @param {Object} carbonCase - Data kasus karbon
- * @returns {Promise<Object>} - Hasil transaksi dari blockchain
+ * Issue carbon certificates on the blockchain after validator approval
+ * @param {string} recipientAddress - Seller's blockchain address
+ * @param {Object} carbonCase - Validated carbon data
+ * @returns {Promise<Object>} - Transaction result with token data
  */
 async function issueCarbonCertificate(recipientAddress, carbonCase) {
   try {
-    // Pastikan jumlahSertifikat adalah angka
-    const amount = parseInt(carbonCase.jumlahSertifikat || carbonCase.jumlahKarbon);
+    // Ensure amount is a valid number
+    const amount = parseInt(carbonCase.jumlahKarbon);
     if (isNaN(amount) || amount <= 0) {
-      throw new Error("Jumlah sertifikat harus berupa angka positif");
+      throw new Error("Carbon amount must be a positive number");
     }
 
-    // Gunakan ID kasus sebagai projectId
+    // Use case ID as project identifier
     const projectId = carbonCase._id.toString();
 
-    console.log(`Issuing ${amount} carbon certificates for project ${projectId} to ${recipientAddress}`);
+    console.log(
+      `Issuing ${amount} carbon certificates for project ${projectId} to ${recipientAddress}`
+    );
 
-    // Panggil fungsi smart contract yang akan menghasilkan token unik
-    console.log("Memanggil kontrak di alamat:", contractAddress);
+    // Call smart contract to issue certificates and create tokens
     const tx = await carbonContract.issueCertificate(
       recipientAddress,
       amount,
       projectId
     );
 
-    console.log("Transaction hash:", tx.hash);
+    console.log("Transaction submitted with hash:", tx.hash);
 
-    // Tunggu konfirmasi transaksi
-    console.log("Menunggu konfirmasi transaksi...");
+    // Wait for transaction confirmation
     const receipt = await tx.wait();
     console.log("Transaction confirmed in block:", receipt.blockNumber);
 
-    // Parse event untuk mendapatkan token unik (uniqueHash)
-    console.log("Parsing events dari receipt dengan log count:", receipt.logs.length);
-    console.log("Contract address untuk filter:", contractAddress.toLowerCase());
-
-    // Log semua event topics untuk debugging
-    receipt.logs.forEach((log, i) => {
-      console.log(`Log #${i} address: ${log.address.toLowerCase()}, topics:`, log.topics);
-    });
-
-    // Filter hanya log dari kontrak kita
-    const contractLogs = receipt.logs.filter(
-      (log) => log.address.toLowerCase() === contractAddress.toLowerCase()
-    );
-    console.log(`Filtered logs dari kontrak kita: ${contractLogs.length}`);
-
-    // Parsing events dari logs
+    // Parse events to get token data with unique hashes
     const events = [];
     const iface = new ethers.Interface(contractABI);
 
     for (const log of receipt.logs) {
       try {
-        // Hanya proses log dari kontrak kita
+        // Only process logs from our contract
         if (log.address.toLowerCase() !== contractAddress.toLowerCase())
           continue;
 
-        // Format log untuk parsing
+        // Format log for parsing
         const logDescription = iface.parseLog({
           topics: [...log.topics],
           data: log.data,
@@ -119,7 +118,6 @@ async function issueCarbonCertificate(recipientAddress, carbonCase) {
         if (logDescription && logDescription.name === "CertificateIssued") {
           const { args } = logDescription;
 
-          // Format data dengan benar
           events.push({
             tokenId: args.tokenId.toString(),
             recipient: args.recipient,
@@ -128,37 +126,31 @@ async function issueCarbonCertificate(recipientAddress, carbonCase) {
             uniqueHash: args.uniqueHash,
           });
 
-          console.log("Token berhasil diparsing:", events[events.length - 1]);
+          console.log(
+            "Token data retrieved from blockchain:",
+            events[events.length - 1]
+          );
         }
       } catch (e) {
         console.error("Error parsing log:", e);
-        // Ignore parsing errors for non-matching logs
+        // Continue processing other logs
       }
     }
 
-    console.log(`Jumlah event CertificateIssued yang berhasil di-parse: ${events.length}`);
-
-    // Kumpulkan token ID dan hash unik
+    // Collect token IDs and unique hashes
     const tokenData = events.map((event) => ({
       tokenId: event.tokenId,
       uniqueHash: event.uniqueHash,
     }));
 
-    console.log("Generated tokens:", tokenData);
-
-    // Jika tidak ada event yang terdeteksi, mungkin ada masalah dengan smart contract
+    // Verify we received token data
     if (tokenData.length === 0) {
-      console.warn("Tidak ada token yang terdeteksi dari event. Menggunakan fallback untuk testing.");
-      
-      // Fallback untuk testing saja - pada implementasi sebenarnya, ini tidak diperlukan
-      for (let i = 0; i < amount; i++) {
-        tokenData.push({
-          tokenId: `${projectId}-${i+1}`,
-          uniqueHash: `0x${Math.random().toString(16).substring(2)}${Math.random().toString(16).substring(2)}`
-        });
-      }
+      throw new Error(
+        "No tokens were detected from blockchain events. Check smart contract implementation."
+      );
     }
 
+    // Return blockchain data to be stored in MongoDB
     return {
       success: true,
       transactionHash: tx.hash,
@@ -167,6 +159,7 @@ async function issueCarbonCertificate(recipientAddress, carbonCase) {
       recipient: recipientAddress,
       carbonAmount: amount,
       projectId: projectId,
+      issuedOn: Date.now(),
     };
   } catch (error) {
     console.error("Error issuing carbon certificate:", error);
@@ -178,9 +171,9 @@ async function issueCarbonCertificate(recipientAddress, carbonCase) {
 }
 
 /**
- * Mengambil detail sertifikat dari blockchain berdasarkan uniqueHash
- * @param {string} uniqueHash - Hash unik sertifikat yang akan diambil
- * @returns {Promise<Object>} Detail sertifikat
+ * Get certificate details from blockchain by unique hash
+ * @param {string} uniqueHash - Certificate's unique hash
+ * @returns {Promise<Object>} Certificate details
  */
 async function getCertificateByHash(uniqueHash) {
   try {
@@ -189,11 +182,16 @@ async function getCertificateByHash(uniqueHash) {
       success: true,
       carbonAmount: certificate.carbonAmount.toString(),
       projectId: certificate.projectId,
-      issueDate: new Date(certificate.issueDate.toString() * 1000).toISOString(),
+      issueDate: new Date(
+        certificate.issueDate.toString() * 1000
+      ).toISOString(),
       uniqueHash: certificate.uniqueHash,
     };
   } catch (error) {
-    console.error(`Error getting certificate details for hash ${uniqueHash}:`, error);
+    console.error(
+      `Error getting certificate details for hash ${uniqueHash}:`,
+      error
+    );
     return {
       success: false,
       error: error.message,
@@ -202,9 +200,9 @@ async function getCertificateByHash(uniqueHash) {
 }
 
 /**
- * Verifikasi keberadaan sertifikat dengan hash tertentu
- * @param {string} uniqueHash - Hash unik yang akan diverifikasi
- * @returns {Promise<Object>} Hasil verifikasi
+ * Verify certificate authenticity on blockchain
+ * @param {string} uniqueHash - Hash to verify
+ * @returns {Promise<Object>} Verification result
  */
 async function verifyCertificate(uniqueHash) {
   try {
@@ -214,7 +212,10 @@ async function verifyCertificate(uniqueHash) {
       isValid: isValid,
     };
   } catch (error) {
-    console.error(`Error verifying certificate with hash ${uniqueHash}:`, error);
+    console.error(
+      `Error verifying certificate with hash ${uniqueHash}:`,
+      error
+    );
     return {
       success: false,
       error: error.message,
@@ -225,5 +226,5 @@ async function verifyCertificate(uniqueHash) {
 module.exports = {
   issueCarbonCertificate,
   getCertificateByHash,
-  verifyCertificate
+  verifyCertificate,
 };

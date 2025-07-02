@@ -119,6 +119,31 @@ const ProductDetail = () => {
                   <span className="font-medium">Lembaga Sertifikasi:</span>{" "}
                   {product.lembagaSertifikasi}
                 </p>
+
+                {/* Tambahan informasi penjual */}
+                <p>
+                  <span className="font-medium">Penjual:</span>{" "}
+                  {product.penggugah
+                    ? `${product.penggugah.firstName} ${product.penggugah.lastName}`
+                    : "Informasi penjual tidak tersedia"}
+                </p>
+
+                {/* Tambahan informasi blockchain jika tersedia */}
+                {product.blockchainData && (
+                  <div className="mt-3 pt-3 border-t border-gray-200">
+                    <p className="font-medium text-blue-600">
+                      Terverifikasi Blockchain
+                    </p>
+                    {product.blockchainData.tokens &&
+                      product.blockchainData.tokens.length > 0 && (
+                        <p>
+                          <span className="font-medium">Jumlah Token:</span>{" "}
+                          {product.blockchainData.tokens.length}
+                        </p>
+                      )}
+                  </div>
+                )}
+
                 <p>
                   <span className="font-medium">Harga Per Ton:</span> Rp{" "}
                   {product.hargaPerTon?.toLocaleString()}

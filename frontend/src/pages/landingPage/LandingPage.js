@@ -268,6 +268,16 @@ const LandingPage = () => {
                           </p>
                         </div>
 
+                        {/* Tambahkan informasi penjual */}
+                        <div className="mb-3">
+                          <span className="text-sm text-gray-500">Penjual</span>
+                          <p className="text-sm font-medium truncate">
+                            {product.penggugah
+                              ? `${product.penggugah.firstName} ${product.penggugah.lastName}`
+                              : "Informasi penjual tidak tersedia"}
+                          </p>
+                        </div>
+
                         <div className="flex justify-between items-end">
                           <div>
                             <span className="text-sm text-gray-500">

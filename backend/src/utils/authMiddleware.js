@@ -8,8 +8,6 @@ function authenticateToken(req, res, next) {
     }
 
     const [bearer, token] = authHeader.split(" ")
-    console.log('Bearer Akun:', bearer);
-    console.log('Token Akun:', token);
     
     if (bearer !== "Bearer" || !token) {
         return res.status(401).json({ message: "Unauthorized: Missing Token" })

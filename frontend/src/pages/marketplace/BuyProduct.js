@@ -5,16 +5,15 @@ import Header from "../../components/Header";
 const BuyProduct = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
 
+  // User data
   const user = JSON.parse(localStorage.getItem("user"));
-  const userRole = user?.role;
-
-  // Cek apakah user dapat membeli (hanya buyer)
-  const canPurchase = userRole === "buyer" || userRole === "superadmin";
+  const canPurchase =
+    user && (user.role === "buyer" || user.role === "superadmin");
 
   const fetchProductDetails = useCallback(async () => {
     try {
@@ -28,7 +27,12 @@ const BuyProduct = () => {
       }
 
       const data = await response.json();
-      setProduct(data);
+
+      // Set data produk dengan harga (hardcoded harga per ton)
+      setProduct({
+        ...data,
+        hargaPerTon: 100000,
+      });
     } catch (error) {
       setError(error.message);
     } finally {
@@ -133,30 +137,70 @@ const BuyProduct = () => {
                   <span className="font-medium">Lembaga Sertifikasi:</span>{" "}
                   {product.lembagaSertifikasi}
                 </p>
+
+                {/* Tambahkan informasi penjual */}
                 <p>
-                  <span className="font-medium">Harga Per Ton:</span> Rp{" "}
-                  {product.hargaPerTon?.toLocaleString()}
+                  <span className="font-medium">Penjual:</span>{" "}
+                  {product.penggugah
+                    ? `${product.penggugah.firstName} ${product.penggugah.lastName}`
+                    : "Informasi penjual tidak tersedia"}
                 </p>
+
+                {/* Data Blockchain jika tersedia */}
+                {product.blockchainData && (
+                  <div className="mt-3 pt-3 border-t border-gray-200">
+                    <p className="font-medium text-blue-600">
+                      Terverifikasi Blockchain
+                    </p>
+                    {product.blockchainData.tokens &&
+                      product.blockchainData.tokens.length > 0 && (
+                        <p>
+                          <span className="font-medium">Jumlah Token:</span>{" "}
+                          {product.blockchainData.tokens.length}
+                        </p>
+                      )}
+                  </div>
+                )}
+              </div>
+
+              <div className="mb-4">
+                <h3 className="text-lg font-medium mb-2">Jumlah Pembelian</h3>
+                <div className="flex items-center">
+                  <button
+                    onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                    className="bg-gray-200 px-3 py-1 rounded-l"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    min="1"
+                    max={product.jumlahKarbon}
+                    value={quantity}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      if (val > 0 && val <= product.jumlahKarbon) {
+                        setQuantity(val);
+                      }
+                    }}
+                    className="w-16 text-center border-t border-b border-gray-300 py-1"
+                  />
+                  <button
+                    onClick={() =>
+                      quantity < product.jumlahKarbon &&
+                      setQuantity(quantity + 1)
+                    }
+                    className="bg-gray-200 px-3 py-1 rounded-r"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
 
               {canPurchase ? (
                 <>
-                  <div className="mb-6">
-                    <label className="block text-gray-700 mb-2">
-                      Jumlah (Ton)
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      max={product.jumlahKarbon}
-                      value={quantity}
-                      onChange={(e) => setQuantity(parseInt(e.target.value))}
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-
-                  <div className="mb-4">
-                    <h3 className="text-lg font-medium mb-2">
+                  <div className="bg-gray-100 p-4 rounded-md mb-4">
+                    <h3 className="text-lg font-semibold mb-2">
                       Ringkasan Pembelian
                     </h3>
                     <p>

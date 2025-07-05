@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { DayPicker } from "react-day-picker";
+import { format } from "date-fns";
+import "react-day-picker/dist/style.css";
 
 const CaseForm = ({
   initialFormState,
@@ -10,36 +13,165 @@ const CaseForm = ({
   setEditMode,
 }) => {
   const [localFormData, setLocalFormData] = useState(initialFormState);
-  const [showModal, setShowModal] = useState(false); // Modal untuk validasi file
+  const [showModal, setShowModal] = useState(false);
   const fileInputRef = useRef(null);
+  const [proposals, setProposals] = useState([]);
+  const [lembagaOptions, setLembagaOptions] = useState([
+    {
+      value: "ISPO (Indonesian Sustainable Palm Oil)",
+      label: "ISPO (Indonesian Sustainable Palm Oil)",
+    },
+    {
+      value: "RSPO (Roundtable on Sustainable Palm Oil)",
+      label: "RSPO (Roundtable on Sustainable Palm Oil)",
+    },
+    {
+      value: "FSC (Forest Stewardship Council)",
+      label: "FSC (Forest Stewardship Council)",
+    },
+    {
+      value: "PEFC (Programme for the Endorsement of Forest Certification)",
+      label: "PEFC (Programme for the Endorsement of Forest Certification)",
+    },
+    {
+      value: "SVLK (Sistem Verifikasi Legalitas Kayu)",
+      label: "SVLK (Sistem Verifikasi Legalitas Kayu)",
+    },
+    {
+      value: "ISCC (International Sustainability and Carbon Certification)",
+      label: "ISCC (International Sustainability and Carbon Certification)",
+    },
+    { value: "independen", label: "Lembaga Independen (Isi Sendiri)" },
+  ]);
+  const [customLembaga, setCustomLembaga] = useState("");
+  const [showCustomLembaga, setShowCustomLembaga] = useState(false);
+
+  // State untuk mengelola modal date picker
+  const [selectedProposalIndex, setSelectedProposalIndex] = useState(null);
+  const [datePickerType, setDatePickerType] = useState(null); // 'start' atau 'end'
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     if (editMode) {
       setLocalFormData(formData);
+      setProposals(formData.proposals || []);
+
+      // Cek jika lembaga sertifikasi adalah custom
+      const isCustom = !lembagaOptions.find(
+        (option) =>
+          option.value === formData.lembagaSertifikasi &&
+          option.value !== "independen"
+      );
+
+      setShowCustomLembaga(
+        isCustom || formData.lembagaSertifikasi === "independen"
+      );
+      setCustomLembaga(isCustom ? formData.lembagaSertifikasi : "");
     } else {
       setLocalFormData(initialFormState);
+      setProposals([]);
+      setShowCustomLembaga(false);
+      setCustomLembaga("");
       setShowModal(false);
+
       // Reset input file saat keluar dari edit mode
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
     }
-  }, [editMode, formData, formData._fileResetKey]); // Tambahkan dependency
+  }, [editMode, formData, initialFormState]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "lembagaSertifikasi") {
+      const selectedValue = value;
+      setShowCustomLembaga(selectedValue === "independen");
+
+      setLocalFormData((prevData) => ({
+        ...prevData,
+        [name]: selectedValue !== "independen" ? selectedValue : customLembaga,
+      }));
+    } else {
+      setLocalFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleCustomLembagaChange = (e) => {
+    const value = e.target.value;
+    setCustomLembaga(value);
     setLocalFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      lembagaSertifikasi: value,
     }));
   };
 
   const handleFileChange = (e) => {
     setLocalFormData((prevData) => ({
       ...prevData,
-      file: e.target.files.length > 0 ? e.target.files : null, // Cek apakah ada file
+      file: e.target.files.length > 0 ? e.target.files : null,
     }));
-    setShowModal(false); // Tutup modal jika user memilih file baru
+    setShowModal(false);
+  };
+
+  // Fungsi untuk menambah proposal baru
+  const addProposal = () => {
+    const newProposal = {
+      tanggalMulai: new Date(),
+      tanggalSelesai: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 hari dari sekarang
+      jumlahKarbon: 0,
+      statusProposal: "Diajukan",
+    };
+
+    setProposals([...proposals, newProposal]);
+  };
+
+  // Fungsi untuk update proposal
+  const updateProposal = (index, field, value) => {
+    const updatedProposals = [...proposals];
+    updatedProposals[index][field] = value;
+    setProposals(updatedProposals);
+  };
+
+  // Fungsi untuk menghapus proposal
+  const removeProposal = (index) => {
+    const updatedProposals = [...proposals];
+    updatedProposals.splice(index, 1);
+    setProposals(updatedProposals);
+  };
+
+  // Fungsi untuk membuka date picker
+  const openDatePicker = (index, type) => {
+    setSelectedProposalIndex(index);
+    setDatePickerType(type);
+    setShowDatePicker(true);
+  };
+
+  // Fungsi untuk memilih tanggal
+  const handleDaySelect = (date) => {
+    if (!date) return;
+
+    if (selectedProposalIndex !== null && datePickerType) {
+      const updatedProposals = [...proposals];
+
+      if (datePickerType === "start") {
+        updatedProposals[selectedProposalIndex].tanggalMulai = date;
+
+        // Jika tanggal mulai lebih besar dari tanggal selesai, update tanggal selesai
+        if (date > updatedProposals[selectedProposalIndex].tanggalSelesai) {
+          updatedProposals[selectedProposalIndex].tanggalSelesai = date;
+        }
+      } else {
+        updatedProposals[selectedProposalIndex].tanggalSelesai = date;
+      }
+
+      setProposals(updatedProposals);
+    }
+
+    setShowDatePicker(false);
   };
 
   const handleSubmit = async (e) => {
@@ -50,23 +182,47 @@ const CaseForm = ({
       return;
     }
 
+    // Validasi tambahan
+    if (proposals.length === 0) {
+      alert("Harap tambahkan minimal satu data periode penyerapan karbon");
+      return;
+    }
+
+    // Hitung total karbon
+    const totalKarbon = proposals.reduce(
+      (sum, proposal) => sum + Number(proposal.jumlahKarbon),
+      0
+    );
+
+    // Buat data lengkap termasuk proposals
+    const completeFormData = {
+      ...localFormData,
+      proposals: proposals,
+      jumlahKarbon: totalKarbon,
+    };
+
     if (editMode && handleUpdate) {
-      await handleUpdate(localFormData);
+      await handleUpdate(completeFormData);
     } else {
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user"));
       const penggugah = user ? user._id : "Unknown";
 
       const formDataToSend = new FormData();
-      Object.keys(localFormData).forEach((key) => {
-        if (key === "file" && localFormData.file) {
-          Array.from(localFormData.file).forEach((file) => {
-            formDataToSend.append("files", file);
-          });
-        } else {
-          formDataToSend.append(key, localFormData[key]);
+
+      // Tambahkan data utama
+      Object.keys(completeFormData).forEach((key) => {
+        if (key === "file" && completeFormData.file) {
+          for (let i = 0; i < completeFormData.file.length; i++) {
+            formDataToSend.append("files", completeFormData.file[i]);
+          }
+        } else if (key !== "file" && key !== "proposals") {
+          formDataToSend.append(key, completeFormData[key]);
         }
       });
+
+      // Tambahkan data proposals sebagai JSON string
+      formDataToSend.append("proposals", JSON.stringify(proposals));
 
       formDataToSend.append("penggugah", penggugah);
 
@@ -83,36 +239,40 @@ const CaseForm = ({
         );
 
         if (response.ok) {
-          console.log("Data berhasil ditambahkan");
-          refreshCases();
+          alert("Data berhasil disimpan");
           setLocalFormData(initialFormState);
-          setShowModal(false);
-          fileInputRef.current.value = ""; // Reset input file
+          setProposals([]);
+          if (fileInputRef.current) fileInputRef.current.value = "";
+          refreshCases();
         } else {
-          const errorResult = await response.json();
-          console.error(
-            "Gagal menambahkan data:",
-            errorResult.message || "Unknown error"
-          );
+          const errorData = await response.json();
+          alert(`Gagal menyimpan data: ${errorData.message}`);
         }
       } catch (error) {
-        console.error("Error:", error.message);
+        alert(`Error: ${error.message}`);
       }
     }
   };
 
   const handleCancel = () => {
     setLocalFormData(initialFormState);
+    setProposals([]);
     setEditMode(false);
-    setShowModal(false); // Reset modal setelah berhasil submit
-    fileInputRef.current.value = ""; // Reset input file
+    setShowModal(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  // Format tanggal
+  const formatDate = (date) => {
+    if (!date) return "";
+    return format(new Date(date), "dd/MM/yyyy");
   };
 
   return (
     <div>
-      {/* MODAL UNTUK FILE KOSONG */}
+      {/* Modal untuk file kosong */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-lg">
             <p className="text-red-500 text-lg font-bold">
               File harus diunggah!
@@ -126,95 +286,285 @@ const CaseForm = ({
           </div>
         </div>
       )}
+
+      {/* Modal untuk Date Picker */}
+      {showDatePicker && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <h3 className="text-lg font-medium mb-4">
+              {datePickerType === "start"
+                ? "Pilih Tanggal Mulai"
+                : "Pilih Tanggal Selesai"}
+            </h3>
+            <DayPicker
+              mode="single"
+              selected={
+                datePickerType === "start"
+                  ? proposals[selectedProposalIndex].tanggalMulai
+                  : proposals[selectedProposalIndex].tanggalSelesai
+              }
+              onSelect={handleDaySelect}
+              fromDate={
+                datePickerType === "end"
+                  ? proposals[selectedProposalIndex].tanggalMulai
+                  : undefined
+              }
+              className="mx-auto"
+            />
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setShowDatePicker(false)}
+                className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <form
         onSubmit={handleSubmit}
         className="bg-white shadow rounded p-6 mb-4"
       >
         <h2 className="text-xl font-bold mb-4">
-          {editMode ? "Edit Data" : "Tambah Data Baru"}
+          {editMode ? "Edit Proyek" : "Tambah Proyek Baru"}
         </h2>
+
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <input
-            type="text"
-            name="luasTanah"
-            placeholder="Luas Tanah (Ha)"
-            value={localFormData.luasTanah}
-            onChange={handleInputChange}
-            className="border border-gray-300 rounded p-2"
-            required
-          />
-          <input
-            type="text"
-            name="jenisPohon"
-            placeholder="Jenis Pohon"
-            value={localFormData.jenisPohon}
-            onChange={handleInputChange}
-            className="border border-gray-300 rounded p-2"
-            required
-          />
-          <input
-            type="text"
-            name="lembagaSertifikasi"
-            placeholder="Lembaga Sertifikasi"
-            value={localFormData.lembagaSertifikasi}
-            onChange={handleInputChange}
-            className="border border-gray-300 rounded p-2"
-            required
-          />
-          <input
-            type="text"
-            name="jumlahKarbon"
-            placeholder="Jumlah Karbon (Ton)"
-            value={localFormData.jumlahKarbon}
-            onChange={handleInputChange}
-            className="border border-gray-300 rounded p-2"
-            required
-          />
-          <input
-            type="text"
-            name="metodePengukuran"
-            placeholder="Metode Pengukuran"
-            value={localFormData.metodePengukuran}
-            onChange={handleInputChange}
-            className="border border-gray-300 rounded p-2"
-            required
-          />
-          <input
-            type="text"
-            name="jenisTanah"
-            placeholder="Jenis Tanah"
-            value={localFormData.jenisTanah}
-            onChange={handleInputChange}
-            className="border border-gray-300 rounded p-2"
-            required
-          />
-          <input
-            type="text"
-            name="lokasiGeografis"
-            placeholder="Lokasi Geografis"
-            value={localFormData.lokasiGeografis}
-            onChange={handleInputChange}
-            className="border border-gray-300 rounded p-2"
-            required
-          />
-          <input
-            type="text"
-            name="kepemilikanLahan"
-            placeholder="Kepemilikan Lahan"
-            value={localFormData.kepemilikanLahan}
-            onChange={handleInputChange}
-            className="border border-gray-300 rounded p-2"
-            required
-          />
-          <input
-            type="file"
-            name="file"
-            multiple
-            onChange={handleFileChange}
-            ref={fileInputRef}
-            key={formData._fileResetKey || "file-input"} // Gunakan key untuk reset
-            className="border border-gray-300 rounded p-2"
-          />
+          <div className="col-span-2">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Nama Proyek
+            </label>
+            <input
+              type="text"
+              name="namaProyek"
+              placeholder="Nama Proyek"
+              value={localFormData.namaProyek || ""}
+              onChange={handleInputChange}
+              className="border border-gray-300 rounded p-2 w-full"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Luas Tanah (Ha)
+            </label>
+            <input
+              type="text"
+              name="luasTanah"
+              placeholder="Luas Tanah (Ha)"
+              value={localFormData.luasTanah || ""}
+              onChange={handleInputChange}
+              className="border border-gray-300 rounded p-2 w-full"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Sarana Penyerap Emisi
+            </label>
+            <input
+              type="text"
+              name="saranaPenyerapEmisi"
+              placeholder="Sarana Penyerap Emisi"
+              value={localFormData.saranaPenyerapEmisi || ""}
+              onChange={handleInputChange}
+              className="border border-gray-300 rounded p-2 w-full"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Kepemilikan Lahan
+            </label>
+            <input
+              type="text"
+              name="kepemilikanLahan"
+              placeholder="Kepemilikan Lahan"
+              value={localFormData.kepemilikanLahan || ""}
+              onChange={handleInputChange}
+              className="border border-gray-300 rounded p-2 w-full"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Lembaga Sertifikasi
+            </label>
+            <select
+              name="lembagaSertifikasi"
+              value={
+                showCustomLembaga
+                  ? "independen"
+                  : localFormData.lembagaSertifikasi || ""
+              }
+              onChange={handleInputChange}
+              className="border border-gray-300 rounded p-2 w-full"
+              required
+            >
+              <option value="">Pilih Lembaga Sertifikasi</option>
+              {lembagaOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {showCustomLembaga && (
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Nama Lembaga Independen
+              </label>
+              <input
+                type="text"
+                value={customLembaga}
+                onChange={handleCustomLembagaChange}
+                className="border border-gray-300 rounded p-2 w-full"
+                placeholder="Masukkan nama lembaga sertifikasi"
+                required
+              />
+            </div>
+          )}
+
+          <div className="col-span-2">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Unggah Dokumen Pendukung
+            </label>
+            <input
+              type="file"
+              name="file"
+              multiple
+              onChange={handleFileChange}
+              ref={fileInputRef}
+              className="border border-gray-300 rounded p-2 w-full"
+            />
+          </div>
+        </div>
+
+        {/* Bagian Proposal */}
+        <div className="mt-6 mb-4">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-lg font-medium">
+              Data Periode Penyerapan Karbon
+            </h3>
+            <button
+              type="button"
+              onClick={addProposal}
+              className="bg-green-500 text-white px-3 py-1 rounded-full hover:bg-green-600 flex items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Tambah Periode
+            </button>
+          </div>
+
+          {proposals.length === 0 ? (
+            <div className="text-center py-4 bg-gray-50 rounded border border-gray-200">
+              <p className="text-gray-500">
+                Belum ada data periode. Klik tombol "Tambah Periode" untuk
+                menambahkan.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {proposals.map((proposal, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-50 p-4 rounded border border-gray-200 relative"
+                >
+                  <button
+                    type="button"
+                    onClick={() => removeProposal(index)}
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Tanggal Mulai
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => openDatePicker(index, "start")}
+                        className="border border-gray-300 rounded p-2 w-full text-left bg-white"
+                      >
+                        {formatDate(proposal.tanggalMulai)}
+                      </button>
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Tanggal Selesai
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => openDatePicker(index, "end")}
+                        className="border border-gray-300 rounded p-2 w-full text-left bg-white"
+                      >
+                        {formatDate(proposal.tanggalSelesai)}
+                      </button>
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Jumlah Karbon (Ton)
+                      </label>
+                      <input
+                        type="number"
+                        value={proposal.jumlahKarbon}
+                        onChange={(e) =>
+                          updateProposal(
+                            index,
+                            "jumlahKarbon",
+                            Number(e.target.value)
+                          )
+                        }
+                        className="border border-gray-300 rounded p-2 w-full"
+                        min="0"
+                        step="0.01"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <div className="p-3 bg-blue-50 rounded text-blue-700 font-medium">
+                Total Karbon:{" "}
+                {proposals.reduce((sum, p) => sum + Number(p.jumlahKarbon), 0)}{" "}
+                Ton
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex space-x-4">

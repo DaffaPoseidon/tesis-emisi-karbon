@@ -78,9 +78,6 @@ provider
     return carbonContract
       .owner()
       .then((owner) => {
-        console.log(`Contract owner: ${owner}`);
-        console.log(`Current wallet: ${wallet.address}`);
-
         if (owner.toLowerCase() !== wallet.address.toLowerCase()) {
           console.warn(
             "PERINGATAN: Wallet saat ini bukan owner kontrak, mungkin ada masalah izin"

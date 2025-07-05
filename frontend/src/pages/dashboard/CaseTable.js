@@ -4,6 +4,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
   const [loading, setLoading] = useState({});
   const [error, setError] = useState(null);
   const [lastClickTime, setLastClickTime] = useState({});
+  const [processingIds, setProcessingIds] = useState(new Set());
 
   const user = JSON.parse(localStorage.getItem("user"));
   const userRole = user?.role;
@@ -22,18 +23,24 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
 
   const handleDelete = async (id) => {
     if (!onDelete) return;
-    await onDelete(id);
-    refreshCases?.();
-  };
 
-  // Tambahkan state terpisah untuk melacak proses yang sedang berjalan
-  const [processingIds, setProcessingIds] = useState(new Set());
+    const confirmed = window.confirm("Apakah Anda yakin ingin menghapus data ini?");
+    if (!confirmed) return;
+
+    try {
+      await onDelete(id);
+      if (refreshCases) {
+        refreshCases();
+      }
+    } catch (error) {
+      console.error("Error deleting case:", error);
+    }
+  };
 
   // Fungsi update status pengajuan
   const handleStatusUpdate = async (id, newStatus) => {
     const now = Date.now();
     if (lastClickTime[id] && now - lastClickTime[id] < 2000) {
-      // 2 detik cooldown
       console.log("Terlalu cepat klik, mohon tunggu...");
       return;
     }
@@ -48,11 +55,8 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
     // Tambahkan ID ke daftar yang sedang diproses
     setProcessingIds((prev) => new Set(prev).add(id));
     setLoading((prev) => ({ ...prev, [id]: true }));
-    setError(null);
 
     try {
-      console.log(`Memperbarui status ${id} menjadi ${newStatus}...`);
-
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/cases/${id}/status`,
         {
@@ -65,21 +69,14 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
         }
       );
 
-      const data = await response.json();
-
       if (response.ok) {
-        console.log(`Status berhasil diubah menjadi ${newStatus}`);
-
-        if (newStatus === "Diterima" && data.blockchain) {
-          console.log("Sertifikat berhasil diterbitkan:", data.blockchain);
-        }
-
-        // Pastikan refresh dipanggil sebelum state loading diubah
+        console.log(`Status case ${id} diperbarui ke ${newStatus}`);
         if (refreshCases) {
           await refreshCases();
         }
       } else {
-        setError(data.message || "Gagal mengubah status pengajuan");
+        const data = await response.json();
+        setError(data.message);
         console.error("Gagal mengubah status pengajuan:", data.message);
       }
     } catch (error) {
@@ -100,236 +97,217 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
     }
   };
 
+  // Fungsi untuk update status proposal individual
+  const handleProposalStatusUpdate = async (caseId, proposalId, newStatus) => {
+    // Verifikasi agar tidak melakukan double-click
+    const key = `${caseId}-${proposalId}`;
+    const now = Date.now();
+    if (lastClickTime[key] && now - lastClickTime[key] < 2000) {
+      console.log("Terlalu cepat klik, mohon tunggu...");
+      return;
+    }
+
+    setLastClickTime((prev) => ({ ...prev, [key]: now }));
+
+    // Jika sudah sedang diproses, jangan lakukan apa-apa
+    if (processingIds.has(key)) return;
+
+    const token = localStorage.getItem("token");
+
+    // Tambahkan ke daftar yang sedang diproses
+    setProcessingIds((prev) => new Set(prev).add(key));
+    setLoading((prev) => ({ ...prev, [key]: true }));
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/cases/${caseId}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            proposalUpdates: [{ proposalId, status: newStatus }]
+          }),
+        }
+      );
+
+      if (response.ok) {
+        console.log(`Status proposal ${proposalId} diperbarui ke ${newStatus}`);
+        if (refreshCases) {
+          await refreshCases();
+        }
+      } else {
+        const data = await response.json();
+        setError(data.message);
+        console.error("Gagal mengubah status proposal:", data.message);
+      }
+    } catch (error) {
+      console.error("Error updating proposal status:", error);
+      setError(error.message);
+    } finally {
+      // Hapus dari daftar yang sedang diproses
+      setProcessingIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(key);
+        return newSet;
+      });
+      setLoading((prev) => {
+        const newLoading = { ...prev };
+        delete newLoading[key];
+        return newLoading;
+      });
+    }
+  };
+
+  // Handler untuk menyetujui semua proposal sekaligus
+  const handleApproveAllProposals = async (caseId) => {
+    if (!window.confirm("Apakah Anda yakin ingin menyetujui semua proposal?")) {
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    setLoading((prev) => ({ ...prev, [caseId]: true }));
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/cases/${caseId}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ statusPengajuan: "Diterima" }),
+        }
+      );
+
+      if (response.ok) {
+        console.log(`Semua proposal untuk case ${caseId} telah disetujui`);
+        if (refreshCases) {
+          await refreshCases();
+        }
+      } else {
+        const data = await response.json();
+        setError(data.message);
+        console.error("Gagal menyetujui semua proposal:", data.message);
+      }
+    } catch (error) {
+      console.error("Error approving all proposals:", error);
+      setError(error.message);
+    } finally {
+      setLoading((prev) => {
+        const newLoading = { ...prev };
+        delete newLoading[caseId];
+        return newLoading;
+      });
+    }
+  };
+
   // Cek visibility kolom
   const showUploaderColumn = ["superadmin", "validator"].includes(userRole);
-  const showActionColumn = ["superadmin", "validator", "seller"].includes(
-    userRole
-  );
-  const canPurchase = userRole === "buyer" || userRole === "superadmin";
+  const showActionColumn = ["superadmin", "validator", "seller"].includes(userRole);
   const showApprovalColumn = ["superadmin", "validator"].includes(userRole);
-  const showStatusColumn = userRole === "user";
   const showBlockchainColumn = userRole === "user" || userRole === "superadmin";
+
+  // Format tanggal untuk tampilan
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   return (
     <div className="bg-white shadow rounded p-6 overflow-x-auto">
-      <h2 className="text-xl font-bold mb-4">Daftar Pengajuan</h2>
+      <h2 className="text-xl font-bold mb-4">Daftar Proyek</h2>
+      
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
         </div>
       )}
-      <table className="table-auto w-full border-collapse border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 px-4 py-2">No</th>
-            <th className="border border-gray-300 px-4 py-2">
-              Luas Tanah (Ha)
-            </th>
-            <th className="border border-gray-300 px-4 py-2">Jenis Pohon</th>
-            <th className="border border-gray-300 px-4 py-2">
-              Lembaga Sertifikasi
-            </th>
-            <th className="border border-gray-300 px-4 py-2">
-              Jumlah Karbon (Ton)
-            </th>
-            <th className="border border-gray-300 px-4 py-2">
-              Jumlah Sertifikat
-            </th>
-            <th className="border border-gray-300 px-4 py-2">Jenis Tanah</th>
-            <th className="border border-gray-300 px-4 py-2">
-              Lokasi Geografis
-            </th>
-            <th className="border border-gray-300 px-4 py-2">
-              Kepemilikan Lahan
-            </th>
-
-            <th className="border border-gray-300 px-4 py-2">
-              Metode Pengukuran
-            </th>
-            {showUploaderColumn && (
-              <th className="border border-gray-300 px-4 py-2">
-                Akun Pengunggah
-              </th>
-            )}
-
-            {/* Kolom status pengajuan untuk user */}
-            {showStatusColumn && (
-              <th className="border border-gray-300 px-4 py-2">
-                Status Pengajuan
-              </th>
-            )}
-
-            {/* Kolom data blockchain */}
-            {showBlockchainColumn && (
-              <th className="border border-gray-300 px-4 py-2">
-                Data Blockchain
-              </th>
-            )}
-
-            {/* Kolom penerimaan untuk validator/superadmin */}
-            {showApprovalColumn && (
-              <th className="border border-gray-300 px-4 py-2">Penerimaan</th>
-            )}
-
-            <th className="border border-gray-300 px-4 py-2">Download</th>
-
-            {showActionColumn && (
-              <th className="border border-gray-300 px-4 py-2">Aksi</th>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredCases.map((item, index) => (
-            <tr key={item._id}>
-              <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                {item.luasTanah}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {item.jenisPohon}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {item.lembagaSertifikasi}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {item.jumlahKarbon}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {item.jumlahSertifikat || item.jumlahKarbon} Sertifikat
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {item.metodePengukuran}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {item.jenisTanah}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {item.lokasiGeografis}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {item.kepemilikanLahan}
-              </td>
-
-              {showUploaderColumn && (
-                <td className="border border-gray-300 px-4 py-2">
-                  {item.penggugah
-                    ? `${item.penggugah.firstName} ${item.penggugah.lastName}`
-                    : "Tidak Diketahui"}
-                </td>
-              )}
-
-              {/* Status pengajuan untuk user */}
-              {showStatusColumn && (
-                <td className="border border-gray-300 px-4 py-2">
-                  {!item.statusPengajuan ||
-                  item.statusPengajuan === "Diajukan" ? (
-                    <span className="inline-block px-3 py-1 rounded bg-yellow-500 text-white">
-                      Diajukan
-                    </span>
-                  ) : item.statusPengajuan === "Diterima" ? (
-                    <span className="inline-block px-3 py-1 rounded bg-green-500 text-white">
-                      Diterima
-                    </span>
-                  ) : (
-                    <span className="inline-block px-3 py-1 rounded bg-red-500 text-white">
-                      Ditolak
-                    </span>
-                  )}
-                </td>
-              )}
-
-              {/* Data blockchain */}
-              {showBlockchainColumn && (
-                <td className="border border-gray-300 px-4 py-2 text-sm">
-                  {item.blockchainData &&
-                  item.blockchainData.transactionHash ? (
-                    <div className="flex flex-col space-y-1">
-                      <div>
-                        <span className="font-semibold">TX:</span>{" "}
-                        <a
-                          href={`${process.env.REACT_APP_BESU_EXPLORER_URL}/tx/${item.blockchainData.transactionHash}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline truncate block max-w-[120px]"
-                        >
-                          {item.blockchainData.transactionHash.substring(0, 10)}
-                          ...
-                        </a>
-                      </div>
-
-                      {/* Token count - versi baru */}
-                      {item.blockchainData.tokens && (
-                        <div>
-                          <span className="font-semibold">Tokens:</span>{" "}
-                          <span className="text-gray-600">
-                            {item.blockchainData.tokens.length} tokens
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Token count - versi lama (kompatibilitas) */}
-                      {!item.blockchainData.tokens &&
-                        item.blockchainData.tokenIds && (
-                          <div>
-                            <span className="font-semibold">Tokens:</span>{" "}
-                            <span className="text-gray-600">
-                              {item.blockchainData.tokenIds.length} tokens
-                            </span>
-                          </div>
-                        )}
-
-                      {/* Contoh hash token - versi baru */}
-                      {item.blockchainData.tokens &&
-                        item.blockchainData.tokens.length > 0 && (
-                          <div>
-                            <span className="font-semibold">Sample Hash:</span>{" "}
-                            <span
-                              className="text-green-600 font-mono text-xs"
-                              title={item.blockchainData.tokens[0].uniqueHash}
-                            >
-                              {item.blockchainData.tokens[0].uniqueHash.substring(
-                                0,
-                                8
-                              )}
-                              ...
-                            </span>
-                          </div>
-                        )}
-
-                      <div>
-                        <span className="font-semibold">Block:</span>{" "}
-                        <span className="text-gray-600">
-                          {item.blockchainData.blockNumber}
-                        </span>
+      
+      {filteredCases.length === 0 ? (
+        <div className="text-center py-4 text-gray-500">
+          Tidak ada proyek yang tersedia.
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {filteredCases.map((item) => (
+            <div key={item._id} className="border border-gray-200 rounded-lg overflow-hidden">
+              {/* Header proyek */}
+              <div className="bg-gray-50 p-4 flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-bold">{item.namaProyek}</h3>
+                  <p className="text-sm text-gray-600">
+                    {showUploaderColumn && item.penggugah ? 
+                      `Diajukan oleh: ${item.penggugah.firstName} ${item.penggugah.lastName}` : 
+                      ""}
+                  </p>
+                </div>
+                
+                <div className="flex space-x-2">
+                  {/* Tombol download */}
+                  {item.files && item.files.length > 0 && (
+                    <div className="dropdown">
+                      <button className="bg-blue-500 text-white px-3 py-1 rounded">
+                        Download
+                      </button>
+                      <div className="dropdown-content">
+                        {item.files.map((file, fileIndex) => (
+                          <a
+                            key={fileIndex}
+                            href={`${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${item._id}/files/${fileIndex}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block px-4 py-2 text-sm hover:bg-gray-100"
+                          >
+                            {file.fileName}
+                          </a>
+                        ))}
                       </div>
                     </div>
-                  ) : (
-                    <span className="text-gray-400">
-                      Belum tersimpan di blockchain
-                    </span>
                   )}
-                </td>
-              )}
-
-              {/* Tombol penerimaan untuk validator/superadmin */}
-              {showApprovalColumn && (
-                <td className="border border-gray-300 px-4 py-2">
-                  <div className="flex space-x-2">
+                  
+                  {/* Tombol edit & hapus */}
+                  {showActionColumn && userRole === "seller" && (
+                    <>
+                      <button
+                        onClick={() => onEdit(item)}
+                        className="bg-yellow-500 text-white px-3 py-1 rounded"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item._id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded"
+                      >
+                        Hapus
+                      </button>
+                    </>
+                  )}
+                  
+                  {/* Tombol approve all untuk validator */}
+                  {showApprovalColumn && (
                     <button
-                      onClick={() => handleStatusUpdate(item._id, "Diterima")}
+                      onClick={() => handleApproveAllProposals(item._id)}
                       className={`${
                         loading[item._id]
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-green-500 hover:bg-green-600"
-                      } text-white px-3 py-1 rounded flex items-center justify-center min-w-[80px]`}
-                      disabled={
-                        loading[item._id] || processingIds.has(item._id)
-                      }
+                      } text-white px-3 py-1 rounded flex items-center`}
+                      disabled={loading[item._id]}
                     >
                       {loading[item._id] ? (
                         <>
                           <svg
-                            className="animate-spin h-4 w-4 mr-1"
+                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
                             viewBox="0 0 24 24"
                           >
                             <circle
@@ -349,66 +327,169 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                           <span>Memproses...</span>
                         </>
                       ) : (
-                        "Terima"
+                        "Terima Semua"
                       )}
                     </button>
-                    <button
-                      onClick={() => handleStatusUpdate(item._id, "Ditolak")}
-                      className={`${
-                        loading[item._id]
-                          ? "bg-gray-400"
-                          : "bg-red-500 hover:bg-red-600"
-                      } text-white px-3 py-1 rounded`}
-                      disabled={loading[item._id]}
-                    >
-                      Tolak
-                    </button>
+                  )}
+                </div>
+              </div>
+              
+              {/* Detail proyek */}
+              <div className="p-4 bg-white">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <span className="block text-sm text-gray-500">Luas Tanah</span>
+                    <span className="font-medium">{item.luasTanah} Ha</span>
                   </div>
-                </td>
-              )}
-
-              <td className="border border-gray-300 px-4 py-2">
-                {item.files.length > 0 ? (
-                  <ul>
-                    {item.files.map((file, index) => (
-                      <li key={index}>
+                  
+                  <div>
+                    <span className="block text-sm text-gray-500">Sarana Penyerap</span>
+                    <span className="font-medium">{item.saranaPenyerapEmisi}</span>
+                  </div>
+                  
+                  <div>
+                    <span className="block text-sm text-gray-500">Kepemilikan Lahan</span>
+                    <span className="font-medium">{item.kepemilikanLahan}</span>
+                  </div>
+                  
+                  <div>
+                    <span className="block text-sm text-gray-500">Lembaga Sertifikasi</span>
+                    <span className="font-medium">{item.lembagaSertifikasi}</span>
+                  </div>
+                </div>
+                
+                {/* Blockchain data jika ada */}
+                {item.blockchainData && item.blockchainData.transactionHash && (
+                  <div className="mb-4 p-3 bg-blue-50 rounded">
+                    <h4 className="font-medium text-blue-700">Data Blockchain</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 text-sm">
+                      <div>
+                        <span className="font-medium">Transaction Hash: </span>
                         <a
-                          href={`${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${item._id}/files/${index}`}
+                          href={`${process.env.REACT_APP_BESU_EXPLORER_URL}/tx/${item.blockchainData.transactionHash}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-500 underline"
+                          className="text-blue-500 hover:underline"
                         >
-                          {file.fileName}
+                          {item.blockchainData.transactionHash.substring(0, 10)}...
                         </a>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  "Tidak ada file"
+                      </div>
+                      
+                      <div>
+                        <span className="font-medium">Block Number: </span>
+                        <span>{item.blockchainData.blockNumber}</span>
+                      </div>
+                      
+                      {item.blockchainData.tokens && (
+                        <div>
+                          <span className="font-medium">Tokens: </span>
+                          <span>{item.blockchainData.tokens.length}</span>
+                        </div>
+                      )}
+                      
+                      <div>
+                        <span className="font-medium">Issued On: </span>
+                        <span>{new Date(item.blockchainData.issuedOn).toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </td>
-
-              {showActionColumn && (
-                <td className="border border-gray-300 px-4 py-2">
-                  <button
-                    className="bg-yellow-500 text-white px-4 py-2 rounded"
-                    onClick={() => onEdit(item)}
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    className="bg-red-500 text-white px-4 py-2 rounded ml-2"
-                    onClick={() => handleDelete(item._id)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              )}
-            </tr>
+                
+                {/* Proposal list */}
+                <div className="mt-4">
+                  <h4 className="font-medium mb-2">Periode Penyerapan Karbon</h4>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Periode
+                          </th>
+                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Jumlah Karbon
+                          </th>
+                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                          </th>
+                          {showApprovalColumn && (
+                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Aksi
+                            </th>
+                          )}
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {item.proposals && item.proposals.map((proposal) => {
+                          const key = `${item._id}-${proposal._id}`;
+                          return (
+                            <tr key={proposal._id}>
+                              <td className="px-4 py-2 whitespace-nowrap">
+                                {formatDate(proposal.tanggalMulai)} - {formatDate(proposal.tanggalSelesai)}
+                              </td>
+                              <td className="px-4 py-2 whitespace-nowrap">
+                                {proposal.jumlahKarbon} Ton
+                              </td>
+                              <td className="px-4 py-2 whitespace-nowrap">
+                                {proposal.statusProposal === "Diajukan" ? (
+                                  <span className="inline-block px-2 py-1 text-xs font-medium rounded bg-yellow-100 text-yellow-800">
+                                    Diajukan
+                                  </span>
+                                ) : proposal.statusProposal === "Diterima" ? (
+                                  <span className="inline-block px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-800">
+                                    Diterima
+                                  </span>
+                                ) : (
+                                  <span className="inline-block px-2 py-1 text-xs font-medium rounded bg-red-100 text-red-800">
+                                    Ditolak
+                                  </span>
+                                )}
+                              </td>
+                              {showApprovalColumn && (
+                                <td className="px-4 py-2 whitespace-nowrap">
+                                  <div className="flex space-x-2">
+                                    <button
+                                      onClick={() => handleProposalStatusUpdate(item._id, proposal._id, "Diterima")}
+                                      className={`${
+                                        loading[key]
+                                          ? "bg-gray-400 cursor-not-allowed"
+                                          : "bg-green-500 hover:bg-green-600"
+                                      } text-white text-xs px-2 py-1 rounded`}
+                                      disabled={loading[key] || proposal.statusProposal === "Diterima"}
+                                    >
+                                      {loading[key] ? "..." : "Terima"}
+                                    </button>
+                                    <button
+                                      onClick={() => handleProposalStatusUpdate(item._id, proposal._id, "Ditolak")}
+                                      className={`${
+                                        loading[key]
+                                          ? "bg-gray-400 cursor-not-allowed"
+                                          : "bg-red-500 hover:bg-red-600"
+                                      } text-white text-xs px-2 py-1 rounded`}
+                                      disabled={loading[key] || proposal.statusProposal === "Ditolak"}
+                                    >
+                                      {loading[key] ? "..." : "Tolak"}
+                                    </button>
+                                  </div>
+                                </td>
+                              )}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  <div className="mt-2 text-right">
+                    <span className="font-medium">Total Karbon: </span>
+                    <span>{item.jumlahKarbon} Ton</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      )}
     </div>
   );
 };

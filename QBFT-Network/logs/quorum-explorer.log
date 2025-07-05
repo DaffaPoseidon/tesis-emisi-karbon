@@ -1154,3 +1154,4639 @@ Run `npm audit` for details.
 [next-auth][warn][NO_SECRET] 
 https://next-auth.js.org/warnings#no_secret
 [chakra-ui]: createBreakpoints(...) will be deprecated pretty soonsimply pass the breakpoints as an object. Remove the createBreakpoints(..) call
+ ✓ Compiled /api/auth/[...nextauth] in 123ms (113 modules)
+ ✓ Compiled (122 modules)
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+ ✓ Compiled /explorer in 373ms (1408 modules)
+[chakra-ui]: createBreakpoints(...) will be deprecated pretty soonsimply pass the breakpoints as an object. Remove the createBreakpoints(..) call
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}
+[next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error undefined {
+  error: {},
+  url: 'http://localhost:25000/api/auth/session',
+  message: undefined
+}

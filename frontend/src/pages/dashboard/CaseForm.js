@@ -192,13 +192,31 @@ const CaseForm = ({
       const updatedProposals = [...proposals];
 
       if (datePickerType === "start") {
+        // Jika memilih tanggal mulai
         updatedProposals[selectedProposalIndex].tanggalMulai = date;
 
         // Jika tanggal mulai lebih besar dari tanggal selesai, update tanggal selesai
         if (date > updatedProposals[selectedProposalIndex].tanggalSelesai) {
           updatedProposals[selectedProposalIndex].tanggalSelesai = date;
+          // Beri notifikasi kepada user
+          alert(
+            "Tanggal Selesai telah diubah otomatis karena Tanggal Mulai lebih besar"
+          );
         }
       } else {
+        // Jika memilih tanggal selesai
+        const tanggalMulai =
+          updatedProposals[selectedProposalIndex].tanggalMulai;
+
+        // Pastikan tanggal selesai tidak sebelum tanggal mulai
+        if (date < tanggalMulai) {
+          alert(
+            "Tanggal Selesai tidak boleh sebelum atau sama dengan Tanggal Mulai"
+          );
+          // Tetap gunakan tanggal selesai lama
+          return;
+        }
+
         updatedProposals[selectedProposalIndex].tanggalSelesai = date;
       }
 
@@ -220,6 +238,23 @@ const CaseForm = ({
     if (proposals.length === 0) {
       alert("Harap tambahkan minimal satu data periode penyerapan karbon");
       return;
+    }
+
+    // Validasi tanggal untuk semua proposal
+    for (let i = 0; i < proposals.length; i++) {
+      const proposal = proposals[i];
+      const tanggalMulai = new Date(proposal.tanggalMulai);
+      const tanggalSelesai = new Date(proposal.tanggalSelesai);
+
+      if (tanggalMulai >= tanggalSelesai) {
+        alert(`Periode #${i + 1}: Tanggal Selesai harus setelah Tanggal Mulai`);
+        return;
+      }
+
+      if (proposal.jumlahKarbon <= 0) {
+        alert(`Periode #${i + 1}: Jumlah Karbon harus lebih dari 0`);
+        return;
+      }
     }
 
     // Hitung total karbon
@@ -343,6 +378,21 @@ const CaseForm = ({
                   ? proposals[selectedProposalIndex].tanggalMulai
                   : undefined
               }
+              // Tambahkan property ini untuk menampilkan dropdown selectors
+              captionLayout="dropdown"
+              // Tambahkan range tahun yang lebih luas (dari 10 tahun lalu hingga 20 tahun ke depan)
+              fromYear={new Date().getFullYear() - 10}
+              toYear={new Date().getFullYear() + 20}
+              // Styling tambahan untuk dropdown
+              classNames={{
+                caption_dropdowns: "flex justify-center space-x-1",
+                caption_label: "hidden", // Sembunyikan label default
+                dropdown:
+                  "p-1 border border-gray-300 rounded bg-white cursor-pointer text-gray-700",
+                dropdown_month: "mr-1",
+                dropdown_year: "ml-1",
+                vhidden: "hidden", // Sembunyikan elemen yang tidak perlu
+              }}
               className="mx-auto"
             />
             <div className="flex justify-end mt-4">
@@ -594,7 +644,8 @@ const CaseForm = ({
 
                     <div>
                       <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Jumlah Karbon (Ton)
+                        Jumlah Karbon (Ton){" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="number"
@@ -606,11 +657,22 @@ const CaseForm = ({
                             Number(e.target.value)
                           )
                         }
-                        className="border border-gray-300 rounded p-2 w-full"
-                        min="0"
-                        step="0.01"
+                        className={`border ${
+                          !proposal.jumlahKarbon || proposal.jumlahKarbon <= 0
+                            ? "border-red-500 bg-red-50"
+                            : "border-gray-300"
+                        } rounded p-2 w-full`}
+                        min="1"
+                        step="1"
                         required
+                        placeholder="Masukkan jumlah karbon"
                       />
+                      {(!proposal.jumlahKarbon ||
+                        proposal.jumlahKarbon <= 0) && (
+                        <p className="text-red-500 text-xs mt-1">
+                          Jumlah karbon wajib diisi dan harus lebih dari 0
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { format } from "date-fns";
+import * as XLSX from "xlsx";
 
 const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
   const [loading, setLoading] = useState({});
@@ -22,6 +23,90 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
             !caseItem.statusPengajuan || caseItem.statusPengajuan === "Diajukan"
         )
       : cases;
+
+  const handleDownloadImage = (caseItem, e) => {
+    e.stopPropagation(); // Mencegah toggle expand
+
+    // Jika tidak ada file, tampilkan pesan
+    if (!caseItem.files || caseItem.files.length === 0) {
+      alert("Tidak ada gambar yang tersedia untuk diunduh");
+      return;
+    }
+
+    // Buka link download untuk file pertama (gambar)
+    window.open(
+      `${process.env.REACT_APP_API_BASE_URL}/cases/${caseItem._id}/files/0`,
+      "_blank"
+    );
+  };
+
+  const handleDownloadCaseExcel = (caseItem, e) => {
+    e.stopPropagation(); // Mencegah toggle expand
+
+    // Format tanggal untuk Excel
+    const formatExcelDate = (dateStr) => {
+      if (!dateStr) return "N/A";
+      return new Date(dateStr).toLocaleDateString("id-ID");
+    };
+
+    // Data proyek untuk Excel
+    const caseData = {
+      "Nama Proyek": caseItem.namaProyek,
+      "Luas Tanah (Ha)": caseItem.luasTanah,
+      "Sarana Penyerap Emisi": caseItem.saranaPenyerapEmisi,
+      "Lembaga Sertifikasi": caseItem.lembagaSertifikasi,
+      "Kepemilikan Lahan": caseItem.kepemilikanLahan,
+      "Total Karbon (Ton)": caseItem.jumlahKarbon,
+      "Status Pengajuan": caseItem.statusPengajuan,
+      Penggugah: caseItem.penggugah
+        ? `${caseItem.penggugah.firstName} ${caseItem.penggugah.lastName}`
+        : "N/A",
+    };
+
+    // Data blockchain jika ada
+    if (caseItem.blockchainData && caseItem.blockchainData.transactionHash) {
+      caseData["Transaction Hash"] = caseItem.blockchainData.transactionHash;
+      caseData["Block Number"] = caseItem.blockchainData.blockNumber;
+      caseData["Issued On"] = formatExcelDate(caseItem.blockchainData.issuedOn);
+    }
+
+    // Sheet utama untuk informasi proyek
+    const ws = XLSX.utils.json_to_sheet([caseData]);
+
+    // Worksheet untuk data periode penyerapan karbon
+    const proposalsData =
+      caseItem.proposals && caseItem.proposals.length > 0
+        ? caseItem.proposals.map((proposal, index) => ({
+            "No.": index + 1,
+            "Tanggal Mulai": formatExcelDate(proposal.tanggalMulai),
+            "Tanggal Selesai": formatExcelDate(proposal.tanggalSelesai),
+            "Jumlah Karbon (Ton)": proposal.jumlahKarbon,
+            Status: proposal.statusProposal,
+          }))
+        : [
+            {
+              "No.": 1,
+              Keterangan: "Tidak ada data periode penyerapan karbon",
+            },
+          ];
+
+    const proposalsWs = XLSX.utils.json_to_sheet(proposalsData);
+
+    // Buat workbook dan tambahkan worksheets
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Informasi Proyek");
+    XLSX.utils.book_append_sheet(wb, proposalsWs, "Periode Penyerapan");
+
+    // Simpan file
+    const fileName = `Proyek_${caseItem.namaProyek.replace(/\s+/g, "_")}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+  };
+
+  // Fungsi untuk mendownload file dokumen
+  const handleShowFileMenu = (e) => {
+    e.stopPropagation(); // Mencegah toggle expand
+    // Tidak perlu lakukan apa-apa karena dropdown muncul dengan hover
+  };
 
   const handleDelete = async (id) => {
     if (!onDelete) return;
@@ -253,7 +338,6 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
               key={item._id}
               className="border border-gray-200 rounded-lg overflow-hidden"
             >
-              {/* Header proyek - informasi nama proyek dan penggugah */}
               <div
                 className="bg-blue-50 p-4 flex justify-between items-center cursor-pointer"
                 onClick={() => toggleExpand(item._id)}
@@ -313,18 +397,31 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
 
                   {/* Action buttons */}
                   <div className="flex space-x-2">
-                    {/* Tombol download */}
+                    {/* Tombol download Excel */}
+                    <button
+                      onClick={(e) => handleDownloadCaseExcel(item, e)}
+                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                    >
+                      Download Excel
+                    </button>
+
+                    {/* Tombol download Files */}
                     {item.files && item.files.length > 0 && (
                       <div className="relative group">
-                        <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-                          Download
-                        </button>
+                        {item.files && item.files.length > 0 && (
+                          <button
+                            onClick={(e) => handleDownloadImage(item, e)}
+                            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                          >
+                            Download Gambar
+                          </button>
+                        )}
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-10">
                           <div className="py-1">
                             {item.files.map((file, fileIndex) => (
                               <a
                                 key={fileIndex}
-                                href={`${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${item._id}/files/${fileIndex}`}
+                                href={`${process.env.REACT_APP_API_BASE_URL}/cases/${item._id}/files/${fileIndex}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -343,18 +440,42 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            // Cek jika proyek sudah disetujui, jangan izinkan edit
+                            if (item.statusPengajuan === "Diterima") {
+                              alert(
+                                "Proyek yang sudah disetujui tidak dapat diedit"
+                              );
+                              return;
+                            }
                             onEdit(item);
                           }}
-                          className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                          className={`${
+                            item.statusPengajuan === "Diterima"
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-yellow-500 hover:bg-yellow-600"
+                          } text-white px-3 py-1 rounded`}
+                          disabled={item.statusPengajuan === "Diterima"}
                         >
                           Edit
                         </button>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            // Cek jika proyek sudah disetujui, jangan izinkan hapus
+                            if (item.statusPengajuan === "Diterima") {
+                              alert(
+                                "Proyek yang sudah disetujui tidak dapat dihapus"
+                              );
+                              return;
+                            }
                             handleDelete(item._id);
                           }}
-                          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                          className={`${
+                            item.statusPengajuan === "Diterima"
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-red-500 hover:bg-red-600"
+                          } text-white px-3 py-1 rounded`}
+                          disabled={item.statusPengajuan === "Diterima"}
                         >
                           Hapus
                         </button>

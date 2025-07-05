@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import CaseForm from "./CaseForm";
 import CaseTable from "./CaseTable";
 import { useNavigate } from "react-router-dom";
-import * as XLSX from "xlsx";
+import * as XLSX from 'xlsx';
 
 const Dashboard = () => {
   const [cases, setCases] = useState([]);
@@ -87,22 +87,106 @@ const Dashboard = () => {
       : cases;
 
   const handleDownloadExcel = () => {
-    const modifiedCases = cases.map((caseItem, index) => ({
-      Nomor: index + 1,
-      "Luas Tanah (Ha)": caseItem.luasTanah,
-      "Jenis Pohon": caseItem.jenisPohon,
-      "Lembaga Sertifikasi": caseItem.lembagaSertifikasi,
-      "Jumlah Karbon (Ton)": caseItem.jumlahKarbon,
-      "Metode Pengukuran": caseItem.metodePengukuran,
-      "Jenis Tanah": caseItem.jenisTanah,
-      "Lokasi Geografis": caseItem.lokasiGeografis,
-      "Kepemilikan Lahan": caseItem.kepemilikanLahan,
-    }));
+    // Modifikasi data untuk format Excel
+    const excelData = cases.map((caseItem, index) => {
+      // Format tanggal untuk Excel
+      const formatExcelDate = (dateStr) => {
+        if (!dateStr) return "N/A";
+        return new Date(dateStr).toLocaleDateString("id-ID");
+      };
 
-    const ws = XLSX.utils.json_to_sheet(modifiedCases);
+      // Hitung total karbon dari proposal yang diterima
+      const approvedTotalCarbon = caseItem.proposals
+        ? caseItem.proposals
+            .filter((p) => p.statusProposal === "Diterima")
+            .reduce((sum, p) => sum + Number(p.jumlahKarbon), 0)
+        : 0;
+
+      return {
+        "No.": index + 1,
+        "ID Proyek": caseItem._id,
+        "Nama Proyek": caseItem.namaProyek,
+        "Luas Tanah (Ha)": caseItem.luasTanah,
+        "Sarana Penyerap Emisi": caseItem.saranaPenyerapEmisi,
+        "Lembaga Sertifikasi": caseItem.lembagaSertifikasi,
+        "Kepemilikan Lahan": caseItem.kepemilikanLahan,
+        "Status Pengajuan": caseItem.statusPengajuan,
+        "Total Karbon (Ton)": caseItem.jumlahKarbon,
+        "Karbon Disetujui (Ton)": approvedTotalCarbon,
+        "Jumlah Sertifikat": caseItem.jumlahSertifikat || 0,
+        "Jumlah Periode": caseItem.proposals ? caseItem.proposals.length : 0,
+        "Periode Disetujui": caseItem.proposals
+          ? caseItem.proposals.filter((p) => p.statusProposal === "Diterima")
+              .length
+          : 0,
+        "Periode Ditolak": caseItem.proposals
+          ? caseItem.proposals.filter((p) => p.statusProposal === "Ditolak")
+              .length
+          : 0,
+        Penggugah: caseItem.penggugah
+          ? `${caseItem.penggugah.firstName} ${caseItem.penggugah.lastName}`
+          : "N/A",
+        "Email Penggugah": caseItem.penggugah
+          ? caseItem.penggugah.email
+          : "N/A",
+        "Tanggal Pengajuan": formatExcelDate(caseItem.createdAt),
+        "Tanggal Update": formatExcelDate(caseItem.updatedAt),
+      };
+    });
+
+    // Tambahkan data blockchain jika ada
+    excelData.forEach((row) => {
+      const caseItem = cases.find((c) => c._id === row["ID Proyek"]);
+      if (caseItem.blockchainData && caseItem.blockchainData.transactionHash) {
+        row["Transaction Hash"] = caseItem.blockchainData.transactionHash;
+        row["Block Number"] = caseItem.blockchainData.blockNumber;
+        row["Tanggal Penerbitan"] = caseItem.blockchainData.issuedOn
+          ? new Date(caseItem.blockchainData.issuedOn).toLocaleDateString(
+              "id-ID"
+            )
+          : "N/A";
+      }
+    });
+
+    // Buat workbook dan worksheet
+    const ws = XLSX.utils.json_to_sheet(excelData);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Data Pengajuan");
-    XLSX.writeFile(wb, "data_pengajuan.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Data Proyek Karbon");
+
+    // Tambahkan worksheet khusus untuk periode
+    const allPeriods = [];
+    cases.forEach((caseItem) => {
+      if (caseItem.proposals && caseItem.proposals.length > 0) {
+        caseItem.proposals.forEach((proposal) => {
+          allPeriods.push({
+            "ID Proyek": caseItem._id,
+            "Nama Proyek": caseItem.namaProyek,
+            "Tanggal Mulai": new Date(proposal.tanggalMulai).toLocaleDateString(
+              "id-ID"
+            ),
+            "Tanggal Selesai": new Date(
+              proposal.tanggalSelesai
+            ).toLocaleDateString("id-ID"),
+            "Jumlah Karbon (Ton)": proposal.jumlahKarbon,
+            Status: proposal.statusProposal,
+            Penggugah: caseItem.penggugah
+              ? `${caseItem.penggugah.firstName} ${caseItem.penggugah.lastName}`
+              : "N/A",
+          });
+        });
+      }
+    });
+
+    if (allPeriods.length > 0) {
+      const periodsWs = XLSX.utils.json_to_sheet(allPeriods);
+      XLSX.utils.book_append_sheet(wb, periodsWs, "Periode Penyerapan");
+    }
+
+    // Simpan file
+    const fileName = `Data_Proyek_Karbon_${new Date()
+      .toISOString()
+      .slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
   };
 
   // Fungsi delete kasus
@@ -146,18 +230,25 @@ const Dashboard = () => {
     const formDataToSend = new FormData();
 
     // Validasi file saat update
-    if (!localFormData.file) {
+    if (!localFormData.file && !formData.files?.length) {
       setShowModal(true); // Tampilkan modal jika file tidak diunggah
       return; // Hentikan proses update
     }
 
-    // Lanjutkan proses update jika file ada
+    // Tambahkan data utama
     Object.keys(localFormData).forEach((key) => {
       if (key === "file" && localFormData.file) {
         Array.from(localFormData.file).forEach((file) => {
           formDataToSend.append("files", file);
         });
-      } else {
+      } else if (key === "proposals") {
+        // Kirim proposals sebagai JSON string
+        formDataToSend.append(
+          "proposals",
+          JSON.stringify(localFormData.proposals)
+        );
+      } else if (key !== "files") {
+        // Skip files array
         formDataToSend.append(key, localFormData[key]);
       }
     });
@@ -175,15 +266,18 @@ const Dashboard = () => {
       );
 
       if (response.ok) {
+        alert("Data berhasil diperbarui");
         await fetchCases();
         setEditMode(false);
         setFormData(initialFormState); // Reset form
-        fileInputRef.current.value = ""; // Reset input file
+        if (fileInputRef.current) fileInputRef.current.value = ""; // Reset input file
       } else {
         const errorResult = await response.json();
+        alert(`Gagal memperbarui data: ${errorResult.message}`);
         console.error("Gagal memperbarui data:", errorResult.message);
       }
     } catch (error) {
+      alert(`Error: ${error.message}`);
       console.error("Error:", error.message);
     }
   };

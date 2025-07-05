@@ -1,48 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 
 const Marketplace = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
-  // Tambahkan user role check
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userRole = user?.role;
-  const canPurchase = userRole === "buyer" || userRole === "superadmin";
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/cases`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-
-        // Filter produk yang sudah diterima
-        const approvedProducts = data.cases.filter(
-          (item) => item.statusPengajuan === "Diterima"
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/cases`
         );
 
-        // Untuk setiap produk, filter proposal yang sudah diterima
-        const productsWithApprovedProposals = approvedProducts.map(
-          (product) => {
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data produk");
+        }
+
+        const data = await response.json();
+
+        // Hanya tampilkan produk yang statusnya diterima dan memiliki proposal yang diterima
+        const availableProducts = data.cases
+          .filter((product) => product.statusPengajuan === "Diterima")
+          .map((product) => {
+            // Filter hanya proposal yang diterima
             const approvedProposals = product.proposals
               ? product.proposals.filter(
                   (proposal) => proposal.statusProposal === "Diterima"
                 )
               : [];
 
-            // Hitung total karbon dari proposal yang diterima
+            // Hitung jumlah karbon dari proposal yang diterima
             const totalKarbon = approvedProposals.reduce(
-              (sum, proposal) => sum + proposal.jumlahKarbon,
+              (sum, proposal) => sum + Number(proposal.jumlahKarbon),
               0
             );
 
@@ -50,153 +43,214 @@ const Marketplace = () => {
               ...product,
               proposals: approvedProposals,
               jumlahKarbon: totalKarbon,
-              hargaPerTon: 100000, // Harga tetap 100.000 per ton
+              hargaPerTon: 100000, // Harga tetap per ton
+              totalHarga: totalKarbon * 100000, // Total harga
             };
-          }
-        );
+          })
+          .filter((product) => product.jumlahKarbon > 0); // Hanya produk dengan karbon > 0
 
-        // Filter produk yang memiliki setidaknya satu proposal yang diterima
-        const validProducts = productsWithApprovedProposals.filter(
-          (product) => product.proposals.length > 0 && product.jumlahKarbon > 0
-        );
-
-        setProducts(validProducts);
+        setProducts(availableProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Filter products berdasarkan search term
+  const filteredProducts = products.filter(
+    (product) =>
+      product.namaProyek.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.saranaPenyerapEmisi
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+  );
+
+  // Format tanggal
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
-  const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`);
-  };
+  if (loading) {
+    return (
+      <div>
+        <Header />
+        <div className="container mx-auto p-4 flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <Header />
       <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Marketplace Emisi Karbon</h1>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-center mb-4">
+            Carbon Marketplace
+          </h1>
+          <p className="text-center text-gray-600 max-w-3xl mx-auto">
+            Belilah kredit karbon untuk mengimbangi emisi Anda dan mendukung
+            proyek-proyek yang membantu melestarikan lingkungan.
+          </p>
+        </div>
 
-        {loading ? (
-          <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <p className="font-bold">Error!</p>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Cari proyek berdasarkan nama atau jenis penyerap..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+          />
+        </div>
+
+        {filteredProducts.length === 0 ? (
+          <div className="text-center py-10">
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <h3 className="mt-2 text-lg font-medium text-gray-900">
+              Tidak ada produk yang tersedia
+            </h3>
+            <p className="mt-1 text-gray-500">
+              Tidak ada proyek karbon yang sesuai dengan pencarian Anda.
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.length > 0 ? (
-              products.map((product) => (
-                <div
-                  key={product._id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300"
-                >
-                  <div className="relative h-48 bg-gray-200">
-                    {product.files && product.files.length > 0 ? (
-                      <img
-                        src={`${
-                          process.env.REACT_APP_BACKEND_BASEURL
-                        }/api/cases/${product._id}/files/0?t=${Date.now()}`}
-                        alt={product.kepemilikanLahan}
-                        className="w-full h-48 object-cover"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src =
-                            "https://via.placeholder.com/300x200?text=No+Image";
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-48 flex items-center justify-center">
-                        <span className="text-gray-500">Tidak ada gambar</span>
-                      </div>
-                    )}
-                    <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map((product) => (
+              <Link
+                key={product._id}
+                to={`/product/${product._id}`}
+                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+              >
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <h2 className="text-xl font-bold text-gray-800">
+                      {product.namaProyek}
+                    </h2>
+                    <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
                       Terverifikasi
+                    </span>
+                  </div>
+
+                  <div className="space-y-2 mb-4">
+                    <p>
+                      <span className="font-medium">Sarana Penyerap:</span>{" "}
+                      {product.saranaPenyerapEmisi}
+                    </p>
+                    <p>
+                      <span className="font-medium">Luas Tanah:</span>{" "}
+                      {product.luasTanah} Ha
+                    </p>
+                    <p>
+                      <span className="font-medium">Lembaga Sertifikasi:</span>{" "}
+                      {product.lembagaSertifikasi}
+                    </p>
+                  </div>
+
+                  <div className="mb-4">
+                    <h3 className="font-medium mb-2">Periode Penyerapan:</h3>
+                    <div className="space-y-2">
+                      {product.proposals.slice(0, 2).map((proposal, index) => (
+                        <div
+                          key={index}
+                          className="text-sm bg-gray-50 p-2 rounded"
+                        >
+                          <div className="flex justify-between">
+                            <span>
+                              {formatDate(proposal.tanggalMulai)} -{" "}
+                              {formatDate(proposal.tanggalSelesai)}
+                            </span>
+                            <span className="font-medium">
+                              {proposal.jumlahKarbon} Ton
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                      {product.proposals.length > 2 && (
+                        <div className="text-sm text-center text-gray-500">
+                          + {product.proposals.length - 2} periode lainnya
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate">
-                      {product.namaProyek}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-medium">Jenis Penyerap:</span>{" "}
-                      {product.saranaPenyerapEmisi}
-                    </p>
-
-                    {/* Informasi penjual */}
-                    <p className="text-sm text-gray-600 mb-2">
-                      <span className="font-medium">Penjual:</span>{" "}
-                      {product.penggugah
-                        ? `${product.penggugah.firstName} ${product.penggugah.lastName}`
-                        : "Informasi penjual tidak tersedia"}
-                    </p>
-
-                    <div className="flex justify-between mb-3">
-                      <div>
-                        <span className="text-sm text-gray-500">
-                          Luas Tanah
-                        </span>
-                        <p className="font-medium">{product.luasTanah} Ha</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-gray-500">
-                          Jumlah Karbon
-                        </span>
-                        <p className="font-medium">
-                          {product.jumlahKarbon} Ton
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Menampilkan jumlah proposal yang disetujui */}
-                    <div className="mb-3">
-                      <span className="text-sm text-gray-500">
-                        Jumlah Periode Tervalidasi
-                      </span>
-                      <p className="font-medium">
-                        {product.proposals.length} Periode
+                  <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
+                    <div>
+                      <p className="text-gray-500">Total Karbon</p>
+                      <p className="text-xl font-bold text-gray-800">
+                        {product.jumlahKarbon} Ton
                       </p>
                     </div>
-
-                    <div className="flex justify-between items-end">
-                      <div>
-                        <span className="text-sm text-gray-500">
-                          Total Harga
-                        </span>
-                        <p className="text-lg font-bold text-green-600">
-                          Rp{" "}
-                          {(
-                            product.hargaPerTon * product.jumlahKarbon
-                          ).toLocaleString()}
-                        </p>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => handleProductClick(product._id)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm transition"
-                        >
-                          Lihat Detail
-                        </button>
-                        {canPurchase && (
-                          <button
-                            onClick={() => navigate(`/buy/${product._id}`)}
-                            className="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm transition"
-                          >
-                            Beli
-                          </button>
-                        )}
-                      </div>
+                    <div className="text-right">
+                      <p className="text-gray-500">Harga per Ton</p>
+                      <p className="text-xl font-bold text-green-600">
+                        Rp {product.hargaPerTon.toLocaleString("id-ID")}
+                      </p>
                     </div>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-10 text-gray-500">
-                Tidak ada produk karbon yang tersedia saat ini. Silakan tunggu
-                validator menyetujui pengajuan.
-              </div>
-            )}
+
+                <div className="bg-gray-50 px-6 py-4">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <div className="text-sm">
+                        <p className="text-gray-500">Penjual</p>
+                        <p className="font-medium text-gray-800">
+                          {product.penggugah
+                            ? `${product.penggugah.firstName} ${product.penggugah.lastName}`
+                            : "Unknown"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center text-green-600">
+                      <span className="mr-1">Lihat Detail</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         )}
       </div>

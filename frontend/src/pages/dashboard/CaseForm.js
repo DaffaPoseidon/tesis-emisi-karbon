@@ -54,7 +54,25 @@ const CaseForm = ({
   useEffect(() => {
     if (editMode) {
       setLocalFormData(formData);
-      setProposals(formData.proposals || []);
+
+      // Proses proposals dari server
+      if (formData.proposals && formData.proposals.length > 0) {
+        // Pastikan setiap proposal memiliki format yang benar
+        const processedProposals = formData.proposals.map((proposal) => ({
+          ...proposal,
+          // Pastikan tanggal adalah objek Date
+          tanggalMulai: new Date(proposal.tanggalMulai),
+          tanggalSelesai: new Date(proposal.tanggalSelesai),
+          // Pastikan jumlahKarbon adalah number
+          jumlahKarbon: Number(proposal.jumlahKarbon),
+          // Pastikan ID tersimpan untuk proposals yang sudah ada
+          _id: proposal._id,
+        }));
+
+        setProposals(processedProposals);
+      } else {
+        setProposals([]);
+      }
 
       // Cek jika lembaga sertifikasi adalah custom
       const isCustom = !lembagaOptions.find(
@@ -79,7 +97,7 @@ const CaseForm = ({
         fileInputRef.current.value = "";
       }
     }
-  }, [editMode, formData, initialFormState]);
+  }, [editMode, formData, initialFormState, lembagaOptions]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -131,6 +149,14 @@ const CaseForm = ({
 
   // Fungsi untuk update proposal
   const updateProposal = (index, field, value) => {
+    const proposal = proposals[index];
+
+    // Cek jika proposal sudah disetujui
+    if (proposal._id && proposal.statusProposal === "Diterima") {
+      alert("Proposal yang sudah disetujui tidak dapat diubah");
+      return;
+    }
+
     const updatedProposals = [...proposals];
     updatedProposals[index][field] = value;
     setProposals(updatedProposals);
@@ -138,6 +164,14 @@ const CaseForm = ({
 
   // Fungsi untuk menghapus proposal
   const removeProposal = (index) => {
+    const proposal = proposals[index];
+
+    // Cek jika proposal sudah disetujui
+    if (proposal._id && proposal.statusProposal === "Diterima") {
+      alert("Proposal yang sudah disetujui tidak dapat dihapus");
+      return;
+    }
+
     const updatedProposals = [...proposals];
     updatedProposals.splice(index, 1);
     setProposals(updatedProposals);
@@ -486,12 +520,36 @@ const CaseForm = ({
               {proposals.map((proposal, index) => (
                 <div
                   key={index}
-                  className="bg-gray-50 p-4 rounded border border-gray-200 relative"
+                  className={`bg-gray-50 p-4 rounded border border-gray-200 relative ${
+                    proposal._id && proposal.statusProposal === "Diterima"
+                      ? "bg-green-50"
+                      : proposal._id && proposal.statusProposal === "Ditolak"
+                      ? "bg-red-50"
+                      : "bg-gray-50"
+                  }`}
                 >
+                  {proposal._id && proposal.statusProposal === "Diterima" && (
+                    <div className="absolute top-0 right-0 bg-green-500 text-white text-xs px-2 py-1 rounded-bl">
+                      Disetujui - Tidak dapat diubah
+                    </div>
+                  )}
+                  {proposal._id && proposal.statusProposal === "Ditolak" && (
+                    <div className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-bl">
+                      Ditolak
+                    </div>
+                  )}
+
                   <button
                     type="button"
                     onClick={() => removeProposal(index)}
-                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                    className={`absolute top-2 right-2 text-red-500 hover:text-red-700 ${
+                      proposal._id && proposal.statusProposal === "Diterima"
+                        ? "hidden"
+                        : ""
+                    }`}
+                    disabled={
+                      proposal._id && proposal.statusProposal === "Diterima"
+                    }
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

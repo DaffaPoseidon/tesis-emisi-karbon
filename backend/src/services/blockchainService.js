@@ -13,6 +13,19 @@ let contractABI;
 try {
   const abiFile = fs.readFileSync(contractABIPath, "utf8");
   contractABI = JSON.parse(abiFile).abi;
+
+  // Verifikasi ABI mengandung fungsi issueCertificate
+  const issueCertFunc = contractABI.find(
+    (item) => item.type === "function" && item.name === "issueCertificate"
+  );
+
+  if (!issueCertFunc) {
+    console.error(
+      "PERINGATAN: Fungsi issueCertificate tidak ditemukan dalam ABI!"
+    );
+  } else {
+    console.log("Fungsi issueCertificate ditemukan dalam ABI:", issueCertFunc);
+  }
 } catch (error) {
   console.error(`Error loading ABI file from ${contractABIPath}:`, error);
   process.exit(1);
@@ -60,6 +73,23 @@ provider
     console.log(
       `Successfully connected to blockchain. Current block: ${blockNumber}`
     );
+
+    // Verifikasi kontrak dapat diakses
+    return carbonContract
+      .owner()
+      .then((owner) => {
+        console.log(`Contract owner: ${owner}`);
+        console.log(`Current wallet: ${wallet.address}`);
+
+        if (owner.toLowerCase() !== wallet.address.toLowerCase()) {
+          console.warn(
+            "PERINGATAN: Wallet saat ini bukan owner kontrak, mungkin ada masalah izin"
+          );
+        }
+      })
+      .catch((err) => {
+        console.error("Error accessing contract:", err.message);
+      });
   })
   .catch((err) => {
     console.error(`Failed to connect to blockchain: ${err.message}`);
@@ -73,6 +103,12 @@ provider
  */
 async function issueCarbonCertificate(recipientAddress, carbonCase) {
   try {
+    // Verifikasi kontrak memiliki fungsi yang diharapkan
+    if (typeof carbonContract.issueCertificate !== "function") {
+      console.error("Fungsi issueCertificate tidak ditemukan dalam kontrak");
+      throw new Error("Kontrak tidak memiliki fungsi yang diharapkan");
+    }
+
     // Ensure amount is a valid number
     const amount = parseInt(carbonCase.jumlahKarbon);
     if (isNaN(amount) || amount <= 0) {
@@ -86,17 +122,44 @@ async function issueCarbonCertificate(recipientAddress, carbonCase) {
       `Issuing ${amount} carbon certificates for project ${projectId} to ${recipientAddress}`
     );
 
+    // Log parameter untuk debugging
+    console.log("Parameter fungsi:", {
+      recipientAddress,
+      amount,
+      projectId,
+    });
+
     // Call smart contract to issue certificates and create tokens
+    // Tambahkan gas limit dan pastikan tipe parameter benar
     const tx = await carbonContract.issueCertificate(
       recipientAddress,
       amount,
-      projectId
+      projectId,
+      { gasLimit: 5000000 } // Tambahkan gas limit yang cukup
     );
+
+    // Log detail transaksi untuk debugging
+    console.log("Detail transaksi:", {
+      from: tx.from,
+      to: tx.to,
+      data: tx.data, // Ini TIDAK boleh kosong
+      hash: tx.hash,
+    });
 
     console.log("Transaction submitted with hash:", tx.hash);
 
     // Wait for transaction confirmation
     const receipt = await tx.wait();
+    console.log(
+      "Receipt transaksi:",
+      JSON.stringify({
+        status: receipt.status,
+        blockNumber: receipt.blockNumber,
+        gasUsed: receipt.gasUsed.toString(),
+        logs: receipt.logs.length,
+      })
+    );
+
     console.log("Transaction confirmed in block:", receipt.blockNumber);
 
     // Parse events to get token data with unique hashes
@@ -109,13 +172,29 @@ async function issueCarbonCertificate(recipientAddress, carbonCase) {
         if (log.address.toLowerCase() !== contractAddress.toLowerCase())
           continue;
 
-        // Format log for parsing
-        const logDescription = iface.parseLog({
+        console.log("Processing log from contract address:", log.address);
+        console.log("Log topics:", log.topics);
+        console.log("Log data:", log.data);
+
+        // Format log untuk parsing
+        const parsedLog = {
           topics: [...log.topics],
           data: log.data,
-        });
+        };
+
+        // Coba parse log
+        const logDescription = iface.parseLog(parsedLog);
+        console.log(
+          "Log description:",
+          logDescription ? logDescription.name : "Failed to parse"
+        );
 
         if (logDescription && logDescription.name === "CertificateIssued") {
+          console.log(
+            "Found CertificateIssued event, args:",
+            logDescription.args
+          );
+
           const { args } = logDescription;
 
           events.push({
@@ -133,6 +212,7 @@ async function issueCarbonCertificate(recipientAddress, carbonCase) {
         }
       } catch (e) {
         console.error("Error parsing log:", e);
+        console.error("Log that caused error:", JSON.stringify(log));
         // Continue processing other logs
       }
     }
@@ -163,18 +243,28 @@ async function issueCarbonCertificate(recipientAddress, carbonCase) {
     };
   } catch (error) {
     console.error("Error issuing carbon certificate:", error);
+
+    // Error reporting lebih detail
+    if (error.transaction) {
+      console.error("Transaksi yang gagal:", error.transaction);
+    }
+    if (error.receipt) {
+      console.error("Detail receipt transaksi:", {
+        status: error.receipt.status,
+        gasUsed: error.receipt.gasUsed.toString(),
+        blockNumber: error.receipt.blockNumber,
+      });
+    }
+
     return {
       success: false,
       error: error.message,
+      details: error.reason || "Unknown reason for transaction failure",
     };
   }
 }
 
-/**
- * Get certificate details from blockchain by unique hash
- * @param {string} uniqueHash - Certificate's unique hash
- * @returns {Promise<Object>} Certificate details
- */
+// Rest of the functions remain the same
 async function getCertificateByHash(uniqueHash) {
   try {
     const certificate = await carbonContract.getCertificateByHash(uniqueHash);
@@ -199,11 +289,6 @@ async function getCertificateByHash(uniqueHash) {
   }
 }
 
-/**
- * Verify certificate authenticity on blockchain
- * @param {string} uniqueHash - Hash to verify
- * @returns {Promise<Object>} Verification result
- */
 async function verifyCertificate(uniqueHash) {
   try {
     const isValid = await carbonContract.verifyCertificate(uniqueHash);

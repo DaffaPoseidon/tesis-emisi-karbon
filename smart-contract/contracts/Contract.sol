@@ -27,13 +27,13 @@ contract CarbonCertificate is ERC721Enumerable, Ownable {
     mapping(string => uint256) private _hashToToken;
     
     // Event yang dipancarkan ketika sertifikat diterbitkan
-    event CertificateIssued(
-        uint256 tokenId,
-        address recipient,
-        uint256 carbonAmount,
-        string projectId,
-        string uniqueHash
-    );
+event CertificateIssued(
+    uint256 tokenId,
+    address recipient,
+    uint256 carbonAmount,
+    string projectId,
+    string uniqueHash
+);
     
     constructor() ERC721("Carbon Credit Certificate", "CARBON") {}
     
@@ -52,39 +52,38 @@ contract CarbonCertificate is ERC721Enumerable, Ownable {
         require(bytes(projectId).length > 0, "Project ID cannot be empty");
         
         // Membuat token sejumlah yang ditentukan
-        for (uint256 i = 0; i < amount; i++) {
-            _tokenIdCounter.increment();
-            uint256 tokenId = _tokenIdCounter.current();
-            
-            // Menghasilkan hash unik untuk token ini
-            string memory uniqueHash = generateUniqueHash(tokenId, projectId, i);
-            
-            // Mint token ke penerima
-            _safeMint(recipient, tokenId);
-            
-            // Menyimpan data sertifikat di blockchain
-            Certificate memory newCertificate = Certificate({
-                tokenId: tokenId,
-                carbonAmount: 1, // 1 ton per sertifikat
-                projectId: projectId,
-                issueDate: block.timestamp,
-                uniqueHash: uniqueHash
-            });
-            
-            // Memperbarui mapping
-            _certificates[tokenId] = newCertificate;
-            _projectTokens[projectId].push(tokenId);
-            _hashToToken[uniqueHash] = tokenId;
-            
-            // Memancarkan event dengan semua data sertifikat
-            emit CertificateIssued(
-                tokenId,
-                recipient,
-                1,
-                projectId,
-                uniqueHash
-            );
-        }
+for (uint256 i = 0; i < amount; i++) {
+        _tokenIdCounter.increment();
+        uint256 tokenId = _tokenIdCounter.current();
+        
+        // Generate unique hash
+        string memory uniqueHash = generateUniqueHash(tokenId, projectId, i);
+        
+        // Mint token
+        _safeMint(recipient, tokenId);
+        
+        // Simpan certificate data
+        Certificate memory newCertificate = Certificate({
+            tokenId: tokenId,
+            carbonAmount: 1,
+            projectId: projectId,
+            issueDate: block.timestamp,
+            uniqueHash: uniqueHash
+        });
+        
+        _certificates[tokenId] = newCertificate;
+        _projectTokens[projectId].push(tokenId);
+        _hashToToken[uniqueHash] = tokenId;
+        
+        // PENTING: Pancarkan event dengan semua parameter yang dibutuhkan
+        emit CertificateIssued(
+            tokenId,
+            recipient,
+            1, // 1 ton per sertifikat
+            projectId,
+            uniqueHash
+        );
+    }
         
         return true;
     }

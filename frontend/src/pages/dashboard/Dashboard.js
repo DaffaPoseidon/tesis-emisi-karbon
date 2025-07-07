@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import CaseForm from "./CaseForm";
 import CaseTable from "./CaseTable";
 import { useNavigate } from "react-router-dom";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 
 const Dashboard = () => {
   const [cases, setCases] = useState([]);
@@ -233,6 +233,19 @@ const Dashboard = () => {
     if (!localFormData.file && !formData.files?.length) {
       setShowModal(true); // Tampilkan modal jika file tidak diunggah
       return; // Hentikan proses update
+    }
+
+    if (localFormData.proposals) {
+      // Identifikasi proposals yang telah ditolak dan diubah
+      localFormData.proposals = localFormData.proposals.map((proposal) => {
+        if (proposal.hasBeenEdited && proposal.statusProposal === "Ditolak") {
+          return {
+            ...proposal,
+            statusProposal: "Diajukan",
+          };
+        }
+        return proposal;
+      });
     }
 
     // Tambahkan data utama

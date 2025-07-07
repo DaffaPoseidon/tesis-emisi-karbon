@@ -148,19 +148,25 @@ const CaseForm = ({
   };
 
   // Fungsi untuk update proposal
-  const updateProposal = (index, field, value) => {
-    const proposal = proposals[index];
+const updateProposal = (index, field, value) => {
+  const proposal = proposals[index];
 
-    // Cek jika proposal sudah disetujui
-    if (proposal._id && proposal.statusProposal === "Diterima") {
-      alert("Proposal yang sudah disetujui tidak dapat diubah");
-      return;
-    }
+  // Cek jika proposal sudah disetujui
+  if (proposal._id && proposal.statusProposal === "Diterima") {
+    alert("Proposal yang sudah disetujui tidak dapat diubah");
+    return;
+  }
 
-    const updatedProposals = [...proposals];
-    updatedProposals[index][field] = value;
-    setProposals(updatedProposals);
-  };
+  const updatedProposals = [...proposals];
+  updatedProposals[index][field] = value;
+  
+  // Jika proposal sebelumnya ditolak, tandai sebagai "telah diubah"
+  if (proposal._id && proposal.statusProposal === "Ditolak") {
+    updatedProposals[index].hasBeenEdited = true; // Flag untuk menandai proposal telah diubah
+  }
+  
+  setProposals(updatedProposals);
+};
 
   // Fungsi untuk menghapus proposal
   const removeProposal = (index) => {
@@ -270,8 +276,27 @@ const CaseForm = ({
       jumlahKarbon: totalKarbon,
     };
 
-    if (editMode && handleUpdate) {
-      await handleUpdate(completeFormData);
+  if (editMode && handleUpdate) {
+    // Perbarui status proposal yang telah diubah dan sebelumnya ditolak
+    const updatedProposals = proposals.map(proposal => {
+      if (proposal.hasBeenEdited && proposal.statusProposal === "Ditolak") {
+        // Ubah status menjadi "Diajukan"
+        return {
+          ...proposal,
+          statusProposal: "Diajukan"
+        };
+      }
+      return proposal;
+    });
+    
+    // Buat data lengkap termasuk proposals yang sudah diperbarui statusnya
+    const completeFormData = {
+      ...localFormData,
+      proposals: updatedProposals, // Gunakan proposals yang sudah diperbarui statusnya
+      jumlahKarbon: totalKarbon,
+    };
+    
+    await handleUpdate(completeFormData);
     } else {
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user"));
@@ -588,6 +613,12 @@ const CaseForm = ({
                       Ditolak
                     </div>
                   )}
+                  {/* Tambahkan indikator akan diajukan ulang */}
+{proposal._id && proposal.statusProposal === "Ditolak" && proposal.hasBeenEdited && (
+  <div className="absolute top-6 right-0 bg-yellow-500 text-white text-xs px-2 py-1 rounded-bl">
+    Akan diajukan ulang setelah update
+  </div>
+)}
 
                   <button
                     type="button"

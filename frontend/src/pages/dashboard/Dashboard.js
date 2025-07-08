@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 const Dashboard = () => {
   const [cases, setCases] = useState([]);
   const [filter, setFilter] = useState("");
+  const [localFormData, setLocalFormData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [formData, setFormData] = useState({
     luasTanah: "",
@@ -27,7 +28,6 @@ const Dashboard = () => {
   }, []);
   const [editMode, setEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false); // State untuk modal
-  const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   const initialFormState = {
@@ -221,54 +221,46 @@ const Dashboard = () => {
   };
 
   const handleEdit = (caseData) => {
-    setFormData(caseData);
+    // Map caseData untuk format yang sesuai dengan form
+    const formattedData = {
+      ...caseData,
+      // Format tanggal untuk tampilan di form
+      tanggalMulai: new Date(caseData.tanggalMulai),
+      tanggalSelesai: new Date(caseData.tanggalSelesai),
+    };
+
+    setFormData(formattedData);
     setEditMode(true);
   };
 
-  const handleUpdate = async (localFormData) => {
+  const handleUpdate = async (formData) => {
     const token = localStorage.getItem("token");
     const formDataToSend = new FormData();
 
     // Validasi file saat update
-    if (!localFormData.file && !formData.files?.length) {
+    if (!formData.file && !localFormData.files?.length) {
       setShowModal(true); // Tampilkan modal jika file tidak diunggah
       return; // Hentikan proses update
     }
 
-    if (localFormData.proposals) {
-      // Identifikasi proposals yang telah ditolak dan diubah
-      localFormData.proposals = localFormData.proposals.map((proposal) => {
-        if (proposal.hasBeenEdited && proposal.statusProposal === "Ditolak") {
-          return {
-            ...proposal,
-            statusProposal: "Diajukan",
-          };
-        }
-        return proposal;
-      });
-    }
-
     // Tambahkan data utama
-    Object.keys(localFormData).forEach((key) => {
-      if (key === "file" && localFormData.file) {
-        Array.from(localFormData.file).forEach((file) => {
-          formDataToSend.append("files", file);
-        });
-      } else if (key === "proposals") {
-        // Kirim proposals sebagai JSON string
-        formDataToSend.append(
-          "proposals",
-          JSON.stringify(localFormData.proposals)
-        );
-      } else if (key !== "files") {
-        // Skip files array
-        formDataToSend.append(key, localFormData[key]);
+    Object.keys(formData).forEach((key) => {
+      if (key === "file" && formData.file) {
+        for (let i = 0; i < formData.file.length; i++) {
+          formDataToSend.append("files", formData.file[i]);
+        }
+      } else if (
+        key !== "file" &&
+        key !== "files" &&
+        key !== "blockchainData"
+      ) {
+        formDataToSend.append(key, formData[key]);
       }
     });
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/cases/${localFormData._id}`,
+        `${process.env.REACT_APP_API_BASE_URL}/cases/${formData._id}`,
         {
           method: "PUT",
           headers: {
@@ -280,18 +272,15 @@ const Dashboard = () => {
 
       if (response.ok) {
         alert("Data berhasil diperbarui");
-        await fetchCases();
+        setLocalFormData(initialFormState);
         setEditMode(false);
-        setFormData(initialFormState); // Reset form
-        if (fileInputRef.current) fileInputRef.current.value = ""; // Reset input file
+        fetchCases();
       } else {
-        const errorResult = await response.json();
-        alert(`Gagal memperbarui data: ${errorResult.message}`);
-        console.error("Gagal memperbarui data:", errorResult.message);
+        const errorData = await response.json();
+        alert(`Gagal memperbarui data: ${errorData.message}`);
       }
     } catch (error) {
       alert(`Error: ${error.message}`);
-      console.error("Error:", error.message);
     }
   };
 

@@ -31,64 +31,75 @@ const LandingPage = () => {
     fetchCarbonProducts();
   }, []);
 
-  const fetchCarbonProducts = async () => {
-    setIsLoadingProducts(true);
-    try {
-      // Ambil semua data kasus
-      const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/cases`
-      );
+ const fetchCarbonProducts = async () => {
+  setIsLoadingProducts(true);
+  try {
+    console.log("Fetching carbon products...");
+    // Gunakan endpoint cases yang sudah ada, bukan approved-cases
+    const response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/cases`
+    );
 
-      if (response.ok) {
-        const data = await response.json();
-
-        // Filter hanya kasus dengan status "Diterima"
-        const approvedCases = data.cases.filter(
-          (item) => item.statusPengajuan === "Diterima"
-        );
-
-        // Load images for each product
-        const productsWithImages = await Promise.all(
-          approvedCases.map(async (caseItem) => {
-            try {
-              // Pre-check image availability with HEAD request
-              const imgUrl = `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${caseItem._id}/files/0`;
-              console.log("Trying to fetch image from:", imgUrl);
-
-              return {
-                ...caseItem,
-                hargaPerTon: 100000, // Harga tetap 100.000 per ton
-                imageUrl: imgUrl,
-                // Use timestamp to prevent caching
-                imageUrlWithTimestamp: `${imgUrl}?t=${new Date().getTime()}`,
-              };
-            } catch (imgError) {
-              console.error(
-                `Failed to load image for ${caseItem._id}:`,
-                imgError
-              );
-              return {
-                ...caseItem,
-                hargaPerTon: 100000,
-                imageUrl: null,
-              };
-            }
-          })
-        );
-
-        setCarbonProducts(productsWithImages);
-        console.log("Produk karbon yang disetujui:", productsWithImages);
-      } else {
-        console.error("Gagal mengambil data produk karbon");
-        setCarbonProducts([]);
-      }
-    } catch (error) {
-      console.error("Error fetching carbon products:", error);
-      setCarbonProducts([]);
-    } finally {
-      setIsLoadingProducts(false);
+    if (!response.ok) {
+      throw new Error(`Error fetching products: ${response.status}`);
     }
-  };
+
+    const data = await response.json();
+    console.log("Raw data received:", data);
+
+    // Pastikan data dalam format yang benar
+    if (!data || !data.cases || !Array.isArray(data.cases)) {
+      console.error("Invalid data format:", data);
+      setCarbonProducts([]);
+      setIsLoadingProducts(false);
+      return;
+    }
+
+    // Filter cases yang memiliki proposal disetujui dan hitung total karbon
+    const approvedProducts = data.cases
+      .map((caseItem) => {
+        // Filter proposal yang disetujui
+        const approvedProposals =
+          caseItem.proposals?.filter(
+            (p) => p.statusProposal === "Diterima"
+          ) || [];
+
+        // Hitung total karbon dari proposal yang disetujui
+        const totalKarbon = approvedProposals.reduce(
+          (sum, p) => sum + Number(p.jumlahKarbon || 0),
+          0
+        );
+
+        // Hanya kembalikan jika ada proposal yang disetujui
+        if (approvedProposals.length > 0 && totalKarbon > 0) {
+          return {
+            ...caseItem,
+            proposals: approvedProposals,
+            jumlahKarbon: totalKarbon,
+            hargaPerTon: 100000,
+            imageUrl: caseItem._id
+              ? `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${caseItem._id}/files/0`
+              : null,
+            imageUrlWithTimestamp: caseItem._id
+              ? `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${
+                  caseItem._id
+                }/files/0?t=${Date.now()}`
+              : null,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean); // Hapus nilai null
+
+    console.log("Processed products:", approvedProducts);
+    setCarbonProducts(approvedProducts);
+  } catch (error) {
+    console.error("Error fetching carbon products:", error);
+    setCarbonProducts([]);
+  } finally {
+    setIsLoadingProducts(false);
+  }
+};
 
   const handleDashboardClick = () => {
     navigate("/dashboard");
@@ -99,6 +110,12 @@ const LandingPage = () => {
   };
 
   const handleProductClick = (productId) => {
+    // Validasi ID sebelum navigasi
+    if (!productId) {
+      console.error("Error: Trying to view product with undefined ID");
+      alert("Maaf, produk ini tidak memiliki ID yang valid");
+      return;
+    }
     navigate(`/product/${productId}`);
   };
 
@@ -169,7 +186,7 @@ const LandingPage = () => {
                 {carbonProducts.length > 0 ? (
                   carbonProducts.map((product) => (
                     <div
-                      key={product._id}
+                      key={product._id || `temp-${Math.random()}`} // Tambahkan fallback untuk key
                       className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300"
                     >
                       <div className="relative h-48 bg-gray-200">
@@ -183,12 +200,18 @@ const LandingPage = () => {
                               </div>
                             ) : (
                               <img
-                                src={`${
-                                  process.env.REACT_APP_BACKEND_BASEURL
-                                }/api/cases/${
+                                src={
                                   product._id
-                                }/files/0?t=${Date.now()}`}
-                                alt={product.kepemilikanLahan}
+                                    ? `${
+                                        process.env.REACT_APP_BACKEND_BASEURL
+                                      }/api/cases/${
+                                        product._id
+                                      }/files/0?t=${Date.now()}`
+                                    : null
+                                }
+                                alt={
+                                  product.kepemilikanLahan || "Produk Karbon"
+                                }
                                 className="w-full h-64 object-cover rounded-md"
                                 onError={() => setImageError(true)}
                               />
@@ -226,11 +249,11 @@ const LandingPage = () => {
 
                       <div className="p-4">
                         <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate">
-                          {product.kepemilikanLahan}
+                          {product.kepemilikanLahan || "Proyek Karbon"}
                         </h3>
                         <p className="text-sm text-gray-600 mb-2">
                           <span className="font-medium">Jenis Pohon:</span>{" "}
-                          {product.jenisPohon}
+                          {product.jenisPohon || "-"}
                         </p>
 
                         <div className="flex justify-between mb-3">
@@ -239,7 +262,7 @@ const LandingPage = () => {
                               Luas Tanah
                             </span>
                             <p className="font-medium">
-                              {product.luasTanah} Ha
+                              {product.luasTanah || 0} Ha
                             </p>
                           </div>
                           <div>
@@ -247,7 +270,7 @@ const LandingPage = () => {
                               Jumlah Karbon
                             </span>
                             <p className="font-medium">
-                              {product.jumlahKarbon} Ton
+                              {product.jumlahKarbon || 0} Ton
                             </p>
                           </div>
                         </div>
@@ -256,7 +279,7 @@ const LandingPage = () => {
                             Jumlah Sertifikat
                           </span>
                           <p className="font-medium">
-                            {product.jumlahKarbon} Sertifikat
+                            {product.jumlahKarbon || 0} Sertifikat
                           </p>
                         </div>
                         <div className="mb-3">
@@ -264,16 +287,17 @@ const LandingPage = () => {
                             Lembaga Sertifikasi
                           </span>
                           <p className="text-sm font-medium truncate">
-                            {product.lembagaSertifikasi}
+                            {product.lembagaSertifikasi || "-"}
                           </p>
                         </div>
 
-                        {/* Tambahkan informasi penjual */}
                         <div className="mb-3">
                           <span className="text-sm text-gray-500">Penjual</span>
                           <p className="text-sm font-medium truncate">
                             {product.penggugah
-                              ? `${product.penggugah.firstName} ${product.penggugah.lastName}`
+                              ? `${product.penggugah.firstName || ""} ${
+                                  product.penggugah.lastName || ""
+                                }`
                               : "Informasi penjual tidak tersedia"}
                           </p>
                         </div>
@@ -286,23 +310,34 @@ const LandingPage = () => {
                             <p className="text-lg font-bold text-green-600">
                               Rp{" "}
                               {(
-                                product.hargaPerTon * product.jumlahKarbon
+                                (product.hargaPerTon || 0) *
+                                (product.jumlahKarbon || 0)
                               ).toLocaleString()}
                             </p>
                           </div>
-                          <button
-                            onClick={() => handleProductClick(product._id)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm transition"
-                          >
-                            Lihat Detail
-                          </button>
-                          {canPurchase && (
-                            <button
-                              onClick={() => navigate(`/buy/${product._id}`)}
-                              className="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm transition"
-                            >
-                              Beli Sekarang
-                            </button>
+                          {product._id ? (
+                            <>
+                              <button
+                                onClick={() => handleProductClick(product._id)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm transition"
+                              >
+                                Lihat Detail
+                              </button>
+                              {canPurchase && (
+                                <button
+                                  onClick={() =>
+                                    navigate(`/buy/${product._id}`)
+                                  }
+                                  className="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm transition"
+                                >
+                                  Beli Sekarang
+                                </button>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-red-500 text-xs">
+                              ID Produk tidak tersedia
+                            </span>
                           )}
                         </div>
                       </div>
@@ -313,7 +348,8 @@ const LandingPage = () => {
                             Tervalidasi:{" "}
                             {new Date(
                               product.blockchainData?.issuedOn ||
-                                product.updatedAt
+                                product.updatedAt ||
+                                new Date()
                             ).toLocaleDateString()}
                           </div>
                           {product.blockchainData &&

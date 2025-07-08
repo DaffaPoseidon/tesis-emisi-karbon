@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "../../components/Header";
 
@@ -8,51 +8,62 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchProductDetails = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`
-        );
+  const fetchProductDetails = useCallback(async () => {
+    if (!id) {
+      console.error("Invalid product ID: undefined");
+      setError("ID produk tidak valid");
+      setLoading(false);
+      return;
+    }
 
-        if (!response.ok) {
-          throw new Error("Gagal mengambil data produk");
-        }
+    try {
+      console.log("Fetching product with ID:", id);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`
+      );
 
-        const data = await response.json();
-
-        // Filter hanya proposal yang telah diterima
-        const approvedProposals = data.proposals
-          ? data.proposals.filter(
-              (proposal) => proposal.statusProposal === "Diterima"
-            )
-          : [];
-
-        // Hitung ulang jumlah karbon dari proposal yang diterima
-        const totalKarbon = approvedProposals.reduce(
-          (sum, proposal) => sum + Number(proposal.jumlahKarbon),
-          0
-        );
-
-        // Set data produk dengan harga
-        setProduct({
-          ...data,
-          proposals: approvedProposals,
-          jumlahKarbon: totalKarbon,
-          hargaPerTon: 100000, // Harga tetap per ton
-          totalHarga: totalKarbon * 100000, // Total harga
-        });
-      } catch (error) {
-        console.error("Error fetching product:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
 
-    fetchProductDetails();
+      const data = await response.json();
+
+      if (!data) {
+        throw new Error("Produk tidak ditemukan");
+      }
+
+      // Filter proposal yang statusnya diterima
+      const approvedProposals = data.proposals
+        ? data.proposals.filter(
+            (proposal) => proposal.statusProposal === "Diterima"
+          )
+        : [];
+
+      // Hitung jumlah karbon dari proposal yang diterima
+      const totalKarbon = approvedProposals.reduce(
+        (sum, proposal) => sum + Number(proposal.jumlahKarbon),
+        0
+      );
+
+      // Set data produk dengan harga
+      setProduct({
+        ...data,
+        proposals: approvedProposals,
+        jumlahKarbon: totalKarbon,
+        hargaPerTon: 100000, // Harga tetap per ton
+        totalHarga: totalKarbon * 100000, // Total harga
+      });
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
+
+  useEffect(() => {
+    fetchProductDetails();
+  }, [id, fetchProductDetails]);
 
   // Format tanggal
   const formatDate = (dateString) => {

@@ -12,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT; 
 const MONGO_URL = process.env.MONGO_URL || "mongodb://192.168.1.3:27017/jwt_db";
 require("dotenv").config();
+require('events').EventEmitter.defaultMaxListeners = 100;
 
 app.use(cors());
 app.use("/uploads", express.static("uploads"));

@@ -5,6 +5,7 @@ const {
   updateCase, 
   upload, 
   getCase,
+  getApprovedCases,
   getFile,
   getFileByIndex,
   deleteCase,
@@ -15,7 +16,6 @@ const {
 
 const { authenticateToken } = require("../utils/authMiddleware");
 const isSellerMiddleware = require('../middleware/isSellerMiddleware'); // Tambahkan import
-
 const router = express.Router();
 
 // Tambahkan isSellerMiddleware ke routes yang perlu dilindungi
@@ -23,8 +23,8 @@ router.post("/", authenticateToken, isSellerMiddleware, upload.array("files", 10
 router.put("/:id", authenticateToken, isSellerMiddleware, upload.array("files", 100), updateCase);
 router.delete("/:id", authenticateToken, isSellerMiddleware, deleteCase);
 
-// Routes lainnya yang tidak perlu isSellerMiddleware
 router.get("/:id", getCase);
+router.get('/approved-cases', getApprovedCases);
 router.get("/", getAllCases);
 router.get("/:id/files/:fileIndex", getFileByIndex);
 router.get("/:id/files", getFile);

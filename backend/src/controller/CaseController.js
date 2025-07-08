@@ -23,7 +23,7 @@ const fs = require("fs");
 const updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { statusPengajuan, proposalUpdates } = req.body;
+    const { statusPengajuan } = req.body;
 
     // Validasi status
     if (
@@ -39,117 +39,102 @@ const updateStatus = async (req, res) => {
       return res.status(404).json({ message: "Case not found" });
     }
 
-    // Jika ada update status keseluruhan
-    if (statusPengajuan) {
-      caseData.statusPengajuan = statusPengajuan;
+    // Update status
+    caseData.statusPengajuan = statusPengajuan;
 
-      // Jika status diterima, update status semua proposal juga
-      if (statusPengajuan === "Diterima" && caseData.proposals) {
-        caseData.proposals.forEach((proposal) => {
-          proposal.statusProposal = "Diterima";
-        });
-      }
-    }
+    let blockchainSuccess = false;
 
-    // Jika ada update untuk proposal individual
-    if (proposalUpdates && proposalUpdates.length > 0) {
-      proposalUpdates.forEach((update) => {
-        const { proposalId, status } = update;
-
-        // Cari proposal dengan _id yang sesuai
-        const proposalIndex = caseData.proposals.findIndex(
-          (p) => p._id.toString() === proposalId
-        );
-
-        if (proposalIndex !== -1) {
-          // Update status proposal
-          caseData.proposals[proposalIndex].statusProposal = status;
-        }
-      });
-    }
-
-    // Hitung ulang total karbon berdasarkan proposal yang diterima
-    if (caseData.proposals && caseData.proposals.length > 0) {
-      const totalAcceptedCarbon = caseData.proposals.reduce(
-        (total, proposal) => {
-          return proposal.statusProposal === "Diterima"
-            ? total + Number(proposal.jumlahKarbon)
-            : total;
-        },
-        0
-      );
-
-      // Update jumlah karbon dan sertifikat
-      caseData.jumlahKarbon = totalAcceptedCarbon;
-      caseData.jumlahSertifikat = totalAcceptedCarbon;
-    }
-
-    // Jika status keseluruhan "Diterima" atau ada proposal yang diterima, proses ke blockchain
+    // Jika status Diterima, proses ke blockchain
     if (statusPengajuan === "Diterima") {
       try {
-        // Alamat penerima (bisa dari user.walletAddress jika ada, atau gunakan default)
+        // Ambil alamat penerima
         const recipientAddress =
           caseData.penggugah.walletAddress ||
           process.env.DEFAULT_RECIPIENT_ADDRESS;
 
-        // Pastikan jumlahSertifikat sudah diisi dan merupakan angka positif
-        if (!caseData.jumlahSertifikat || caseData.jumlahSertifikat <= 0) {
-          return res.status(400).json({
-            message:
-              "Jumlah sertifikat tidak valid. Harus berupa angka positif.",
-          });
+        if (!recipientAddress) {
+          throw new Error("No recipient address available");
         }
 
         console.log(
-          `Menerbitkan ${caseData.jumlahSertifikat} sertifikat untuk project ${id}`
+          `Processing blockchain for case ${caseData._id} with recipient ${recipientAddress}`
         );
-        console.log(`Recipient Address: ${recipientAddress}`);
 
-        // Panggil service blockchain untuk menerbitkan sertifikat
+        // Debugging sebelum blockchain process
+        const { debugSmartContract } = require("../services/blockchainService");
+        await debugSmartContract();
+
+        // Proses ke blockchain dengan data yang benar
         const blockchainResult = await issueCarbonCertificate(
           recipientAddress,
-          caseData
+          {
+            _id: caseData._id,
+            namaProyek: caseData.namaProyek,
+            luasTanah: caseData.luasTanah,
+            saranaPenyerapEmisi: caseData.saranaPenyerapEmisi,
+            lembagaSertifikasi: caseData.lembagaSertifikasi,
+            kepemilikanLahan: caseData.kepemilikanLahan,
+            jumlahKarbon: caseData.jumlahKarbon,
+            tanggalMulai: caseData.tanggalMulai,
+            tanggalSelesai: caseData.tanggalSelesai,
+            proposalId: caseData._id, // Gunakan ID yang sama sebagai proposal ID
+          }
         );
 
-        console.log("Hasil blockchain:", blockchainResult);
+        console.log("Blockchain result:", JSON.stringify(blockchainResult));
 
         if (blockchainResult.success) {
-          // Simpan data blockchain ke MongoDB
+          console.log(
+            "Blockchain process successful, updating MongoDB document"
+          );
+
+          // Verifikasi tokens
+          if (
+            !blockchainResult.tokens ||
+            blockchainResult.tokens.length === 0
+          ) {
+            console.warn("Warning: No tokens returned from blockchain process");
+          }
+
+          // Simpan data blockchain
           caseData.blockchainData = {
             transactionHash: blockchainResult.transactionHash,
             blockNumber: blockchainResult.blockNumber,
-            tokens: blockchainResult.tokens,
-            issuedOn: blockchainResult.issuedOn,
+            tokens: blockchainResult.tokens || [],
+            issuedOn: blockchainResult.issuedOn || Date.now(),
             recipientAddress: recipientAddress,
           };
 
-          await caseData.save();
-          res.status(200).json({
-            message: "Status pengajuan diperbarui dan sertifikat diterbitkan",
-            case: caseData,
-          });
+          blockchainSuccess = true;
         } else {
-          console.error("Transaksi blockchain gagal:", blockchainResult.error);
-          res.status(500).json({
-            message: "Gagal menerbitkan sertifikat di blockchain",
+          console.error("Blockchain process failed:", blockchainResult.error);
+          return res.status(500).json({
+            message: "Gagal memproses data ke blockchain",
             error: blockchainResult.error,
+            details: blockchainResult.details,
           });
         }
       } catch (error) {
         console.error("Error dalam proses blockchain:", error);
-        res.status(500).json({
-          message: "Terjadi kesalahan saat memproses blockchain",
+        return res.status(500).json({
+          message: "Gagal memproses data ke blockchain",
           error: error.message,
         });
       }
-    } else {
-      // Jika status bukan "Diterima", cukup simpan perubahan
-      await caseData.save();
-      res.status(200).json({
-        message: "Status pengajuan diperbarui",
-        case: caseData,
-      });
     }
+
+    // Simpan perubahan ke MongoDB
+    const savedCase = await caseData.save();
+    console.log(
+      "Case saved to MongoDB with blockchain data:",
+      savedCase.blockchainData ? "Yes" : "No"
+    );
+
+    res.status(200).json({
+      message: `Status pengajuan diperbarui ke ${statusPengajuan}`,
+      case: savedCase,
+      blockchainSuccess,
+    });
   } catch (error) {
     console.error("Error updating status:", error);
     return res.status(500).json({ message: error.message });
@@ -235,7 +220,6 @@ const createCase = async (req, res) => {
       });
     }
 
-    // Validasi apakah ada file yang diunggah
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: "File harus diunggah." });
     }
@@ -246,40 +230,69 @@ const createCase = async (req, res) => {
       saranaPenyerapEmisi,
       lembagaSertifikasi,
       kepemilikanLahan,
+      tanggalMulai,
+      tanggalSelesai,
       jumlahKarbon,
-      proposals: proposalsJson,
     } = req.body;
 
-    // Parse proposals dari JSON string
-    let proposals = [];
-    try {
-      proposals = JSON.parse(proposalsJson);
-
-      // Konversi string tanggal menjadi objek Date
-      proposals = proposals.map((proposal) => ({
-        ...proposal,
-        tanggalMulai: new Date(proposal.tanggalMulai),
-        tanggalSelesai: new Date(proposal.tanggalSelesai),
-        jumlahKarbon: Number(proposal.jumlahKarbon),
-      }));
-    } catch (error) {
-      return res.status(400).json({
-        message: "Format data proposals tidak valid.",
-        error: error.message,
-      });
+    // Ambil jumlahKarbon yang valid jika berupa array
+    let jumlahKarbonValue = jumlahKarbon;
+    if (Array.isArray(jumlahKarbon)) {
+      // Ambil nilai terakhir yang bukan string kosong
+      jumlahKarbonValue = jumlahKarbon
+        .reverse()
+        .find((val) => val && val !== "");
     }
 
-    // Simpan semua file yang diunggah
+    // Log untuk debugging
+    console.log("Data karbon yang diterima:", {
+      jumlahKarbon: jumlahKarbonValue,
+      tipe: typeof jumlahKarbonValue,
+      nilai: Number(jumlahKarbonValue),
+    });
+
+    const startDate = new Date(tanggalMulai);
+    const endDate = new Date(tanggalSelesai);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return res.status(400).json({ message: "Format tanggal tidak valid." });
+    }
+    if (startDate >= endDate) {
+      return res
+        .status(400)
+        .json({ message: "Tanggal selesai harus setelah tanggal mulai." });
+    }
+
     const uploadedFiles = req.files.map((file) => ({
       fileName: file.originalname,
       fileData: file.buffer,
     }));
 
-    // Hitung total karbon dari semua proposals
-    const totalKarbon = proposals.reduce(
-      (sum, proposal) => sum + proposal.jumlahKarbon,
-      0
-    );
+    let carbonAmount;
+    try {
+      if (jumlahKarbonValue === undefined || jumlahKarbonValue === "") {
+        throw new Error("Jumlah karbon tidak boleh kosong");
+      }
+      carbonAmount = parseInt(jumlahKarbonValue, 10);
+      if (isNaN(carbonAmount)) {
+        carbonAmount = parseFloat(jumlahKarbonValue);
+      }
+      if (isNaN(carbonAmount)) {
+        throw new Error("Konversi jumlah karbon gagal");
+      }
+      if (carbonAmount <= 0) {
+        throw new Error("Jumlah karbon harus lebih dari 0");
+      }
+    } catch (error) {
+      console.error("Error konversi jumlah karbon:", error.message, {
+        input: jumlahKarbonValue,
+        tipe: typeof jumlahKarbonValue,
+      });
+      return res.status(400).json({
+        message: "Jumlah karbon harus berupa angka positif.",
+        detail: error.message,
+      });
+    }
 
     const newCase = new Case({
       namaProyek,
@@ -287,49 +300,73 @@ const createCase = async (req, res) => {
       saranaPenyerapEmisi,
       lembagaSertifikasi,
       kepemilikanLahan,
-      jumlahKarbon: totalKarbon,
-      jumlahSertifikat: totalKarbon,
-      proposals,
+      tanggalMulai: startDate,
+      tanggalSelesai: endDate,
+      jumlahKarbon: carbonAmount,
+      jumlahSertifikat: carbonAmount,
       penggugah: userId,
       files: uploadedFiles,
-      statusPengajuan: "Diajukan",
     });
 
-    await newCase.save();
-    console.log("Case saved with files:", uploadedFiles.length);
+    const savedCase = await newCase.save();
 
-    res
-      .status(201)
-      .json({ message: "Data berhasil ditambahkan", case: newCase });
+    res.status(201).json({
+      message: "Data berhasil disimpan",
+      case: savedCase,
+    });
   } catch (error) {
     console.error("Error creating case:", error);
-    res
-      .status(500)
-      .json({ message: "Terjadi kesalahan server", error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
 const getCase = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(`Fetching case with ID: ${id}`);
 
-    const caseData = await Case.findById(id).populate("penggugah");
+    console.log("Fetching case with ID:", id);
 
-    if (!caseData) {
-      console.log(`Case not found with ID: ${id}`);
-      return res.status(404).json({ message: "Kasus tidak ditemukan" });
+    // Validasi ID
+    if (!id || id === "undefined") {
+      return res.status(400).json({ message: "ID tidak valid" });
     }
 
-    console.log(`Case found: ${caseData._id}`);
+    // Validasi bahwa ID adalah ObjectId yang valid
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Format ID tidak valid" });
+    }
 
-    // Kirim data kasus sebagai response
-    res.status(200).json(caseData);
+    const caseItem = await Case.findById(id).populate(
+      "penggugah",
+      "firstName lastName email walletAddress"
+    );
+
+    if (!caseItem) {
+      return res.status(404).json({ message: "Case tidak ditemukan" });
+    }
+
+    res.json(caseItem);
   } catch (error) {
-    console.error(`Error fetching case: ${error.message}`);
-    res
-      .status(500)
-      .json({ message: "Terjadi kesalahan server", error: error.message });
+    console.error("Error fetching case:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getApprovedCases = async (req, res) => {
+  try {
+    console.log("Fetching approved cases...");
+
+    // Ambil semua dokumen dengan status Diterima dan data blockchain
+    const approvedCases = await Case.find({
+      statusPengajuan: "Diterima",
+      blockchainData: { $exists: true },
+    }).populate("penggugah", "firstName lastName email walletAddress");
+
+    console.log(`Found ${approvedCases.length} approved cases`);
+    res.json(approvedCases);
+  } catch (error) {
+    console.error("Error fetching approved cases:", error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -612,8 +649,9 @@ const purchaseProduct = async (req, res) => {
 
 module.exports = {
   createCase,
-  getAllCases,
   getCase,
+  getApprovedCases,
+  getAllCases,
   updateCase,
   getFile, // Tambahkan fungsi getFile
   getFileByIndex,

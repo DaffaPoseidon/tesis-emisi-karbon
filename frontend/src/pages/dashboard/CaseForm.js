@@ -45,7 +45,7 @@ const CaseForm = ({
   ]);
   const [customLembaga, setCustomLembaga] = useState("");
   const [showCustomLembaga, setShowCustomLembaga] = useState(false);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   // State untuk mengelola modal date picker
   const [selectedProposalIndex, setSelectedProposalIndex] = useState(null);
   const [datePickerType, setDatePickerType] = useState(null); // 'start' atau 'end'
@@ -148,25 +148,25 @@ const CaseForm = ({
   };
 
   // Fungsi untuk update proposal
-const updateProposal = (index, field, value) => {
-  const proposal = proposals[index];
+  const updateProposal = (index, field, value) => {
+    const proposal = proposals[index];
 
-  // Cek jika proposal sudah disetujui
-  if (proposal._id && proposal.statusProposal === "Diterima") {
-    alert("Proposal yang sudah disetujui tidak dapat diubah");
-    return;
-  }
+    // Cek jika proposal sudah disetujui
+    if (proposal._id && proposal.statusProposal === "DiTerima") {
+      alert("Proposal yang sudah disetujui tidak dapat diubah");
+      return;
+    }
 
-  const updatedProposals = [...proposals];
-  updatedProposals[index][field] = value;
-  
-  // Jika proposal sebelumnya ditolak, tandai sebagai "telah diubah"
-  if (proposal._id && proposal.statusProposal === "Ditolak") {
-    updatedProposals[index].hasBeenEdited = true; // Flag untuk menandai proposal telah diubah
-  }
-  
-  setProposals(updatedProposals);
-};
+    const updatedProposals = [...proposals];
+    updatedProposals[index][field] = value;
+
+    // Jika proposal sebelumnya ditolak, tandai sebagai "telah diubah"
+    if (proposal._id && proposal.statusProposal === "Ditolak") {
+      updatedProposals[index].hasBeenEdited = true; // Flag untuk menandai proposal telah diubah
+    }
+
+    setProposals(updatedProposals);
+  };
 
   // Fungsi untuk menghapus proposal
   const removeProposal = (index) => {
@@ -263,64 +263,52 @@ const updateProposal = (index, field, value) => {
       }
     }
 
-    // Hitung total karbon
-    const totalKarbon = proposals.reduce(
-      (sum, proposal) => sum + Number(proposal.jumlahKarbon),
-      0
-    );
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+    const penggugah = user ? user._id : "Unknown";
 
-    // Buat data lengkap termasuk proposals
-    const completeFormData = {
-      ...localFormData,
-      proposals: proposals,
-      jumlahKarbon: totalKarbon,
-    };
+    // PERUBAHAN UTAMA: Kirim masing-masing periode sebagai entri terpisah
+    try {
+      // Menampilkan status loading
+      setIsSubmitting(true);
 
-  if (editMode && handleUpdate) {
-    // Perbarui status proposal yang telah diubah dan sebelumnya ditolak
-    const updatedProposals = proposals.map(proposal => {
-      if (proposal.hasBeenEdited && proposal.statusProposal === "Ditolak") {
-        // Ubah status menjadi "Diajukan"
-        return {
-          ...proposal,
-          statusProposal: "Diajukan"
-        };
-      }
-      return proposal;
-    });
-    
-    // Buat data lengkap termasuk proposals yang sudah diperbarui statusnya
-    const completeFormData = {
-      ...localFormData,
-      proposals: updatedProposals, // Gunakan proposals yang sudah diperbarui statusnya
-      jumlahKarbon: totalKarbon,
-    };
-    
-    await handleUpdate(completeFormData);
-    } else {
-      const token = localStorage.getItem("token");
-      const user = JSON.parse(localStorage.getItem("user"));
-      const penggugah = user ? user._id : "Unknown";
+      // Simpan semua periode satu per satu
+      for (const proposal of proposals) {
+        const formDataToSend = new FormData();
 
-      const formDataToSend = new FormData();
-
-      // Tambahkan data utama
-      Object.keys(completeFormData).forEach((key) => {
-        if (key === "file" && completeFormData.file) {
-          for (let i = 0; i < completeFormData.file.length; i++) {
-            formDataToSend.append("files", completeFormData.file[i]);
+        // Tambahkan data utama proyek
+        Object.keys(localFormData).forEach((key) => {
+          if (key === "file" && localFormData.file) {
+            for (let i = 0; i < localFormData.file.length; i++) {
+              formDataToSend.append("files", localFormData.file[i]);
+            }
+          } else if (key !== "file" && key !== "proposals") {
+            formDataToSend.append(key, localFormData[key]);
           }
-        } else if (key !== "file" && key !== "proposals") {
-          formDataToSend.append(key, completeFormData[key]);
+        });
+
+        // Tambahkan data periode dengan konversi eksplisit untuk jumlahKarbon
+        formDataToSend.append(
+          "tanggalMulai",
+          proposal.tanggalMulai.toISOString()
+        );
+        formDataToSend.append(
+          "tanggalSelesai",
+          proposal.tanggalSelesai.toISOString()
+        );
+
+        // PERBAIKAN: Pastikan jumlahKarbon selalu menjadi number yang valid
+        const carbonAmount = parseInt(proposal.jumlahKarbon, 10);
+        if (isNaN(carbonAmount) || carbonAmount <= 0) {
+          throw new Error(
+            `Jumlah karbon untuk periode harus berupa angka positif`
+          );
         }
-      });
+        formDataToSend.append("jumlahKarbon", carbonAmount.toString());
 
-      // Tambahkan data proposals sebagai JSON string
-      formDataToSend.append("proposals", JSON.stringify(proposals));
+        formDataToSend.append("penggugah", penggugah);
 
-      formDataToSend.append("penggugah", penggugah);
-
-      try {
+        // Kirim ke server
         const response = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/cases`,
           {
@@ -332,19 +320,21 @@ const updateProposal = (index, field, value) => {
           }
         );
 
-        if (response.ok) {
-          alert("Data berhasil disimpan");
-          setLocalFormData(initialFormState);
-          setProposals([]);
-          if (fileInputRef.current) fileInputRef.current.value = "";
-          refreshCases();
-        } else {
+        if (!response.ok) {
           const errorData = await response.json();
-          alert(`Gagal menyimpan data: ${errorData.message}`);
+          throw new Error(errorData.message || "Gagal menyimpan data");
         }
-      } catch (error) {
-        alert(`Error: ${error.message}`);
       }
+
+      alert("Semua data periode berhasil disimpan");
+      setLocalFormData(initialFormState);
+      setProposals([]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (refreshCases) refreshCases();
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -614,11 +604,13 @@ const updateProposal = (index, field, value) => {
                     </div>
                   )}
                   {/* Tambahkan indikator akan diajukan ulang */}
-{proposal._id && proposal.statusProposal === "Ditolak" && proposal.hasBeenEdited && (
-  <div className="absolute top-6 right-0 bg-yellow-500 text-white text-xs px-2 py-1 rounded-bl">
-    Akan diajukan ulang setelah update
-  </div>
-)}
+                  {proposal._id &&
+                    proposal.statusProposal === "Ditolak" &&
+                    proposal.hasBeenEdited && (
+                      <div className="absolute top-6 right-0 bg-yellow-500 text-white text-xs px-2 py-1 rounded-bl">
+                        Akan diajukan ulang setelah update
+                      </div>
+                    )}
 
                   <button
                     type="button"

@@ -13,7 +13,7 @@ import ProtectedRouteSeller from "./components/ProtectedRouteSeller";
 import ProtectedRouteBuyer from "./components/ProtectedRouteBuyer";
 import BuyProduct from "./pages/marketplace/BuyProduct";
 import Marketplace from "./pages/marketplace/Marketplace";
-import ProductDetail from './pages/marketplace/ProductDetail';
+import ProductDetail from "./pages/marketplace/ProductDetail";
 
 function App() {
   return (
@@ -23,13 +23,12 @@ function App() {
         <Route path="/login" element={<Login />} />
         {/* <Route path="/register" element={<Signup />} /> */}
 
-        {/* Menggunakan ProtectedRoute untuk melindungi Dashboard */}
         <Route
           path="/dashboard"
           element={<ProtectedRouteSeller element={<Dashboard />} />}
         />
         <Route
-          path="/buy/:productId"
+          path="/product/:id/buy"
           element={<ProtectedRouteBuyer element={<BuyProduct />} />}
         />
         <Route
@@ -42,7 +41,7 @@ function App() {
           element={<ProtectedRouteValidator element={<DataKandidat />} />}
         />
         <Route path="/marketplace" element={<Marketplace />} />
-        <Route path="/product/:productId" element={<ProductDetail />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
       </Routes>
     </>
   );

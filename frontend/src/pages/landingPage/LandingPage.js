@@ -35,7 +35,6 @@ const LandingPage = () => {
   setIsLoadingProducts(true);
   try {
     console.log("Fetching carbon products...");
-    // Gunakan endpoint cases yang sudah ada, bukan approved-cases
     const response = await fetch(
       `${process.env.REACT_APP_API_BASE_URL}/cases`
     );
@@ -51,45 +50,28 @@ const LandingPage = () => {
     if (!data || !data.cases || !Array.isArray(data.cases)) {
       console.error("Invalid data format:", data);
       setCarbonProducts([]);
-      setIsLoadingProducts(false);
       return;
     }
 
-    // Filter cases yang memiliki proposal disetujui dan hitung total karbon
+    // Dalam struktur baru, langsung filter cases dengan status "Diterima"
     const approvedProducts = data.cases
-      .map((caseItem) => {
-        // Filter proposal yang disetujui
-        const approvedProposals =
-          caseItem.proposals?.filter(
-            (p) => p.statusProposal === "Diterima"
-          ) || [];
-
-        // Hitung total karbon dari proposal yang disetujui
-        const totalKarbon = approvedProposals.reduce(
-          (sum, p) => sum + Number(p.jumlahKarbon || 0),
-          0
-        );
-
-        // Hanya kembalikan jika ada proposal yang disetujui
-        if (approvedProposals.length > 0 && totalKarbon > 0) {
-          return {
-            ...caseItem,
-            proposals: approvedProposals,
-            jumlahKarbon: totalKarbon,
-            hargaPerTon: 100000,
-            imageUrl: caseItem._id
-              ? `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${caseItem._id}/files/0`
-              : null,
-            imageUrlWithTimestamp: caseItem._id
-              ? `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${
-                  caseItem._id
-                }/files/0?t=${Date.now()}`
-              : null,
-          };
-        }
-        return null;
+      .filter(item => item.statusPengajuan === "Diterima")
+      .map((item) => {
+        return {
+          ...item,
+          jumlahKarbon: Number(item.jumlahKarbon) || 0,
+          hargaPerTon: 100000,
+          imageUrl: item._id
+            ? `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${item._id}/files/0`
+            : null,
+          imageUrlWithTimestamp: item._id
+            ? `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${
+                item._id
+              }/files/0?t=${Date.now()}`
+            : null,
+        };
       })
-      .filter(Boolean); // Hapus nilai null
+      .filter(product => product.jumlahKarbon > 0);
 
     console.log("Processed products:", approvedProducts);
     setCarbonProducts(approvedProducts);

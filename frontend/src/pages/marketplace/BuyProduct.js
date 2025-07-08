@@ -1,25 +1,35 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 
 const BuyProduct = () => {
-  const { productId } = useParams();
+  const { id } = useParams(); // Ubah dari productId ke id
+  const navigate = useNavigate();
+  
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const navigate = useNavigate();
-
-  // User data
-  const user = JSON.parse(localStorage.getItem("user"));
-  const canPurchase =
-    user && (user.role === "buyer" || user.role === "superadmin");
+  const [paymentMethod, setPaymentMethod] = useState("transfer");
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    companyName: "",
+    address: "",
+  });
 
   const fetchProductDetails = useCallback(async () => {
     try {
+      console.log("Fetching product with ID:", id);
       setLoading(true);
+      
+      if (!id) {
+        throw new Error("ID produk tidak valid");
+      }
+      
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/cases/${productId}`
+        `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`
       );
 
       if (!response.ok) {
@@ -28,26 +38,17 @@ const BuyProduct = () => {
 
       const data = await response.json();
 
-      // Filter hanya proposal yang telah diterima
-      const approvedProposals = data.proposals
-        ? data.proposals.filter(
-            (proposal) => proposal.statusProposal === "Diterima"
-          )
-        : [];
-
-      // Hitung ulang jumlah karbon dari proposal yang diterima
-      const totalKarbon = approvedProposals.reduce(
-        (sum, proposal) => sum + proposal.jumlahKarbon,
-        0
-      );
+      // Verifikasi status produk
+      if (data.statusPengajuan !== "Diterima") {
+        throw new Error("Produk ini belum disetujui");
+      }
 
       // Set data produk dengan harga
       setProduct({
         ...data,
-        proposals: approvedProposals,
-        jumlahKarbon: totalKarbon,
+        jumlahKarbon: Number(data.jumlahKarbon) || 0,
         hargaPerTon: 100000, // Harga tetap per ton
-        totalHarga: totalKarbon * 100000, // Total harga
+        totalHarga: (Number(data.jumlahKarbon) || 0) * 100000, // Total harga
       });
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -55,48 +56,64 @@ const BuyProduct = () => {
     } finally {
       setLoading(false);
     }
-  }, [productId]);
+  }, [id]);
 
   useEffect(() => {
-    if (!canPurchase) {
-      navigate("/marketplace");
-      return;
-    }
     fetchProductDetails();
-  }, [productId, fetchProductDetails, canPurchase, navigate]);
+    
+    // Isi form dengan data user yang sudah login
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      setFormData({
+        ...formData,
+        fullName: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+        email: user.email || "",
+      });
+    }
+  }, [fetchProductDetails]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const handleQuantityChange = (e) => {
-    const value = parseInt(e.target.value);
-    if (!isNaN(value) && value > 0 && value <= product.jumlahKarbon) {
+    const value = parseInt(e.target.value, 10);
+    if (value > 0 && value <= (product ? product.jumlahKarbon : 1)) {
       setQuantity(value);
     }
   };
 
-  const calculateTotalPrice = () => {
+  const calculateTotal = () => {
     if (!product) return 0;
     return quantity * product.hargaPerTon;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!user || !canPurchase) {
-      setError("Anda harus login sebagai buyer untuk melakukan pembelian");
-      return;
-    }
-
+    
     try {
+      setLoading(true);
+      
+      // Ambil token dari localStorage
       const token = localStorage.getItem("token");
-
+      if (!token) {
+        throw new Error("Anda harus login terlebih dahulu");
+      }
+      
       const purchaseData = {
-        productId: productId,
+        caseId: product._id,
         quantity: quantity,
-        totalPrice: calculateTotalPrice(),
-        buyerId: user._id,
+        totalPrice: calculateTotal(),
+        paymentMethod: paymentMethod,
+        buyerInfo: formData,
       };
-
+      
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/cases/purchase`,
+        `${process.env.REACT_APP_API_BASE_URL}/purchases`,
         {
           method: "POST",
           headers: {
@@ -106,20 +123,34 @@ const BuyProduct = () => {
           body: JSON.stringify(purchaseData),
         }
       );
-
-      if (response.ok) {
-        alert("Pembelian berhasil!");
-        navigate("/dashboard");
-      } else {
+      
+      if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(
-          errorData.message || "Terjadi kesalahan pada pembelian"
-        );
+        throw new Error(errorData.message || "Gagal melakukan pembelian");
       }
+      
+      const data = await response.json();
+      
+      alert("Pembelian berhasil! Silakan lakukan pembayaran sesuai instruksi.");
+      navigate("/dashboard");
+      
     } catch (error) {
       console.error("Error processing purchase:", error);
       setError(error.message);
+      alert(`Gagal melakukan pembelian: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  // Format tanggal
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   if (loading) {
@@ -141,13 +172,13 @@ const BuyProduct = () => {
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             <p className="font-bold">Error!</p>
             <p>{error}</p>
-            <button
-              onClick={() => navigate("/marketplace")}
-              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Kembali ke Marketplace
-            </button>
           </div>
+          <Link
+            to="/marketplace"
+            className="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Kembali ke Marketplace
+          </Link>
         </div>
       </div>
     );
@@ -158,13 +189,16 @@ const BuyProduct = () => {
       <div>
         <Header />
         <div className="container mx-auto p-4">
-          <p>Produk tidak ditemukan.</p>
-          <button
-            onClick={() => navigate("/marketplace")}
-            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+            <p className="font-bold">Produk tidak tersedia</p>
+            <p>Produk ini tidak tersedia atau telah terjual habis.</p>
+          </div>
+          <Link
+            to="/marketplace"
+            className="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Kembali ke Marketplace
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -175,9 +209,9 @@ const BuyProduct = () => {
       <Header />
       <div className="container mx-auto p-4">
         <div className="mb-4">
-          <button
-            onClick={() => navigate(`/product/${productId}`)}
-            className="flex items-center text-blue-600 hover:text-blue-800"
+          <Link
+            to={`/product/${id}`}
+            className="text-blue-600 hover:text-blue-800 flex items-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -192,150 +226,219 @@ const BuyProduct = () => {
               />
             </svg>
             Kembali ke Detail Produk
-          </button>
+          </Link>
         </div>
 
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="md:flex">
-            <div className="md:w-1/2 p-6">
-              <h1 className="text-2xl font-bold text-gray-800 mb-4">
-                Checkout
+            <div className="md:w-1/2 p-8">
+              <h1 className="text-2xl font-bold text-gray-800 mb-6">
+                Formulir Pembelian
               </h1>
-
-              <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                  Informasi Produk
-                </h2>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="font-medium text-gray-800">
-                    {product.namaProyek}
-                  </h3>
-                  <p className="text-gray-600">
-                    Kepemilikan: {product.kepemilikanLahan}
-                  </p>
-                  <p className="text-gray-600">
-                    Lembaga Sertifikasi: {product.lembagaSertifikasi}
-                  </p>
-                  <p className="text-gray-600">
-                    Total Karbon: {product.jumlahKarbon} Ton
-                  </p>
-                  <p className="text-gray-600">
-                    Harga per Ton: Rp {product.hargaPerTon.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                  Informasi Penjual
-                </h2>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-gray-600">
-                    {product.penggugah
-                      ? `${product.penggugah.firstName} ${product.penggugah.lastName}`
-                      : "Informasi penjual tidak tersedia"}
-                  </p>
-                </div>
-              </div>
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-6">
-                  <label
-                    htmlFor="quantity"
-                    className="block text-lg font-semibold text-gray-700 mb-2"
-                  >
-                    Jumlah Pembelian (Ton)
-                  </label>
-                  <input
-                    type="number"
-                    id="quantity"
-                    min="1"
-                    max={product.jumlahKarbon}
-                    value={quantity}
-                    onChange={handleQuantityChange}
-                    className="w-full p-3 border border-gray-300 rounded-md"
-                    required
-                  />
-                  <p className="text-sm text-gray-500 mt-1">
-                    Maksimum: {product.jumlahKarbon} Ton
-                  </p>
+                  <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                    Informasi Pembeli
+                  </h2>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">
+                        Nama Lengkap
+                      </label>
+                      <input
+                        type="text"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">
+                        Nomor Telepon
+                      </label>
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">
+                        Nama Perusahaan
+                      </label>
+                      <input
+                        type="text"
+                        name="companyName"
+                        value={formData.companyName}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-1">
+                        Alamat
+                      </label>
+                      <textarea
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        rows="3"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                    Ringkasan Pembelian
-                  </h3>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="flex justify-between mb-2">
-                      <span>Harga per Ton</span>
-                      <span>Rp {product.hargaPerTon.toLocaleString()}</span>
+                  <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                    Jumlah Pembelian
+                  </h2>
+                  <div className="flex items-center space-x-4">
+                    <input
+                      type="number"
+                      min="1"
+                      max={product.jumlahKarbon}
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                      className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                    <span className="text-gray-600">
+                      dari {product.jumlahKarbon} Ton tersedia
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                    Metode Pembayaran
+                  </h2>
+                  <div className="space-y-2">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="transfer"
+                        name="paymentMethod"
+                        value="transfer"
+                        checked={paymentMethod === "transfer"}
+                        onChange={() => setPaymentMethod("transfer")}
+                        className="mr-2"
+                      />
+                      <label htmlFor="transfer">Transfer Bank</label>
                     </div>
-                    <div className="flex justify-between mb-2">
-                      <span>Jumlah</span>
-                      <span>{quantity} Ton</span>
-                    </div>
-                    <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold">
-                      <span>Total</span>
-                      <span>Rp {calculateTotalPrice().toLocaleString()}</span>
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="emoney"
+                        name="paymentMethod"
+                        value="emoney"
+                        checked={paymentMethod === "emoney"}
+                        onChange={() => setPaymentMethod("emoney")}
+                        className="mr-2"
+                      />
+                      <label htmlFor="emoney">E-Wallet / QRIS</label>
                     </div>
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-200"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-md transition duration-200"
+                  disabled={loading}
                 >
-                  Konfirmasi Pembelian
+                  {loading ? "Memproses..." : "Konfirmasi Pembelian"}
                 </button>
               </form>
             </div>
 
-            <div className="md:w-1/2 bg-gray-50 p-6">
+            <div className="md:w-1/2 bg-gray-50 p-8">
               <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                Periode Penyerapan Karbon yang Dibeli
+                Ringkasan Pembelian
               </h2>
 
-              <div className="space-y-4 max-h-96 overflow-y-auto">
-                {product.proposals && product.proposals.length > 0 ? (
-                  product.proposals.map((proposal, index) => (
-                    <div
-                      key={index}
-                      className="bg-white p-4 rounded-lg shadow-sm"
-                    >
-                      <h3 className="font-medium text-gray-800">
-                        Periode {index + 1}
-                      </h3>
-                      <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
-                        <div>
-                          <p className="text-gray-600">Tanggal Mulai</p>
-                          <p className="font-medium">
-                            {new Date(
-                              proposal.tanggalMulai
-                            ).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-gray-600">Tanggal Selesai</p>
-                          <p className="font-medium">
-                            {new Date(
-                              proposal.tanggalSelesai
-                            ).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="col-span-2">
-                          <p className="text-gray-600">Jumlah Karbon</p>
-                          <p className="font-medium">
-                            {proposal.jumlahKarbon} Ton
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center p-4 text-gray-500">
-                    Tidak ada data periode penyerapan karbon yang tersedia.
+              <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
+                <h3 className="font-medium text-lg mb-2">{product.namaProyek}</h3>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <p className="text-gray-600">Sarana Penyerap</p>
+                    <p className="font-medium">{product.saranaPenyerapEmisi}</p>
                   </div>
-                )}
+                  <div>
+                    <p className="text-gray-600">Luas Tanah</p>
+                    <p className="font-medium">{product.luasTanah} Ha</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Lembaga Sertifikasi</p>
+                    <p className="font-medium">{product.lembagaSertifikasi}</p>
+                  </div>
+                </div>
+              </div>
+
+              <h2 className="text-lg font-semibold text-gray-700 mb-4">
+                Periode Penyerapan Karbon
+              </h2>
+
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                  <div>
+                    <p className="text-gray-600">Tanggal Mulai</p>
+                    <p className="font-medium">
+                      {formatDate(product.tanggalMulai)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Tanggal Selesai</p>
+                    <p className="font-medium">
+                      {formatDate(product.tanggalSelesai)}
+                    </p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-gray-600">Jumlah Karbon</p>
+                    <p className="font-medium">
+                      {product.jumlahKarbon} Ton
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 bg-white p-4 rounded-lg shadow-sm">
+                <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                  Detail Biaya
+                </h2>
+                <div className="border-t border-gray-200 pt-2">
+                  <div className="flex justify-between py-2">
+                    <span>Harga per Ton</span>
+                    <span>Rp {product.hargaPerTon.toLocaleString("id-ID")}</span>
+                  </div>
+                  <div className="flex justify-between py-2">
+                    <span>Jumlah</span>
+                    <span>{quantity} Ton</span>
+                  </div>
+                  <div className="flex justify-between py-2 font-bold text-lg border-t border-gray-200 mt-2 pt-2">
+                    <span>Total</span>
+                    <span>Rp {calculateTotal().toLocaleString("id-ID")}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

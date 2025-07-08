@@ -1,57 +1,48 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "../../components/Header";
 
 const ProductDetail = () => {
   const { id } = useParams();
+  console.log("Product ID from URL:", id);
+  
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchProductDetails = useCallback(async () => {
-    if (!id) {
-      console.error("Invalid product ID: undefined");
-      setError("ID produk tidak valid");
-      setLoading(false);
-      return;
-    }
-
+  const fetchProductDetails = async () => {
     try {
       console.log("Fetching product with ID:", id);
+      setLoading(true);
+      
+      if (!id) {
+        throw new Error("ID produk tidak valid");
+      }
+      
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`
       );
 
+      console.log("API response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error("Gagal mengambil data produk");
       }
 
       const data = await response.json();
-
-      if (!data) {
-        throw new Error("Produk tidak ditemukan");
+      console.log("Product data received:", data);
+      
+      // Verifikasi status produk
+      if (data.statusPengajuan !== "Diterima") {
+        throw new Error("Produk ini belum disetujui");
       }
-
-      // Filter proposal yang statusnya diterima
-      const approvedProposals = data.proposals
-        ? data.proposals.filter(
-            (proposal) => proposal.statusProposal === "Diterima"
-          )
-        : [];
-
-      // Hitung jumlah karbon dari proposal yang diterima
-      const totalKarbon = approvedProposals.reduce(
-        (sum, proposal) => sum + Number(proposal.jumlahKarbon),
-        0
-      );
 
       // Set data produk dengan harga
       setProduct({
         ...data,
-        proposals: approvedProposals,
-        jumlahKarbon: totalKarbon,
-        hargaPerTon: 100000, // Harga tetap per ton
-        totalHarga: totalKarbon * 100000, // Total harga
+        jumlahKarbon: Number(data.jumlahKarbon) || 0,
+        hargaPerTon: 100000, 
+        totalHarga: (Number(data.jumlahKarbon) || 0) * 100000,
       });
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -59,11 +50,17 @@ const ProductDetail = () => {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  };
 
   useEffect(() => {
-    fetchProductDetails();
-  }, [id, fetchProductDetails]);
+    if (id) {
+      fetchProductDetails();
+    } else {
+      console.error("No product ID available");
+      setError("ID produk tidak ditemukan");
+      setLoading(false);
+    }
+  }, [id]);
 
   // Format tanggal
   const formatDate = (dateString) => {
@@ -95,12 +92,18 @@ const ProductDetail = () => {
             <p className="font-bold">Error!</p>
             <p>{error}</p>
           </div>
+          <Link
+            to="/marketplace"
+            className="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Kembali ke Marketplace
+          </Link>
         </div>
       </div>
     );
   }
 
-  if (!product || product.proposals.length === 0) {
+  if (!product || product.jumlahKarbon <= 0) {
     return (
       <div>
         <Header />
@@ -108,7 +111,7 @@ const ProductDetail = () => {
           <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
             <p className="font-bold">Produk tidak tersedia</p>
             <p>
-              Produk ini tidak memiliki proposal yang disetujui atau telah
+              Produk ini tidak memiliki jumlah karbon yang tersedia atau telah
               terjual habis.
             </p>
           </div>
@@ -206,34 +209,32 @@ const ProductDetail = () => {
                   Periode Penyerapan Karbon
                 </h2>
                 <div className="space-y-4">
-                  {product.proposals.map((proposal, index) => (
-                    <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-medium">Periode {index + 1}</span>
-                        <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
-                          Disetujui
-                        </span>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium">Periode</span>
+                      <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
+                        Disetujui
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-500">Tanggal Mulai</p>
+                        <p>{formatDate(product.tanggalMulai)}</p>
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm text-gray-500">Tanggal Mulai</p>
-                          <p>{formatDate(proposal.tanggalMulai)}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">
-                            Tanggal Selesai
-                          </p>
-                          <p>{formatDate(proposal.tanggalSelesai)}</p>
-                        </div>
-                        <div className="col-span-2">
-                          <p className="text-sm text-gray-500">Jumlah Karbon</p>
-                          <p className="font-medium">
-                            {proposal.jumlahKarbon} Ton
-                          </p>
-                        </div>
+                      <div>
+                        <p className="text-sm text-gray-500">
+                          Tanggal Selesai
+                        </p>
+                        <p>{formatDate(product.tanggalSelesai)}</p>
+                      </div>
+                      <div className="col-span-2">
+                        <p className="text-sm text-gray-500">Jumlah Karbon</p>
+                        <p className="font-medium">
+                          {product.jumlahKarbon} Ton
+                        </p>
                       </div>
                     </div>
-                  ))}
+                  </div>
                 </div>
               </div>
 

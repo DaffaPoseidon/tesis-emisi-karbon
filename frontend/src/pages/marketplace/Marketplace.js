@@ -21,34 +21,22 @@ const Marketplace = () => {
         }
 
         const data = await response.json();
+        console.log("Raw data received:", data);
 
-        // Hanya tampilkan produk yang statusnya diterima dan memiliki proposal yang diterima
+        // Dalam struktur baru, langsung filter cases dengan status "Diterima"
         const availableProducts = data.cases
           .filter((product) => product.statusPengajuan === "Diterima")
           .map((product) => {
-            // Filter hanya proposal yang diterima
-            const approvedProposals = product.proposals
-              ? product.proposals.filter(
-                  (proposal) => proposal.statusProposal === "Diterima"
-                )
-              : [];
-
-            // Hitung jumlah karbon dari proposal yang diterima
-            const totalKarbon = approvedProposals.reduce(
-              (sum, proposal) => sum + Number(proposal.jumlahKarbon),
-              0
-            );
-
             return {
               ...product,
-              proposals: approvedProposals,
-              jumlahKarbon: totalKarbon,
+              jumlahKarbon: Number(product.jumlahKarbon) || 0,
               hargaPerTon: 100000, // Harga tetap per ton
-              totalHarga: totalKarbon * 100000, // Total harga
+              totalHarga: (Number(product.jumlahKarbon) || 0) * 100000, // Total harga
             };
           })
-          .filter((product) => product.jumlahKarbon > 0); // Hanya produk dengan karbon > 0
+          .filter((product) => product.jumlahKarbon > 0);
 
+        console.log("Processed products:", availableProducts);
         setProducts(availableProducts);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -147,9 +135,8 @@ const Marketplace = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
-              <Link
+              <div
                 key={product._id}
-                to={`/product/${product._id}`}
                 className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
               >
                 <div className="p-6">
@@ -179,28 +166,19 @@ const Marketplace = () => {
 
                   <div className="mb-4">
                     <h3 className="font-medium mb-2">Periode Penyerapan:</h3>
-                    <div className="space-y-2">
-                      {product.proposals.slice(0, 2).map((proposal, index) => (
-                        <div
-                          key={index}
-                          className="text-sm bg-gray-50 p-2 rounded"
-                        >
-                          <div className="flex justify-between">
-                            <span>
-                              {formatDate(proposal.tanggalMulai)} -{" "}
-                              {formatDate(proposal.tanggalSelesai)}
-                            </span>
-                            <span className="font-medium">
-                              {proposal.jumlahKarbon} Ton
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                      {product.proposals.length > 2 && (
-                        <div className="text-sm text-center text-gray-500">
-                          + {product.proposals.length - 2} periode lainnya
-                        </div>
-                      )}
+                    <div className="text-sm bg-gray-50 p-2 rounded">
+                      <div className="flex justify-between">
+                        <span>
+                          {new Date(product.tanggalMulai).toLocaleDateString()}{" "}
+                          -{" "}
+                          {new Date(
+                            product.tanggalSelesai
+                          ).toLocaleDateString()}
+                        </span>
+                        <span className="font-medium">
+                          {product.jumlahKarbon} Ton
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -232,7 +210,10 @@ const Marketplace = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center text-green-600">
+                    <Link
+                      to={`/product/${product._id}`}
+                      className="flex items-center text-green-600"
+                    >
                       <span className="mr-1">Lihat Detail</span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -246,10 +227,10 @@ const Marketplace = () => {
                           clipRule="evenodd"
                         />
                       </svg>
-                    </div>
+                    </Link>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}

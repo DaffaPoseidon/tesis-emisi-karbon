@@ -2,6 +2,7 @@ const multer = require("multer");
 const path = require("path");
 const Case = require("../models/Case");
 const User = require("../models/User");
+const mongoose = require('mongoose');
 
 // Konfigurasi multer untuk menyimpan file di memori
 const storage = multer.memoryStorage(); // Gunakan penyimpanan memori

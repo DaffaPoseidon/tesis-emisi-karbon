@@ -14,6 +14,7 @@ import ProtectedRouteBuyer from "./components/ProtectedRouteBuyer";
 import BuyProduct from "./pages/marketplace/BuyProduct";
 import Marketplace from "./pages/marketplace/Marketplace";
 import ProductDetail from "./pages/marketplace/ProductDetail";
+import Account from "./pages/account/Account";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/account" element={<Account />} />
       </Routes>
     </>
   );

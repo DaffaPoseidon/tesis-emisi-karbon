@@ -2,7 +2,8 @@ const multer = require("multer");
 const path = require("path");
 const Case = require("../models/Case");
 const User = require("../models/User");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const Purchase = require("../models/Purchase");
 
 // Konfigurasi multer untuk menyimpan file di memori
 const storage = multer.memoryStorage(); // Gunakan penyimpanan memori
@@ -19,6 +20,156 @@ const headers = {
 // blockchain
 const { issueCarbonCertificate } = require("../services/blockchainService");
 const fs = require("fs");
+
+const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId)
+      .select("-password") // Exclude password
+      .populate({
+        path: "carbonCredits.caseId",
+        select:
+          "namaProyek saranaPenyerapEmisi jumlahKarbon lembagaSertifikasi tanggalMulai tanggalSelesai",
+      });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const {
+      firstName,
+      lastName,
+      phoneNumber,
+      personalAddress,
+      companyDetails,
+    } = req.body;
+
+    // Validate required fields
+    if (!firstName || !lastName) {
+      return res
+        .status(400)
+        .json({ message: "First name and last name are required" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        firstName,
+        lastName,
+        phoneNumber,
+        personalAddress,
+        companyDetails,
+      },
+      { new: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const processPurchase = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { caseId, quantity, totalPrice } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(caseId)) {
+      return res.status(400).json({ message: "Invalid case ID" });
+    }
+
+    // Validate inputs
+    if (!quantity || quantity <= 0 || !totalPrice || totalPrice <= 0) {
+      return res.status(400).json({ message: "Invalid quantity or price" });
+    }
+
+    // Get the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if user has enough balance
+    if (user.balance < totalPrice) {
+      return res.status(400).json({ message: "Insufficient balance" });
+    }
+
+    // Check if case exists and has enough carbon credits
+    const carbonCase = await Case.findById(caseId);
+    if (!carbonCase) {
+      return res.status(404).json({ message: "Case not found" });
+    }
+
+    if (carbonCase.jumlahKarbon < quantity) {
+      return res
+        .status(400)
+        .json({ message: "Not enough carbon credits available" });
+    }
+
+    // Update user balance
+    user.balance -= totalPrice;
+
+    // Add carbon credits to user
+    const transactionId = new mongoose.Types.ObjectId().toString();
+    user.carbonCredits.push({
+      caseId,
+      quantity,
+      purchaseDate: new Date(),
+      transactionId,
+    });
+
+    // Update case carbon amount
+    carbonCase.jumlahKarbon -= quantity;
+
+    // Save changes
+    await Promise.all([user.save(), carbonCase.save()]);
+
+    // Create purchase record
+    const purchase = new Purchase({
+      buyer: userId,
+      seller: carbonCase.penggugah,
+      case: caseId,
+      quantity,
+      totalPrice,
+      transactionId,
+    });
+
+    await purchase.save();
+
+    res.status(200).json({
+      message: "Purchase successful",
+      purchase: {
+        transactionId,
+        case: carbonCase.namaProyek,
+        quantity,
+        totalPrice,
+        remainingBalance: user.balance,
+      },
+    });
+  } catch (error) {
+    console.error("Error processing purchase:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // Fungsi untuk memproses persetujuan validator
 const updateStatus = async (req, res) => {
@@ -649,6 +800,9 @@ const purchaseProduct = async (req, res) => {
 };
 
 module.exports = {
+  getUserProfile,
+  updateUserProfile,
+  processPurchase,
   createCase,
   getCase,
   getApprovedCases,

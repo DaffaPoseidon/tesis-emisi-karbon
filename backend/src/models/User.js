@@ -1,13 +1,38 @@
-const mongoose = require("../configuration/dbConfig"); // Mengimpor modul Mongoose untuk menghubungkan Node.js ke MongoDB
+const mongoose = require("../configuration/dbConfig");
 
-const userSchema = new mongoose.Schema({ // Mendefinisikan skema (struktur) untuk koleksi "User"
-    firstName: String, // Mendefinisikan field "firstName" dengan tipe data String
-    lastName: String, // Mendefinisikan field "lastName" dengan tipe data String
-    email: {type: String, unique: true}, // Mendefinisikan field "email" dengan tipe data String, yang harus unik
-    password: String, // Mendefinisikan field "password" dengan tipe data String
-    role: {type: String, enum: ["superadmin", "validator", "seller", "buyer", "guest"], default: "guest"}, // Mendefinisikan field "role" dengan nilai terbatas pada "superadmin", "admin", atau "guest" dan nilai default "guest"
-    cases: [{ type: mongoose.Schema.Types.ObjectId, ref: "Case" }] // Menyimpan banyak kasus yang dimiliki user
+const userSchema = new mongoose.Schema({
+  firstName: String,
+  lastName: String,
+  email: { type: String, unique: true },
+  password: String,
+  role: {
+    type: String,
+    enum: ["superadmin", "validator", "seller", "buyer", "guest"],
+    default: "guest",
+  }, 
+  cases: [{ type: mongoose.Schema.Types.ObjectId, ref: "Case" }],
+  walletAddress: String,
+  balance: { type: Number, default: 1000000000 }, // Default 1 Milyar
+  companyDetails: {
+    name: String,
+    address: String,
+    phone: String,
+    taxId: String,
+    industry: String,
+  },
+  personalAddress: String,
+  phoneNumber: String,
+  carbonCredits: [
+    {
+      caseId: { type: mongoose.Schema.Types.ObjectId, ref: "Case" },
+      quantity: Number,
+      purchaseDate: Date,
+      transactionId: String,
+    },
+  ],
+  createdAt: { type: Date, default: Date.now },
 });
 
+const User = mongoose.model("User", userSchema);
 
-module.exports = mongoose.model("User", userSchema); // Membuat dan mengekspor model "User" berdasarkan skema userSchema
+module.exports = User;

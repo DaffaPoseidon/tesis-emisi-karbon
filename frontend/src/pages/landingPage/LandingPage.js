@@ -308,7 +308,7 @@ const LandingPage = () => {
                               {canPurchase && (
                                 <button
                                   onClick={() =>
-                                    navigate(`/buy/${product._id}`)
+                                    navigate(`/product/${product._id}/buy`)
                                   }
                                   className="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm transition"
                                 >

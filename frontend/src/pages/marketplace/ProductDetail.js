@@ -5,7 +5,7 @@ import Header from "../../components/Header";
 const ProductDetail = () => {
   const { id } = useParams();
   console.log("Product ID from URL:", id);
-  
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,24 +14,24 @@ const ProductDetail = () => {
     try {
       console.log("Fetching product with ID:", id);
       setLoading(true);
-      
+
       if (!id) {
         throw new Error("ID produk tidak valid");
       }
-      
+
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`
       );
 
       console.log("API response status:", response.status);
-      
+
       if (!response.ok) {
         throw new Error("Gagal mengambil data produk");
       }
 
       const data = await response.json();
       console.log("Product data received:", data);
-      
+
       // Verifikasi status produk
       if (data.statusPengajuan !== "Diterima") {
         throw new Error("Produk ini belum disetujui");
@@ -41,7 +41,7 @@ const ProductDetail = () => {
       setProduct({
         ...data,
         jumlahKarbon: Number(data.jumlahKarbon) || 0,
-        hargaPerTon: 100000, 
+        hargaPerTon: 100000,
         totalHarga: (Number(data.jumlahKarbon) || 0) * 100000,
       });
     } catch (error) {
@@ -222,9 +222,7 @@ const ProductDetail = () => {
                         <p>{formatDate(product.tanggalMulai)}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">
-                          Tanggal Selesai
-                        </p>
+                        <p className="text-sm text-gray-500">Tanggal Selesai</p>
                         <p>{formatDate(product.tanggalSelesai)}</p>
                       </div>
                       <div className="col-span-2">
@@ -310,18 +308,18 @@ const ProductDetail = () => {
                     </div>
                   </div>
 
-                  {product.statusPengajuan === "Diterima" ? (
-                    <Link
-                      to={`/product/${product._id}/buy`}
-                      className="block w-full bg-green-600 hover:bg-green-700 text-white text-center font-medium py-3 px-4 rounded-md transition duration-200"
-                    >
-                      Beli Sekarang
-                    </Link>
-                  ) : (
-                    <button className="w-full bg-gray-400 text-white text-center font-medium py-3 px-4 rounded-md cursor-not-allowed">
-                      Tidak Tersedia
-                    </button>
-                  )}
+{product.statusPengajuan === "Diterima" ? (
+  <Link
+    to={`/product/${product._id}/buy`}
+    className="block w-full bg-green-600 hover:bg-green-700 text-white text-center font-medium py-3 px-4 rounded-md transition duration-200"
+  >
+    Beli Sekarang
+  </Link>
+) : (
+  <button className="w-full bg-gray-400 text-white text-center font-medium py-3 px-4 rounded-md cursor-not-allowed">
+    Tidak Tersedia
+  </button>
+)}
                 </div>
 
                 <div className="bg-blue-50 p-4 rounded-lg">

@@ -5,7 +5,7 @@ import Header from "../../components/Header";
 const BuyProduct = () => {
   const { id } = useParams(); // Ubah dari productId ke id
   const navigate = useNavigate();
-  
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,11 +23,11 @@ const BuyProduct = () => {
     try {
       console.log("Fetching product with ID:", id);
       setLoading(true);
-      
+
       if (!id) {
         throw new Error("ID produk tidak valid");
       }
-      
+
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`
       );
@@ -60,7 +60,7 @@ const BuyProduct = () => {
 
   useEffect(() => {
     fetchProductDetails();
-    
+
     // Isi form dengan data user yang sudah login
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
@@ -94,16 +94,16 @@ const BuyProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       setLoading(true);
-      
+
       // Ambil token dari localStorage
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("Anda harus login terlebih dahulu");
       }
-      
+
       const purchaseData = {
         caseId: product._id,
         quantity: quantity,
@@ -111,9 +111,10 @@ const BuyProduct = () => {
         paymentMethod: paymentMethod,
         buyerInfo: formData,
       };
-      
+
+      // Gunakan endpoint users/purchase yang baru
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/purchases`,
+        `${process.env.REACT_APP_API_BASE_URL}/users/purchase`,
         {
           method: "POST",
           headers: {
@@ -123,17 +124,26 @@ const BuyProduct = () => {
           body: JSON.stringify(purchaseData),
         }
       );
-      
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Gagal melakukan pembelian");
+        // Parse response dengan error handling yang lebih baik
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Gagal melakukan pembelian");
+        } else {
+          const errorText = await response.text();
+          console.error("Non-JSON error response:", errorText);
+          throw new Error("Terjadi kesalahan pada server");
+        }
       }
-      
+
       const data = await response.json();
-      
-      alert("Pembelian berhasil! Silakan lakukan pembayaran sesuai instruksi.");
-      navigate("/dashboard");
-      
+
+      alert(
+        "Pembelian berhasil! Silakan cek kepemilikan karbon Anda di halaman Akun."
+      );
+      navigate("/account");
     } catch (error) {
       console.error("Error processing purchase:", error);
       setError(error.message);
@@ -377,7 +387,9 @@ const BuyProduct = () => {
               </h2>
 
               <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-                <h3 className="font-medium text-lg mb-2">{product.namaProyek}</h3>
+                <h3 className="font-medium text-lg mb-2">
+                  {product.namaProyek}
+                </h3>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
                     <p className="text-gray-600">Sarana Penyerap</p>
@@ -414,9 +426,7 @@ const BuyProduct = () => {
                   </div>
                   <div className="col-span-2">
                     <p className="text-gray-600">Jumlah Karbon</p>
-                    <p className="font-medium">
-                      {product.jumlahKarbon} Ton
-                    </p>
+                    <p className="font-medium">{product.jumlahKarbon} Ton</p>
                   </div>
                 </div>
               </div>
@@ -428,7 +438,9 @@ const BuyProduct = () => {
                 <div className="border-t border-gray-200 pt-2">
                   <div className="flex justify-between py-2">
                     <span>Harga per Ton</span>
-                    <span>Rp {product.hargaPerTon.toLocaleString("id-ID")}</span>
+                    <span>
+                      Rp {product.hargaPerTon.toLocaleString("id-ID")}
+                    </span>
                   </div>
                   <div className="flex justify-between py-2">
                     <span>Jumlah</span>

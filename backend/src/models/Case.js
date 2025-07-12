@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 
 // Skema untuk proposal (data karbon per periode)
-const proposalSchema = new mongoose.Schema({
-  tanggalMulai: { type: Date, required: true },
-  tanggalSelesai: { type: Date, required: true },
-  jumlahKarbon: { type: Number, required: true },
-  statusProposal: {
-    type: String,
-    enum: ["Diajukan", "Diterima", "Ditolak"],
-    default: "Diajukan",
-  },
-});
+// const proposalSchema = new mongoose.Schema({
+//   tanggalMulai: { type: Date, required: true },
+//   tanggalSelesai: { type: Date, required: true },
+//   jumlahKarbon: { type: Number, required: true },
+//   statusProposal: {
+//     type: String,
+//     enum: ["Diajukan", "Diterima", "Ditolak"],
+//     default: "Diajukan",
+//   },
+// });
 
 const caseSchema = new mongoose.Schema(
   {

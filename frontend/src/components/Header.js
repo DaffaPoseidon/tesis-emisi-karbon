@@ -1,123 +1,156 @@
-// src/components/Header.js
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Gunakan Link untuk routing dan useNavigate untuk navigasi
-import logo from "../images/Logo-Polinema.webp"; // Import gambar logo
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../images/Logo-Polinema.webp";
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
-  const [isValidator, setIsValidator] = useState(false);
-  const [isUser, setIsUser] = useState(false);
+  const [userRole, setUserRole] = useState("");
+  const [userName, setUserName] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Ambil token dari localStorage
-    const token = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
 
-    // Reset semua state role ke false terlebih dahulu
-    setIsSuperAdmin(false);
-    setIsValidator(false);
-    setIsUser(false);
-
-    // Cek apakah token ada
-    if (token) {
+    if (token && user) {
       setIsLoggedIn(true);
-
-      switch (token.role) {
-        case "superadmin":
-          setIsSuperAdmin(true);
-          break;
-        case "validator":
-          setIsValidator(true);
-          break;
-        case "user":
-          setIsUser(true);
-          break;
-        default:
-          break;
-      }
+      setUserRole(user.role);
+      setUserName(`${user.firstName || ""} ${user.lastName || ""}`.trim());
     } else {
       setIsLoggedIn(false);
+      setUserRole("");
+      setUserName("");
     }
   }, []);
 
-  // Fungsi untuk handle logout
   const handleLogout = () => {
-    localStorage.removeItem("user"); // Hapus user dari localStorage
-    setIsLoggedIn(false); // Set status login menjadi false
-    setIsSuperAdmin(false); // Reset role superadmin
-    window.location.reload(); // Refresh halaman (seperti CTRL + SHIFT + R)
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    setUserRole("");
+    setUserName("");
+    setDropdownOpen(false);
+    navigate("/login");
+  };
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
   };
 
   return (
-    <header className="bg-blue-600 py-4">
-      <div className="container mx-auto flex justify-between items-center px-6">
-        {/* Bagian Kiri: Logo + Navigasi */}
-        <div className="flex items-center space-x-12">
-          {/* Logo dan Teks */}
-          <div className="flex items-center">
-            <Link to="/">
-              <img
-                src={logo}
-                alt="Logo Polinema"
-                className="h-20 w-20"
-              />
-            </Link>
-            <ul className="ml-4 text-white">
-              <li>POLINEMA</li>
-              <li>BLOCKCHAIN</li>
-              <li>EMISI KARBON</li>
-            </ul>
-          </div>
+    <header className="bg-white shadow-md">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex justify-between items-center">
+          <Link to="/" className="flex items-center">
+            <img 
+              src={Logo} 
+              alt="Polinema Logo" 
+              className="h-10 w-10" 
+            />
+            <span className="ml-2 text-xl font-bold text-green-600">
+              Carbon Credits
+            </span>
+          </Link>
 
-          {/* Navigasi Beranda & Data Rekap */}
-          <div className="flex space-x-8">
-            <Link to="/" className="text-white hover:text-gray-300">
-              Beranda
+          <nav className="hidden md:flex space-x-6 items-center">
+            <Link
+              to="/"
+              className="text-gray-700 hover:text-green-600 transition duration-150"
+            >
+              Home
             </Link>
-            {(isSuperAdmin || isValidator) && (
-            <Link to="/data-kandidat" className="text-white hover:text-gray-300">
-              Data Rekap
+            <Link
+              to="/marketplace"
+              className="text-gray-700 hover:text-green-600 transition duration-150"
+            >
+              Marketplace
             </Link>
-            )}
-          </div>
-        </div>
-
-        {/* Bagian Kanan: Tombol Login/Register */}
-        <div className="flex space-x-4">
-          {isLoggedIn ? (
-            <>
-              <button
-                onClick={handleLogout}
-                className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300"
-              >
-                Log Out
-              </button>
-              {isSuperAdmin && (
-                <Link
-                  to="/register-validator"
-                  className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300"
+            
+            {isLoggedIn ? (
+              <div className="relative">
+                <button
+                  onClick={toggleDropdown}
+                  className="flex items-center text-gray-700 hover:text-green-600 focus:outline-none"
                 >
-                  Register Admin
+                  <span className="mr-1">{userName}</span>
+                  <svg
+                    className="w-4 h-4 ml-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </button>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                    <Link
+                      to="/account"
+                      className="block px-4 py-2 text-gray-700 hover:bg-green-100"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      Akun Saya
+                    </Link>
+                    
+                    {userRole === "seller" && (
+                      <Link
+                        to="/dashboard"
+                        className="block px-4 py-2 text-gray-700 hover:bg-green-100"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                    )}
+                    
+                    {userRole === "validator" && (
+                      <Link
+                        to="/data-kandidat"
+                        className="block px-4 py-2 text-gray-700 hover:bg-green-100"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        Data Kandidat
+                      </Link>
+                    )}
+                    
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-green-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex space-x-2">
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition duration-150"
+                >
+                  Login
                 </Link>
-              )}
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="px-6 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 transition duration-300"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register-user"
-                className="px-6 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 transition duration-300"
-              >
-                Register
-              </Link>
-            </>
-          )}
+                <Link
+                  to="/register-user"
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-150"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
+          </nav>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            {/* Implement mobile menu here */}
+          </div>
         </div>
       </div>
     </header>

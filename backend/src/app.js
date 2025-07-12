@@ -7,7 +7,7 @@ const authenticatedRoute = require("./routes/Authenticated");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { createSuperAdminAccount } = require("./scripts/setup");
-const caseRoutes = require("./routes/CaseRoutes");
+const routes = require("./routes/Routes");
 const app = express();
 const PORT = process.env.PORT; 
 const MONGO_URL = process.env.MONGO_URL || "mongodb://192.168.1.3:27017/jwt_db";
@@ -23,7 +23,8 @@ app.use("/validator", signupValidator);
 app.use("/user", signupUser);
 app.use("/auth", loginRoute);
 app.use("/api", authenticatedRoute);
-app.use("/api/cases", caseRoutes);
+app.use("/api/cases", routes);
+app.use("/api/users", routes);
 
 // KHUSUS BLOCKCHAIN
 // 

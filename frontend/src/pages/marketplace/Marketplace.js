@@ -102,7 +102,7 @@ const Marketplace = () => {
         <div className="mb-6">
           <input
             type="text"
-            placeholder="Cari proyek berdasarkan nama atau jenis penyerap..."
+            placeholder="Find project from project name or carbon arbsorption medium"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"

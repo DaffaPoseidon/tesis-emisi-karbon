@@ -43,11 +43,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center">
-            <img 
-              src={Logo} 
-              alt="Polinema Logo" 
-              className="h-10 w-10" 
-            />
+            <img src={Logo} alt="Polinema Logo" className="h-10 w-10" />
             <span className="ml-2 text-xl font-bold text-green-600">
               Carbon Credits
             </span>
@@ -66,7 +62,17 @@ const Header = () => {
             >
               Marketplace
             </Link>
-            
+
+            {/* Register Validator link in main navigation - only for superadmin */}
+            {isLoggedIn && userRole === "superadmin" && (
+              <Link
+                to="/register-validator"
+                className="text-gray-700 hover:text-green-600 transition duration-150"
+              >
+                Register Validator
+              </Link>
+            )}
+
             {isLoggedIn ? (
               <div className="relative">
                 <button
@@ -99,7 +105,7 @@ const Header = () => {
                     >
                       My Account
                     </Link>
-                    
+
                     {userRole === "seller" && (
                       <Link
                         to="/dashboard"
@@ -109,17 +115,9 @@ const Header = () => {
                         Dashboard
                       </Link>
                     )}
-                    
-                    {/* {userRole === "validator" && (
-                      <Link
-                        to="/data-kandidat"
-                        className="block px-4 py-2 text-gray-700 hover:bg-green-100"
-                        onClick={() => setDropdownOpen(false)}
-                      >
-                        Data Kandidat
-                      </Link>
-                    )} */}
-                    
+
+                    {/* Removed Register Validator from dropdown since it's now in main nav */}
+
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-green-100"
@@ -148,9 +146,7 @@ const Header = () => {
           </nav>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
-            {/* Implement mobile menu here */}
-          </div>
+          <div className="md:hidden">{/* Implement mobile menu here */}</div>
         </div>
       </div>
     </header>

@@ -18,54 +18,62 @@ const CaseForm = ({
   const [proposals, setProposals] = useState([]);
   const [lembagaOptions, setLembagaOptions] = useState([
     {
-      value: "ISPO (Indonesian Sustainable Palm Oil)",
-      label: "ISPO (Indonesian Sustainable Palm Oil)",
+      value: "PT Surveyor Indonesia",
+      label: "PT Surveyor Indonesia",
     },
     {
-      value: "RSPO (Roundtable on Sustainable Palm Oil)",
-      label: "RSPO (Roundtable on Sustainable Palm Oil)",
+      value: "PT Anindya Wiraputra Konsult Divisi Lembaga Validasi/Verifikasi Gas Rumah Kaca (GRK) dan Nilai Ekonomi Karbon (NEK)",
+      label: "PT Anindya Wiraputra Konsult Divisi Lembaga Validasi/Verifikasi Gas Rumah Kaca (GRK) dan Nilai Ekonomi Karbon (NEK)",
     },
     {
-      value: "FSC (Forest Stewardship Council)",
-      label: "FSC (Forest Stewardship Council)",
+      value: "Balai Besar Standardisasi dan Pelayanan Jasa Industri Kulit, Karet, dan Plastik",
+      label: "Balai Besar Standardisasi dan Pelayanan Jasa Industri Kulit, Karet, dan Plastik",
     },
     {
-      value: "PEFC (Programme for the Endorsement of Forest Certification)",
-      label: "PEFC (Programme for the Endorsement of Forest Certification)",
+      value: "PT Abhipraya Bumi Lestari",
+      label: "PT Abhipraya Bumi Lestari",
     },
     {
-      value: "SVLK (Sistem Verifikasi Legalitas Kayu)",
-      label: "SVLK (Sistem Verifikasi Legalitas Kayu)",
+      value: "PT Mutuagung Lestari",
+      label: "PT Mutuagung Lestari",
     },
     {
-      value: "ISCC (International Sustainability and Carbon Certification)",
-      label: "ISCC (International Sustainability and Carbon Certification)",
+      value: "PT Superintending Company of Indonesia (PT SUCOFINDO) –SBU Sertifikasi dan Eco Framework (Sucofindo International Certification Services)",
+      label: "PT Superintending Company of Indonesia (PT SUCOFINDO) –SBU Sertifikasi dan Eco Framework (Sucofindo International Certification Services)",
     },
-    { value: "independen", label: "Lembaga Independen (Isi Sendiri)" },
+    {
+      value: "PT TUV NORD Indonesia",
+      label: "PT TUV NORD Indonesia",
+    },
+    {
+      value: "PT TUV Rheinland Indonesia",
+      label: "PT TUV Rheinland Indonesia",
+    },
+    { value: "independen", label: "Independent Institute (Custom)" },
   ]);
   const [customLembaga, setCustomLembaga] = useState("");
   const [showCustomLembaga, setShowCustomLembaga] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // State untuk mengelola modal date picker
+  // State for managing date picker modal
   const [selectedProposalIndex, setSelectedProposalIndex] = useState(null);
-  const [datePickerType, setDatePickerType] = useState(null); // 'start' atau 'end'
+  const [datePickerType, setDatePickerType] = useState(null); // 'start' or 'end'
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     if (editMode) {
       setLocalFormData(formData);
 
-      // Proses proposals dari server
+      // Process proposals from server
       if (formData.proposals && formData.proposals.length > 0) {
-        // Pastikan setiap proposal memiliki format yang benar
+        // Ensure each proposal has the correct format
         const processedProposals = formData.proposals.map((proposal) => ({
           ...proposal,
-          // Pastikan tanggal adalah objek Date
+          // Ensure dates are Date objects
           tanggalMulai: new Date(proposal.tanggalMulai),
           tanggalSelesai: new Date(proposal.tanggalSelesai),
-          // Pastikan jumlahKarbon adalah number
+          // Ensure jumlahKarbon is a number
           jumlahKarbon: Number(proposal.jumlahKarbon),
-          // Pastikan ID tersimpan untuk proposals yang sudah ada
+          // Ensure ID is stored for existing proposals
           _id: proposal._id,
         }));
 
@@ -74,7 +82,7 @@ const CaseForm = ({
         setProposals([]);
       }
 
-      // Cek jika lembaga sertifikasi adalah custom
+      // Check if certification institute is custom
       const isCustom = !lembagaOptions.find(
         (option) =>
           option.value === formData.lembagaSertifikasi &&
@@ -92,7 +100,7 @@ const CaseForm = ({
       setCustomLembaga("");
       setShowModal(false);
 
-      // Reset input file saat keluar dari edit mode
+      // Reset file input when exiting edit mode
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -135,11 +143,11 @@ const CaseForm = ({
     setShowModal(false);
   };
 
-  // Fungsi untuk menambah proposal baru
+  // Function to add a new proposal
   const addProposal = () => {
     const newProposal = {
       tanggalMulai: new Date(),
-      tanggalSelesai: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 hari dari sekarang
+      tanggalSelesai: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
       jumlahKarbon: 0,
       statusProposal: "Diajukan",
     };
@@ -147,34 +155,34 @@ const CaseForm = ({
     setProposals([...proposals, newProposal]);
   };
 
-  // Fungsi untuk update proposal
+  // Function to update proposal
   const updateProposal = (index, field, value) => {
     const proposal = proposals[index];
 
-    // Cek jika proposal sudah disetujui
+    // Check if proposal is already approved
     if (proposal._id && proposal.statusProposal === "DiTerima") {
-      alert("Proposal yang sudah disetujui tidak dapat diubah");
+      alert("Approved proposals cannot be modified");
       return;
     }
 
     const updatedProposals = [...proposals];
     updatedProposals[index][field] = value;
 
-    // Jika proposal sebelumnya ditolak, tandai sebagai "telah diubah"
+    // If proposal was previously rejected, mark as "has been edited"
     if (proposal._id && proposal.statusProposal === "Ditolak") {
-      updatedProposals[index].hasBeenEdited = true; // Flag untuk menandai proposal telah diubah
+      updatedProposals[index].hasBeenEdited = true; // Flag to mark proposal as edited
     }
 
     setProposals(updatedProposals);
   };
 
-  // Fungsi untuk menghapus proposal
+  // Function to remove proposal
   const removeProposal = (index) => {
     const proposal = proposals[index];
 
-    // Cek jika proposal sudah disetujui
+    // Check if proposal is already approved
     if (proposal._id && proposal.statusProposal === "Diterima") {
-      alert("Proposal yang sudah disetujui tidak dapat dihapus");
+      alert("Approved proposals cannot be deleted");
       return;
     }
 
@@ -183,14 +191,14 @@ const CaseForm = ({
     setProposals(updatedProposals);
   };
 
-  // Fungsi untuk membuka date picker
+  // Function to open date picker
   const openDatePicker = (index, type) => {
     setSelectedProposalIndex(index);
     setDatePickerType(type);
     setShowDatePicker(true);
   };
 
-  // Fungsi untuk memilih tanggal
+  // Function to select a date
   const handleDaySelect = (date) => {
     if (!date) return;
 
@@ -198,28 +206,28 @@ const CaseForm = ({
       const updatedProposals = [...proposals];
 
       if (datePickerType === "start") {
-        // Jika memilih tanggal mulai
+        // If selecting start date
         updatedProposals[selectedProposalIndex].tanggalMulai = date;
 
-        // Jika tanggal mulai lebih besar dari tanggal selesai, update tanggal selesai
+        // If start date is greater than end date, update end date
         if (date > updatedProposals[selectedProposalIndex].tanggalSelesai) {
           updatedProposals[selectedProposalIndex].tanggalSelesai = date;
-          // Beri notifikasi kepada user
+          // Notify user
           alert(
-            "Tanggal Selesai telah diubah otomatis karena Tanggal Mulai lebih besar"
+            "End Date has been automatically updated because Start Date was later"
           );
         }
       } else {
-        // Jika memilih tanggal selesai
+        // If selecting end date
         const tanggalMulai =
           updatedProposals[selectedProposalIndex].tanggalMulai;
 
-        // Pastikan tanggal selesai tidak sebelum tanggal mulai
+        // Ensure end date is not before start date
         if (date < tanggalMulai) {
           alert(
-            "Tanggal Selesai tidak boleh sebelum atau sama dengan Tanggal Mulai"
+            "End Date cannot be before or the same as Start Date"
           );
-          // Tetap gunakan tanggal selesai lama
+          // Keep using old end date
           return;
         }
 
@@ -240,25 +248,25 @@ const CaseForm = ({
       return;
     }
 
-    // Validasi tambahan
+    // Additional validation
     if (proposals.length === 0) {
-      alert("Harap tambahkan minimal satu data periode penyerapan karbon");
+      alert("Please add at least one carbon absorption period");
       return;
     }
 
-    // Validasi tanggal untuk semua proposal
+    // Validate dates for all proposals
     for (let i = 0; i < proposals.length; i++) {
       const proposal = proposals[i];
       const tanggalMulai = new Date(proposal.tanggalMulai);
       const tanggalSelesai = new Date(proposal.tanggalSelesai);
 
       if (tanggalMulai >= tanggalSelesai) {
-        alert(`Periode #${i + 1}: Tanggal Selesai harus setelah Tanggal Mulai`);
+        alert(`Period #${i + 1}: End Date must be after Start Date`);
         return;
       }
 
       if (proposal.jumlahKarbon <= 0) {
-        alert(`Periode #${i + 1}: Jumlah Karbon harus lebih dari 0`);
+        alert(`Period #${i + 1}: Carbon Amount must be greater than 0`);
         return;
       }
     }
@@ -267,16 +275,16 @@ const CaseForm = ({
     const user = JSON.parse(localStorage.getItem("user"));
     const penggugah = user ? user._id : "Unknown";
 
-    // PERUBAHAN UTAMA: Kirim masing-masing periode sebagai entri terpisah
+    // MAIN CHANGE: Send each period as a separate entry
     try {
-      // Menampilkan status loading
+      // Show loading status
       setIsSubmitting(true);
 
-      // Simpan semua periode satu per satu
+      // Save all periods one by one
       for (const proposal of proposals) {
         const formDataToSend = new FormData();
 
-        // Tambahkan data utama proyek
+        // Add main project data
         Object.keys(localFormData).forEach((key) => {
           if (key === "file" && localFormData.file) {
             for (let i = 0; i < localFormData.file.length; i++) {
@@ -287,7 +295,7 @@ const CaseForm = ({
           }
         });
 
-        // Tambahkan data periode dengan konversi eksplisit untuk jumlahKarbon
+        // Add period data with explicit conversion for jumlahKarbon
         formDataToSend.append(
           "tanggalMulai",
           proposal.tanggalMulai.toISOString()
@@ -297,18 +305,18 @@ const CaseForm = ({
           proposal.tanggalSelesai.toISOString()
         );
 
-        // PERBAIKAN: Pastikan jumlahKarbon selalu menjadi number yang valid
+        // FIX: Ensure jumlahKarbon is always a valid number
         const carbonAmount = parseInt(proposal.jumlahKarbon, 10);
         if (isNaN(carbonAmount) || carbonAmount <= 0) {
           throw new Error(
-            `Jumlah karbon untuk periode harus berupa angka positif`
+            `Carbon amount for the period must be a positive number`
           );
         }
         formDataToSend.append("jumlahKarbon", carbonAmount.toString());
 
         formDataToSend.append("penggugah", penggugah);
 
-        // Kirim ke server
+        // Send to server
         const response = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/cases`,
           {
@@ -322,11 +330,11 @@ const CaseForm = ({
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || "Gagal menyimpan data");
+          throw new Error(errorData.message || "Failed to save data");
         }
       }
 
-      alert("Semua data periode berhasil disimpan");
+      alert("All period data has been successfully saved");
       setLocalFormData(initialFormState);
       setProposals([]);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -346,7 +354,7 @@ const CaseForm = ({
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // Format tanggal
+  // Format date
   const formatDate = (date) => {
     if (!date) return "";
     return format(new Date(date), "dd/MM/yyyy");
@@ -354,12 +362,12 @@ const CaseForm = ({
 
   return (
     <div>
-      {/* Modal untuk file kosong */}
+      {/* Modal for empty file */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-lg">
             <p className="text-red-500 text-lg font-bold">
-              File harus diunggah!
+              File must be uploaded!
             </p>
             <button
               onClick={() => setShowModal(false)}
@@ -371,14 +379,14 @@ const CaseForm = ({
         </div>
       )}
 
-      {/* Modal untuk Date Picker */}
+      {/* Modal for Date Picker */}
       {showDatePicker && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-lg">
             <h3 className="text-lg font-medium mb-4">
               {datePickerType === "start"
-                ? "Pilih Tanggal Mulai"
-                : "Pilih Tanggal Selesai"}
+                ? "Select Start Date"
+                : "Select End Date"}
             </h3>
             <DayPicker
               mode="single"
@@ -393,20 +401,20 @@ const CaseForm = ({
                   ? proposals[selectedProposalIndex].tanggalMulai
                   : undefined
               }
-              // Tambahkan property ini untuk menampilkan dropdown selectors
+              // Add this property to display dropdown selectors
               captionLayout="dropdown"
-              // Tambahkan range tahun yang lebih luas (dari 10 tahun lalu hingga 20 tahun ke depan)
+              // Add a wider year range (from 10 years ago to 20 years ahead)
               fromYear={new Date().getFullYear() - 10}
               toYear={new Date().getFullYear() + 20}
-              // Styling tambahan untuk dropdown
+              // Additional styling for dropdown
               classNames={{
                 caption_dropdowns: "flex justify-center space-x-1",
-                caption_label: "hidden", // Sembunyikan label default
+                caption_label: "hidden", // Hide default label
                 dropdown:
                   "p-1 border border-gray-300 rounded bg-white cursor-pointer text-gray-700",
                 dropdown_month: "mr-1",
                 dropdown_year: "ml-1",
-                vhidden: "hidden", // Sembunyikan elemen yang tidak perlu
+                vhidden: "hidden", // Hide unnecessary elements
               }}
               className="mx-auto"
             />
@@ -415,7 +423,7 @@ const CaseForm = ({
                 onClick={() => setShowDatePicker(false)}
                 className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
               >
-                Batal
+                Cancel
               </button>
             </div>
           </div>
@@ -427,18 +435,18 @@ const CaseForm = ({
         className="bg-white shadow rounded p-6 mb-4"
       >
         <h2 className="text-xl font-bold mb-4">
-          {editMode ? "Edit Proyek" : "Tambah Proyek Baru"}
+          {editMode ? "Edit Project" : "Add New Project"}
         </h2>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="col-span-2">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Nama Proyek
+              Project Name
             </label>
             <input
               type="text"
               name="namaProyek"
-              placeholder="Nama Proyek"
+              placeholder="Project Name"
               value={localFormData.namaProyek || ""}
               onChange={handleInputChange}
               className="border border-gray-300 rounded p-2 w-full"
@@ -448,12 +456,12 @@ const CaseForm = ({
 
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Luas Tanah (Ha)
+              Land Area (Ha)
             </label>
             <input
               type="text"
               name="luasTanah"
-              placeholder="Luas Tanah (Ha)"
+              placeholder="Land Area (Ha)"
               value={localFormData.luasTanah || ""}
               onChange={handleInputChange}
               className="border border-gray-300 rounded p-2 w-full"
@@ -463,12 +471,12 @@ const CaseForm = ({
 
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Sarana Penyerap Emisi
+              Emission Absorption Medium
             </label>
             <input
               type="text"
               name="saranaPenyerapEmisi"
-              placeholder="Sarana Penyerap Emisi"
+              placeholder="Emission Absorption Medium"
               value={localFormData.saranaPenyerapEmisi || ""}
               onChange={handleInputChange}
               className="border border-gray-300 rounded p-2 w-full"
@@ -478,12 +486,12 @@ const CaseForm = ({
 
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Kepemilikan Lahan
+              Land Ownership
             </label>
             <input
               type="text"
               name="kepemilikanLahan"
-              placeholder="Kepemilikan Lahan"
+              placeholder="Land Ownership"
               value={localFormData.kepemilikanLahan || ""}
               onChange={handleInputChange}
               className="border border-gray-300 rounded p-2 w-full"
@@ -493,7 +501,7 @@ const CaseForm = ({
 
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Lembaga Sertifikasi
+              Certification Institute
             </label>
             <select
               name="lembagaSertifikasi"
@@ -506,7 +514,7 @@ const CaseForm = ({
               className="border border-gray-300 rounded p-2 w-full"
               required
             >
-              <option value="">Pilih Lembaga Sertifikasi</option>
+              <option value="">Select Certification Institute</option>
               {lembagaOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -518,14 +526,14 @@ const CaseForm = ({
           {showCustomLembaga && (
             <div>
               <label className="block text-gray-700 text-sm font-bold mb-2">
-                Nama Lembaga Independen
+                Independent Institute Name
               </label>
               <input
                 type="text"
                 value={customLembaga}
                 onChange={handleCustomLembagaChange}
                 className="border border-gray-300 rounded p-2 w-full"
-                placeholder="Masukkan nama lembaga sertifikasi"
+                placeholder="Enter certification institute name"
                 required
               />
             </div>
@@ -533,7 +541,7 @@ const CaseForm = ({
 
           <div className="col-span-2">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Unggah Dokumen Pendukung
+              Upload Supporting Documents
             </label>
             <input
               type="file"
@@ -546,11 +554,11 @@ const CaseForm = ({
           </div>
         </div>
 
-        {/* Bagian Proposal */}
+        {/* Proposals Section */}
         <div className="mt-6 mb-4">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-lg font-medium">
-              Data Periode Penyerapan Karbon
+              Carbon Absorption Period Data
             </h3>
             <button
               type="button"
@@ -569,15 +577,14 @@ const CaseForm = ({
                   clipRule="evenodd"
                 />
               </svg>
-              Tambah Periode
+              Add Period
             </button>
           </div>
 
           {proposals.length === 0 ? (
             <div className="text-center py-4 bg-gray-50 rounded border border-gray-200">
               <p className="text-gray-500">
-                Belum ada data periode. Klik tombol "Tambah Periode" untuk
-                menambahkan.
+                No period data yet. Click "Add Period" button to add.
               </p>
             </div>
           ) : (
@@ -595,20 +602,20 @@ const CaseForm = ({
                 >
                   {proposal._id && proposal.statusProposal === "Diterima" && (
                     <div className="absolute top-0 right-0 bg-green-500 text-white text-xs px-2 py-1 rounded-bl">
-                      Disetujui - Tidak dapat diubah
+                      Approved - Cannot be modified
                     </div>
                   )}
                   {proposal._id && proposal.statusProposal === "Ditolak" && (
                     <div className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-bl">
-                      Ditolak
+                      Rejected
                     </div>
                   )}
-                  {/* Tambahkan indikator akan diajukan ulang */}
+                  {/* Add indicator for resubmission */}
                   {proposal._id &&
                     proposal.statusProposal === "Ditolak" &&
                     proposal.hasBeenEdited && (
                       <div className="absolute top-6 right-0 bg-yellow-500 text-white text-xs px-2 py-1 rounded-bl">
-                        Akan diajukan ulang setelah update
+                        Will be resubmitted after update
                       </div>
                     )}
 
@@ -641,7 +648,7 @@ const CaseForm = ({
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Tanggal Mulai
+                        Start Date
                       </label>
                       <button
                         type="button"
@@ -654,7 +661,7 @@ const CaseForm = ({
 
                     <div>
                       <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Tanggal Selesai
+                        End Date
                       </label>
                       <button
                         type="button"
@@ -667,7 +674,7 @@ const CaseForm = ({
 
                     <div>
                       <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Jumlah Karbon (Ton){" "}
+                        Carbon Amount (Tons){" "}
                         <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -688,12 +695,12 @@ const CaseForm = ({
                         min="1"
                         step="1"
                         required
-                        placeholder="Masukkan jumlah karbon"
+                        placeholder="Enter carbon amount"
                       />
                       {(!proposal.jumlahKarbon ||
                         proposal.jumlahKarbon <= 0) && (
                         <p className="text-red-500 text-xs mt-1">
-                          Jumlah karbon wajib diisi dan harus lebih dari 0
+                          Carbon amount is required and must be greater than 0
                         </p>
                       )}
                     </div>
@@ -702,9 +709,9 @@ const CaseForm = ({
               ))}
 
               <div className="p-3 bg-blue-50 rounded text-blue-700 font-medium">
-                Total Karbon:{" "}
+                Total Carbon:{" "}
                 {proposals.reduce((sum, p) => sum + Number(p.jumlahKarbon), 0)}{" "}
-                Ton
+                Tons
               </div>
             </div>
           )}
@@ -715,7 +722,7 @@ const CaseForm = ({
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
-            {editMode ? "Update" : "Simpan"}
+            {editMode ? "Update" : "Save"}
           </button>
 
           {editMode && (
@@ -724,7 +731,7 @@ const CaseForm = ({
               onClick={handleCancel}
               className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
             >
-              Batal
+              Cancel
             </button>
           )}
         </div>

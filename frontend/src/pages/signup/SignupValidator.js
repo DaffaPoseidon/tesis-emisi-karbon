@@ -151,7 +151,7 @@ const Signup = () => {
                                         className="cursor-pointer"
                                         sx={{ display: 'block', textAlign: 'center', mb: 1 }}
                                     >
-                                        Sudah punya akun? Langsung Login
+                                        Already have an account? Sign in
                                     </Link>
                                     <Link
                                         variant="body2"
@@ -159,14 +159,14 @@ const Signup = () => {
                                         className="cursor-pointer"
                                         sx={{ display: 'block', textAlign: 'center' }}
                                     >
-                                        Kembali ke beranda
+                                        Back to home
                                     </Link>
                                 </Grid>
                             </Grid>
                         </Box>
                     </Box>
                 </Container>
-            </ThemeProvider >
+            </ThemeProvider>
         </>
     )
 }

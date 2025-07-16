@@ -107,7 +107,6 @@ for (uint256 i = 0; i < amount; i++) {
                 msg.sender
             )
         );
-        
         return bytes32ToString(hash);
     }
     

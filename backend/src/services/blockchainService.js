@@ -177,7 +177,7 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
           );
 
           tokens.push({
-            tokenId: dummyTokenId,
+            tokenId:  TokenId,
             uniqueHash: uniqueHash,
             proposalId: carbonData.proposalId.toString(),
           });

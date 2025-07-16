@@ -13,7 +13,7 @@ const LandingPage = () => {
   const [imageError, setImageError] = useState(false);
   const canPurchase = userRole === "buyer" || userRole === "superadmin";
 
-  // Tambahkan di useEffect
+  // Add in useEffect
   useEffect(() => {
     console.log("Backend URL:", process.env.REACT_APP_BACKEND_BASEURL);
     console.log("API URL:", process.env.REACT_APP_API_BASE_URL);
@@ -31,57 +31,57 @@ const LandingPage = () => {
     fetchCarbonProducts();
   }, []);
 
- const fetchCarbonProducts = async () => {
-  setIsLoadingProducts(true);
-  try {
-    console.log("Fetching carbon products...");
-    const response = await fetch(
-      `${process.env.REACT_APP_API_BASE_URL}/cases`
-    );
+  const fetchCarbonProducts = async () => {
+    setIsLoadingProducts(true);
+    try {
+      console.log("Fetching carbon products...");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/cases`
+      );
 
-    if (!response.ok) {
-      throw new Error(`Error fetching products: ${response.status}`);
-    }
+      if (!response.ok) {
+        throw new Error(`Error fetching products: ${response.status}`);
+      }
 
-    const data = await response.json();
-    console.log("Raw data received:", data);
+      const data = await response.json();
+      console.log("Raw data received:", data);
 
-    // Pastikan data dalam format yang benar
-    if (!data || !data.cases || !Array.isArray(data.cases)) {
-      console.error("Invalid data format:", data);
+      // Ensure data is in the correct format
+      if (!data || !data.cases || !Array.isArray(data.cases)) {
+        console.error("Invalid data format:", data);
+        setCarbonProducts([]);
+        return;
+      }
+
+      // In the new structure, directly filter cases with status "Diterima" (Approved)
+      const approvedProducts = data.cases
+        .filter((item) => item.statusPengajuan === "Diterima")
+        .map((item) => {
+          return {
+            ...item,
+            jumlahKarbon: Number(item.jumlahKarbon) || 0,
+            hargaPerTon: 100000,
+            imageUrl: item._id
+              ? `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${item._id}/files/0`
+              : null,
+            imageUrlWithTimestamp: item._id
+              ? `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${
+                  item._id
+                }/files/0?t=${Date.now()}`
+              : null,
+          };
+        })
+        .filter((product) => product.jumlahKarbon > 0);
+
+      console.log("Processed products:", approvedProducts);
+      setCarbonProducts(approvedProducts);
+    } catch (error) {
+      console.error("Error fetching carbon products:", error);
       setCarbonProducts([]);
-      return;
+    } finally {
+      setIsLoadingProducts(false);
     }
-
-    // Dalam struktur baru, langsung filter cases dengan status "Diterima"
-    const approvedProducts = data.cases
-      .filter(item => item.statusPengajuan === "Diterima")
-      .map((item) => {
-        return {
-          ...item,
-          jumlahKarbon: Number(item.jumlahKarbon) || 0,
-          hargaPerTon: 100000,
-          imageUrl: item._id
-            ? `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${item._id}/files/0`
-            : null,
-          imageUrlWithTimestamp: item._id
-            ? `${process.env.REACT_APP_BACKEND_BASEURL}/api/cases/${
-                item._id
-              }/files/0?t=${Date.now()}`
-            : null,
-        };
-      })
-      .filter(product => product.jumlahKarbon > 0);
-
-    console.log("Processed products:", approvedProducts);
-    setCarbonProducts(approvedProducts);
-  } catch (error) {
-    console.error("Error fetching carbon products:", error);
-    setCarbonProducts([]);
-  } finally {
-    setIsLoadingProducts(false);
-  }
-};
+  };
 
   const handleDashboardClick = () => {
     navigate("/dashboard");
@@ -92,10 +92,10 @@ const LandingPage = () => {
   };
 
   const handleProductClick = (productId) => {
-    // Validasi ID sebelum navigasi
+    // Validate ID before navigation
     if (!productId) {
       console.error("Error: Trying to view product with undefined ID");
-      alert("Maaf, produk ini tidak memiliki ID yang valid");
+      alert("Sorry, this product does not have a valid ID");
       return;
     }
     navigate(`/product/${productId}`);
@@ -115,11 +115,10 @@ const LandingPage = () => {
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
         <div className="text-center mt-10 p-4 sm:w-full md:w-3/4 lg:w-1/2">
           <h1 className="text-4xl sm:text-5xl font-bold text-blue-600 mb-6">
-            BLOCKCHAIN MARKETPLACE EMISI KARBON!
+            BLOCKCHAIN CARBON EMISSION MARKETPLACE!
           </h1>
           <p className="text-xl sm:text-2xl text-gray-700 mb-6">
-            Jelajahi dan investasikan pada proyek penyerapan karbon
-            terverifikasi.
+            Explore and invest in verified carbon absorption projects.
           </p>
 
           {isLoggedIn ? (
@@ -127,18 +126,18 @@ const LandingPage = () => {
               onClick={handleDashboardClick}
               className="px-8 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
             >
-              Masuk ke Dashboard
+              Go to Dashboard
             </button>
           ) : (
             <div className="flex flex-col space-y-4 items-center">
               <p className="text-lg text-gray-600">
-                Silakan login untuk mengakses dashboard
+                Please login to access the dashboard
               </p>
               <button
                 onClick={handleLoginClick}
                 className="px-8 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300"
               >
-                Login Sekarang
+                Login Now
               </button>
             </div>
           )}
@@ -149,13 +148,13 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                Marketplace Emisi Karbon
+                Carbon Emission Marketplace
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Jelajahi dan dapatkan kredit karbon terverifikasi yang telah
-                divalidasi oleh validator terpercaya. Setiap produk mewakili
-                proyek penyerapan karbon dengan blockchain sebagai jaminan
-                keaslian.
+                Explore and acquire verified carbon credits that have been
+                validated by trusted validators. Each product represents a
+                carbon absorption project with blockchain as a guarantee of
+                authenticity.
               </p>
             </div>
 
@@ -168,7 +167,7 @@ const LandingPage = () => {
                 {carbonProducts.length > 0 ? (
                   carbonProducts.map((product) => (
                     <div
-                      key={product._id || `temp-${Math.random()}`} // Tambahkan fallback untuk key
+                      key={product._id || `temp-${Math.random()}`} // Add fallback for key
                       className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300"
                     >
                       <div className="relative h-48 bg-gray-200">
@@ -177,7 +176,7 @@ const LandingPage = () => {
                             {imageError ? (
                               <div className="w-full h-64 bg-gray-200 flex items-center justify-center rounded-md">
                                 <span className="text-gray-500">
-                                  Gambar tidak tersedia
+                                  Image not available
                                 </span>
                               </div>
                             ) : (
@@ -192,7 +191,7 @@ const LandingPage = () => {
                                     : null
                                 }
                                 alt={
-                                  product.kepemilikanLahan || "Produk Karbon"
+                                  product.kepemilikanLahan || "Carbon Product"
                                 }
                                 className="w-full h-64 object-cover rounded-md"
                                 onError={() => setImageError(true)}
@@ -201,13 +200,11 @@ const LandingPage = () => {
                           </div>
                         ) : (
                           <div className="w-full h-64 bg-gray-200 flex items-center justify-center rounded-md">
-                            <span className="text-gray-500">
-                              Tidak ada gambar
-                            </span>
+                            <span className="text-gray-500">No image</span>
                           </div>
                         )}
                         <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                          Terverifikasi
+                          Verified
                         </div>
                         {product.blockchainData &&
                           product.blockchainData.transactionHash && (
@@ -231,17 +228,17 @@ const LandingPage = () => {
 
                       <div className="p-4">
                         <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate">
-                          {product.kepemilikanLahan || "Proyek Karbon"}
+                          {product.kepemilikanLahan || "Carbon Project"}
                         </h3>
                         <p className="text-sm text-gray-600 mb-2">
-                          <span className="font-medium">Jenis Pohon:</span>{" "}
+                          <span className="font-medium">Tree Type:</span>{" "}
                           {product.jenisPohon || "-"}
                         </p>
 
                         <div className="flex justify-between mb-3">
                           <div>
                             <span className="text-sm text-gray-500">
-                              Luas Tanah
+                              Land Area
                             </span>
                             <p className="font-medium">
                               {product.luasTanah || 0} Ha
@@ -249,24 +246,24 @@ const LandingPage = () => {
                           </div>
                           <div>
                             <span className="text-sm text-gray-500">
-                              Jumlah Karbon
+                              Carbon Amount
                             </span>
                             <p className="font-medium">
-                              {product.jumlahKarbon || 0} Ton
+                              {product.jumlahKarbon || 0} Tons
                             </p>
                           </div>
                         </div>
                         <div className="mb-3">
                           <span className="text-sm text-gray-500">
-                            Jumlah Sertifikat
+                            Number of Certificates
                           </span>
                           <p className="font-medium">
-                            {product.jumlahKarbon || 0} Sertifikat
+                            {product.jumlahKarbon || 0} Certificates
                           </p>
                         </div>
                         <div className="mb-3">
                           <span className="text-sm text-gray-500">
-                            Lembaga Sertifikasi
+                            Certification Institute
                           </span>
                           <p className="text-sm font-medium truncate">
                             {product.lembagaSertifikasi || "-"}
@@ -274,20 +271,20 @@ const LandingPage = () => {
                         </div>
 
                         <div className="mb-3">
-                          <span className="text-sm text-gray-500">Penjual</span>
+                          <span className="text-sm text-gray-500">Seller</span>
                           <p className="text-sm font-medium truncate">
                             {product.penggugah
                               ? `${product.penggugah.firstName || ""} ${
                                   product.penggugah.lastName || ""
                                 }`
-                              : "Informasi penjual tidak tersedia"}
+                              : "Seller information not available"}
                           </p>
                         </div>
 
                         <div className="flex justify-between items-end">
                           <div>
                             <span className="text-sm text-gray-500">
-                              Total Harga
+                              Total Price
                             </span>
                             <p className="text-lg font-bold text-green-600">
                               Rp{" "}
@@ -303,7 +300,7 @@ const LandingPage = () => {
                                 onClick={() => handleProductClick(product._id)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm transition"
                               >
-                                Lihat Detail
+                                View Details
                               </button>
                               {canPurchase && (
                                 <button
@@ -312,13 +309,13 @@ const LandingPage = () => {
                                   }
                                   className="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm transition"
                                 >
-                                  Beli Sekarang
+                                  Buy Now
                                 </button>
                               )}
                             </>
                           ) : (
                             <span className="text-red-500 text-xs">
-                              ID Produk tidak tersedia
+                              Product ID not available
                             </span>
                           )}
                         </div>
@@ -327,7 +324,7 @@ const LandingPage = () => {
                       <div className="px-4 py-2 bg-gray-50 border-t border-gray-200">
                         <div className="flex items-center justify-between text-xs text-gray-500">
                           <div>
-                            Tervalidasi:{" "}
+                            Validated:{" "}
                             {new Date(
                               product.blockchainData?.issuedOn ||
                                 product.updatedAt ||
@@ -350,7 +347,7 @@ const LandingPage = () => {
                                   />
                                 </svg>
                                 <span>
-                                  {product.blockchainData.tokens.length} Token
+                                  {product.blockchainData.tokens.length} Tokens
                                 </span>
                               </div>
                             )}
@@ -360,8 +357,8 @@ const LandingPage = () => {
                   ))
                 ) : (
                   <div className="col-span-full text-center py-10 text-gray-500">
-                    Tidak ada produk karbon yang tersedia saat ini. Silakan
-                    tunggu validator menyetujui pengajuan.
+                    No carbon products are currently available. Please wait for
+                    validators to approve submissions.
                   </div>
                 )}
               </div>
@@ -372,7 +369,7 @@ const LandingPage = () => {
                 onClick={() => navigate("/marketplace")}
                 className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300"
               >
-                Lihat Semua Produk
+                View All Products
               </button>
             </div>
           </div>

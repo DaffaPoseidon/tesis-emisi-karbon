@@ -187,7 +187,7 @@ const BuyProduct = () => {
             to="/marketplace"
             className="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Kembali ke Marketplace
+            Back to Marketplace
           </Link>
         </div>
       </div>
@@ -200,14 +200,14 @@ const BuyProduct = () => {
         <Header />
         <div className="container mx-auto p-4">
           <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
-            <p className="font-bold">Produk tidak tersedia</p>
-            <p>Produk ini tidak tersedia atau telah terjual habis.</p>
+            <p className="font-bold">Product not available</p>
+            <p>This product isn't available</p>
           </div>
           <Link
             to="/marketplace"
             className="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Kembali ke Marketplace
+            Back to Marketplace
           </Link>
         </div>
       </div>
@@ -235,7 +235,7 @@ const BuyProduct = () => {
                 clipRule="evenodd"
               />
             </svg>
-            Kembali ke Detail Produk
+            Back to Product Details
           </Link>
         </div>
 
@@ -243,18 +243,18 @@ const BuyProduct = () => {
           <div className="md:flex">
             <div className="md:w-1/2 p-8">
               <h1 className="text-2xl font-bold text-gray-800 mb-6">
-                Formulir Pembelian
+                Purchase Form
               </h1>
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-6">
                   <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                    Informasi Pembeli
+                    Buyer Information
                   </h2>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-gray-700 text-sm font-medium mb-1">
-                        Nama Lengkap
+                        Full Name
                       </label>
                       <input
                         type="text"
@@ -280,7 +280,7 @@ const BuyProduct = () => {
                     </div>
                     <div>
                       <label className="block text-gray-700 text-sm font-medium mb-1">
-                        Nomor Telepon
+                        Phone Number
                       </label>
                       <input
                         type="tel"
@@ -293,7 +293,7 @@ const BuyProduct = () => {
                     </div>
                     <div>
                       <label className="block text-gray-700 text-sm font-medium mb-1">
-                        Nama Perusahaan
+                        Company Name
                       </label>
                       <input
                         type="text"
@@ -306,7 +306,7 @@ const BuyProduct = () => {
                     </div>
                     <div>
                       <label className="block text-gray-700 text-sm font-medium mb-1">
-                        Alamat
+                        Address
                       </label>
                       <textarea
                         name="address"
@@ -322,7 +322,7 @@ const BuyProduct = () => {
 
                 <div className="mb-6">
                   <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                    Jumlah Pembelian
+                    Purchase Amount
                   </h2>
                   <div className="flex items-center space-x-4">
                     <input
@@ -334,14 +334,14 @@ const BuyProduct = () => {
                       className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                     <span className="text-gray-600">
-                      dari {product.jumlahKarbon} Ton tersedia
+                      of {product.jumlahKarbon} Tons available
                     </span>
                   </div>
                 </div>
 
                 <div className="mb-8">
                   <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                    Metode Pembayaran
+                    Payment Method
                   </h2>
                   <div className="space-y-2">
                     <div className="flex items-center">
@@ -354,7 +354,7 @@ const BuyProduct = () => {
                         onChange={() => setPaymentMethod("transfer")}
                         className="mr-2"
                       />
-                      <label htmlFor="transfer">Transfer Bank</label>
+                      <label htmlFor="transfer">Bank</label>
                     </div>
                     <div className="flex items-center">
                       <input
@@ -366,7 +366,7 @@ const BuyProduct = () => {
                         onChange={() => setPaymentMethod("emoney")}
                         className="mr-2"
                       />
-                      <label htmlFor="emoney">E-Wallet / QRIS</label>
+                      {/* <label htmlFor="emoney">E-Wallet / QRIS</label> */}
                     </div>
                   </div>
                 </div>
@@ -383,7 +383,7 @@ const BuyProduct = () => {
 
             <div className="md:w-1/2 bg-gray-50 p-8">
               <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                Ringkasan Pembelian
+                Purchase Summary
               </h2>
 
               <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
@@ -392,40 +392,40 @@ const BuyProduct = () => {
                 </h3>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
-                    <p className="text-gray-600">Sarana Penyerap</p>
+                    <p className="text-gray-600">Absorption Medium</p>
                     <p className="font-medium">{product.saranaPenyerapEmisi}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Luas Tanah</p>
+                    <p className="text-gray-600">Land Area</p>
                     <p className="font-medium">{product.luasTanah} Ha</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Lembaga Sertifikasi</p>
+                    <p className="text-gray-600">Certification Organization</p>
                     <p className="font-medium">{product.lembagaSertifikasi}</p>
                   </div>
                 </div>
               </div>
 
               <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                Periode Penyerapan Karbon
+                Carbon Absorption Period
               </h2>
 
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
                   <div>
-                    <p className="text-gray-600">Tanggal Mulai</p>
+                    <p className="text-gray-600">Start Date</p>
                     <p className="font-medium">
                       {formatDate(product.tanggalMulai)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Tanggal Selesai</p>
+                    <p className="text-gray-600">End Date</p>
                     <p className="font-medium">
                       {formatDate(product.tanggalSelesai)}
                     </p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-gray-600">Jumlah Karbon</p>
+                    <p className="text-gray-600">Carbon Amount</p>
                     <p className="font-medium">{product.jumlahKarbon} Ton</p>
                   </div>
                 </div>
@@ -433,18 +433,18 @@ const BuyProduct = () => {
 
               <div className="mt-6 bg-white p-4 rounded-lg shadow-sm">
                 <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                  Detail Biaya
+                  Total Cost Summary
                 </h2>
                 <div className="border-t border-gray-200 pt-2">
                   <div className="flex justify-between py-2">
-                    <span>Harga per Ton</span>
+                    <span>Price per Ton</span>
                     <span>
                       Rp {product.hargaPerTon.toLocaleString("id-ID")}
                     </span>
                   </div>
                   <div className="flex justify-between py-2">
-                    <span>Jumlah</span>
-                    <span>{quantity} Ton</span>
+                    <span>Amount</span>
+                    <span>{quantity} Tons</span>
                   </div>
                   <div className="flex justify-between py-2 font-bold text-lg border-t border-gray-200 mt-2 pt-2">
                     <span>Total</span>

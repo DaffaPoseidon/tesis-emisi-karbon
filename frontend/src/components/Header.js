@@ -97,7 +97,7 @@ const Header = () => {
                       className="block px-4 py-2 text-gray-700 hover:bg-green-100"
                       onClick={() => setDropdownOpen(false)}
                     >
-                      Akun Saya
+                      My Account
                     </Link>
                     
                     {userRole === "seller" && (
@@ -110,7 +110,7 @@ const Header = () => {
                       </Link>
                     )}
                     
-                    {userRole === "validator" && (
+                    {/* {userRole === "validator" && (
                       <Link
                         to="/data-kandidat"
                         className="block px-4 py-2 text-gray-700 hover:bg-green-100"
@@ -118,7 +118,7 @@ const Header = () => {
                       >
                         Data Kandidat
                       </Link>
-                    )}
+                    )} */}
                     
                     <button
                       onClick={handleLogout}

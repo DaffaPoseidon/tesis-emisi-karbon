@@ -19,8 +19,8 @@ const Account = () => {
       address: "",
       phone: "",
       taxId: "",
-      industry: ""
-    }
+      industry: "",
+    },
   });
 
   // Fetch user profile
@@ -29,28 +29,28 @@ const Account = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-        
+
         if (!token) {
           navigate("/login");
           return;
         }
-        
+
         const response = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/users/profile`,
           {
             headers: {
-              Authorization: `Bearer ${token}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
-        
+
         if (!response.ok) {
           throw new Error("Failed to fetch user profile");
         }
-        
+
         const data = await response.json();
         setUser(data.user);
-        
+
         // Initialize form data
         setFormData({
           firstName: data.user.firstName || "",
@@ -62,8 +62,8 @@ const Account = () => {
             address: data.user.companyDetails?.address || "",
             phone: data.user.companyDetails?.phone || "",
             taxId: data.user.companyDetails?.taxId || "",
-            industry: data.user.companyDetails?.industry || ""
-          }
+            industry: data.user.companyDetails?.industry || "",
+          },
         });
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -72,7 +72,7 @@ const Account = () => {
         setLoading(false);
       }
     };
-    
+
     fetchUserProfile();
   }, [navigate]);
 
@@ -85,13 +85,13 @@ const Account = () => {
         ...formData,
         companyDetails: {
           ...formData.companyDetails,
-          [companyField]: value
-        }
+          [companyField]: value,
+        },
       });
     } else {
       setFormData({
         ...formData,
-        [name]: value
+        [name]: value,
       });
     }
   };
@@ -102,23 +102,23 @@ const Account = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      
+
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/users/profile`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(formData),
         }
       );
-      
+
       if (!response.ok) {
         throw new Error("Failed to update profile");
       }
-      
+
       const data = await response.json();
       setUser(data.user);
       setEditMode(false);
@@ -184,9 +184,11 @@ const Account = () => {
                     {user.firstName} {user.lastName}
                   </h2>
                   <p className="text-sm text-gray-600">{user.email}</p>
-                  <p className="text-sm text-gray-600 mt-1">Role: {user.role}</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Role: {user.role}
+                  </p>
                 </div>
-                
+
                 <div className="space-y-1">
                   <button
                     onClick={() => setActiveTab("profile")}
@@ -198,7 +200,7 @@ const Account = () => {
                   >
                     Profile
                   </button>
-                  
+
                   <button
                     onClick={() => setActiveTab("balance")}
                     className={`w-full text-left px-4 py-2 rounded ${
@@ -207,9 +209,9 @@ const Account = () => {
                         : "text-gray-700 hover:bg-gray-100"
                     }`}
                   >
-                    Saldo
+                    Balance
                   </button>
-                  
+
                   <button
                     onClick={() => setActiveTab("carbon")}
                     className={`w-full text-left px-4 py-2 rounded ${
@@ -218,12 +220,12 @@ const Account = () => {
                         : "text-gray-700 hover:bg-gray-100"
                     }`}
                   >
-                    Kepemilikan Karbon
+                    Carbon Ownership
                   </button>
                 </div>
               </div>
             </div>
-            
+
             {/* Main content */}
             <div className="md:w-3/4 p-6">
               {/* Profile Tab */}
@@ -231,26 +233,26 @@ const Account = () => {
                 <div>
                   <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold text-gray-800">
-                      Profil Akun
+                      Account Profile
                     </h1>
                     <button
                       onClick={() => setEditMode(!editMode)}
                       className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                     >
-                      {editMode ? "Batal" : "Edit Profil"}
+                      {editMode ? "Cancel" : "Edit Profile"}
                     </button>
                   </div>
-                  
+
                   {editMode ? (
                     <form onSubmit={handleSubmit}>
                       <div className="mb-6">
                         <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                          Informasi Pribadi
+                          Personal Information
                         </h2>
                         <div className="grid md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-gray-700 text-sm font-medium mb-1">
-                              Nama Depan
+                              First Name
                             </label>
                             <input
                               type="text"
@@ -263,7 +265,7 @@ const Account = () => {
                           </div>
                           <div>
                             <label className="block text-gray-700 text-sm font-medium mb-1">
-                              Nama Belakang
+                              Last Name
                             </label>
                             <input
                               type="text"
@@ -276,7 +278,7 @@ const Account = () => {
                           </div>
                           <div>
                             <label className="block text-gray-700 text-sm font-medium mb-1">
-                              Nomor Telepon
+                              Phone Number
                             </label>
                             <input
                               type="tel"
@@ -288,7 +290,7 @@ const Account = () => {
                           </div>
                           <div>
                             <label className="block text-gray-700 text-sm font-medium mb-1">
-                              Alamat
+                              Address
                             </label>
                             <input
                               type="text"
@@ -300,15 +302,15 @@ const Account = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="mb-6">
                         <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                          Informasi Perusahaan
+                          Company Information
                         </h2>
                         <div className="grid md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-gray-700 text-sm font-medium mb-1">
-                              Nama Perusahaan
+                              Company Name
                             </label>
                             <input
                               type="text"
@@ -320,7 +322,7 @@ const Account = () => {
                           </div>
                           <div>
                             <label className="block text-gray-700 text-sm font-medium mb-1">
-                              Telepon Perusahaan
+                              Company Phone
                             </label>
                             <input
                               type="tel"
@@ -332,7 +334,7 @@ const Account = () => {
                           </div>
                           <div className="md:col-span-2">
                             <label className="block text-gray-700 text-sm font-medium mb-1">
-                              Alamat Perusahaan
+                              Company Address
                             </label>
                             <input
                               type="text"
@@ -344,7 +346,7 @@ const Account = () => {
                           </div>
                           <div>
                             <label className="block text-gray-700 text-sm font-medium mb-1">
-                              NPWP
+                              Tax ID
                             </label>
                             <input
                               type="text"
@@ -356,7 +358,7 @@ const Account = () => {
                           </div>
                           <div>
                             <label className="block text-gray-700 text-sm font-medium mb-1">
-                              Industri
+                              Industry
                             </label>
                             <input
                               type="text"
@@ -368,24 +370,24 @@ const Account = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       <button
                         type="submit"
                         className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                       >
-                        Simpan Perubahan
+                        Save Changes
                       </button>
                     </form>
                   ) : (
                     <>
                       <div className="mb-6">
                         <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                          Informasi Pribadi
+                          Personal Information
                         </h2>
                         <div className="bg-gray-50 p-4 rounded-lg">
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <p className="text-sm text-gray-500">Nama Lengkap</p>
+                              <p className="text-sm text-gray-500">Full Name</p>
                               <p className="font-medium">
                                 {user.firstName} {user.lastName}
                               </p>
@@ -395,55 +397,57 @@ const Account = () => {
                               <p className="font-medium">{user.email}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Telepon</p>
+                              <p className="text-sm text-gray-500">Phone</p>
                               <p className="font-medium">
-                                {user.phoneNumber || "Belum diisi"}
+                                {user.phoneNumber || "Not filled"}
                               </p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Alamat</p>
+                              <p className="text-sm text-gray-500">Address</p>
                               <p className="font-medium">
-                                {user.personalAddress || "Belum diisi"}
+                                {user.personalAddress || "Not filled"}
                               </p>
                             </div>
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="mb-6">
                         <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                          Informasi Perusahaan
+                          Company Information
                         </h2>
                         <div className="bg-gray-50 p-4 rounded-lg">
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <p className="text-sm text-gray-500">Nama Perusahaan</p>
+                              <p className="text-sm text-gray-500">
+                                Company Name
+                              </p>
                               <p className="font-medium">
-                                {user.companyDetails?.name || "Belum diisi"}
+                                {user.companyDetails?.name || "Not filled"}
                               </p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Telepon</p>
+                              <p className="text-sm text-gray-500">Phone</p>
                               <p className="font-medium">
-                                {user.companyDetails?.phone || "Belum diisi"}
+                                {user.companyDetails?.phone || "Not filled"}
                               </p>
                             </div>
                             <div className="md:col-span-2">
-                              <p className="text-sm text-gray-500">Alamat</p>
+                              <p className="text-sm text-gray-500">Address</p>
                               <p className="font-medium">
-                                {user.companyDetails?.address || "Belum diisi"}
+                                {user.companyDetails?.address || "Not filled"}
                               </p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">NPWP</p>
+                              <p className="text-sm text-gray-500">Tax ID</p>
                               <p className="font-medium">
-                                {user.companyDetails?.taxId || "Belum diisi"}
+                                {user.companyDetails?.taxId || "Not filled"}
                               </p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Industri</p>
+                              <p className="text-sm text-gray-500">Industry</p>
                               <p className="font-medium">
-                                {user.companyDetails?.industry || "Belum diisi"}
+                                {user.companyDetails?.industry || "Not filled"}
                               </p>
                             </div>
                           </div>
@@ -453,39 +457,39 @@ const Account = () => {
                   )}
                 </div>
               )}
-              
+
               {/* Balance Tab */}
               {activeTab === "balance" && (
                 <div>
                   <h1 className="text-2xl font-bold text-gray-800 mb-6">
-                    Saldo Akun
+                    Account Balance
                   </h1>
-                  
+
                   <div className="bg-gradient-to-r from-green-400 to-green-600 rounded-lg p-6 text-white mb-6">
-                    <p className="text-xl font-semibold mb-1">Total Saldo</p>
+                    <p className="text-xl font-semibold mb-1">Total Balance</p>
                     <p className="text-4xl font-bold">
                       Rp {user.balance?.toLocaleString("id-ID") || "0"}
                     </p>
                   </div>
-                  
+
                   <div className="mb-6">
                     <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                      Riwayat Transaksi
+                      Transaction History
                     </h2>
-                    
+
                     {user.carbonCredits && user.carbonCredits.length > 0 ? (
                       <div className="bg-white border rounded-lg overflow-hidden">
                         <table className="min-w-full divide-y divide-gray-200">
                           <thead className="bg-gray-50">
                             <tr>
                               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Tanggal
+                                Date
                               </th>
                               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Deskripsi
+                                Description
                               </th>
                               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Jumlah
+                                Amount
                               </th>
                             </tr>
                           </thead>
@@ -493,13 +497,19 @@ const Account = () => {
                             {user.carbonCredits.map((credit, index) => (
                               <tr key={index}>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                  {new Date(credit.purchaseDate).toLocaleDateString("id-ID")}
+                                  {new Date(
+                                    credit.purchaseDate
+                                  ).toLocaleDateString("id-ID")}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                  Pembelian kredit karbon {credit.caseId?.namaProyek || "Proyek"}
+                                  Carbon credit purchase{" "}
+                                  {credit.caseId?.namaProyek || "Project"}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">
-                                  -Rp {(credit.quantity * 100000).toLocaleString("id-ID")}
+                                  -Rp{" "}
+                                  {(credit.quantity * 100000).toLocaleString(
+                                    "id-ID"
+                                  )}
                                 </td>
                               </tr>
                             ))}
@@ -508,64 +518,84 @@ const Account = () => {
                       </div>
                     ) : (
                       <div className="bg-gray-50 p-4 rounded text-center text-gray-500">
-                        Belum ada riwayat transaksi
+                        No transaction history
                       </div>
                     )}
                   </div>
                 </div>
               )}
-              
+
               {/* Carbon Credits Tab */}
               {activeTab === "carbon" && (
                 <div>
                   <h1 className="text-2xl font-bold text-gray-800 mb-6">
-                    Kepemilikan Kredit Karbon
+                    Carbon Credit Ownership
                   </h1>
-                  
+
                   <div className="bg-green-50 rounded-lg p-6 mb-6">
                     <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-xl font-bold text-green-800">Total Kredit Karbon</h2>
+                      <h2 className="text-xl font-bold text-green-800">
+                        Total Carbon Credits
+                      </h2>
                       <span className="text-2xl font-bold text-green-600">
-                        {user.carbonCredits?.reduce((total, credit) => total + credit.quantity, 0) || 0} Ton
+                        {user.carbonCredits?.reduce(
+                          (total, credit) => total + credit.quantity,
+                          0
+                        ) || 0}{" "}
+                        Tons
                       </span>
                     </div>
                     <p className="text-sm text-green-700">
-                      Kredit karbon yang Anda miliki dapat digunakan untuk mengimbangi emisi karbon dari aktivitas bisnis Anda.
+                      Your carbon credits can be used to offset carbon emissions
+                      from your business activities.
                     </p>
                   </div>
-                  
+
                   <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                    Detail Kepemilikan
+                    Ownership Details
                   </h2>
-                  
+
                   {user.carbonCredits && user.carbonCredits.length > 0 ? (
                     <div className="space-y-4">
                       {user.carbonCredits.map((credit, index) => (
-                        <div key={index} className="bg-white border rounded-lg p-4 shadow-sm">
+                        <div
+                          key={index}
+                          className="bg-white border rounded-lg p-4 shadow-sm"
+                        >
                           <div className="flex justify-between items-start mb-2">
                             <h3 className="font-medium text-gray-800">
-                              {credit.caseId?.namaProyek || "Kredit Karbon"}
+                              {credit.caseId?.namaProyek || "Carbon Credit"}
                             </h3>
                             <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                              {credit.quantity} Ton
+                              {credit.quantity} Tons
                             </span>
                           </div>
                           <div className="grid grid-cols-2 gap-2 text-sm">
                             <div>
-                              <p className="text-gray-500">ID Transaksi</p>
+                              <p className="text-gray-500">Transaction ID</p>
                               <p className="truncate">{credit.transactionId}</p>
                             </div>
                             <div>
-                              <p className="text-gray-500">Tanggal Pembelian</p>
-                              <p>{new Date(credit.purchaseDate).toLocaleDateString("id-ID")}</p>
+                              <p className="text-gray-500">Purchase Date</p>
+                              <p>
+                                {new Date(
+                                  credit.purchaseDate
+                                ).toLocaleDateString("id-ID")}
+                              </p>
                             </div>
                             <div>
-                              <p className="text-gray-500">Sarana Penyerap</p>
-                              <p>{credit.caseId?.saranaPenyerapEmisi || "N/A"}</p>
+                              <p className="text-gray-500">Absorption Method</p>
+                              <p>
+                                {credit.caseId?.saranaPenyerapEmisi || "N/A"}
+                              </p>
                             </div>
                             <div>
-                              <p className="text-gray-500">Lembaga Sertifikasi</p>
-                              <p>{credit.caseId?.lembagaSertifikasi || "N/A"}</p>
+                              <p className="text-gray-500">
+                                Certification Institute
+                              </p>
+                              <p>
+                                {credit.caseId?.lembagaSertifikasi || "N/A"}
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -573,7 +603,7 @@ const Account = () => {
                     </div>
                   ) : (
                     <div className="bg-gray-50 p-4 rounded text-center text-gray-500">
-                      Anda belum memiliki kredit karbon
+                      You don't have any carbon credits yet
                     </div>
                   )}
                 </div>

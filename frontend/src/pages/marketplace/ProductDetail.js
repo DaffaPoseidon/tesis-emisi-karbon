@@ -96,7 +96,7 @@ const ProductDetail = () => {
             to="/marketplace"
             className="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Kembali ke Marketplace
+            Back to Marketplace
           </Link>
         </div>
       </div>
@@ -109,7 +109,7 @@ const ProductDetail = () => {
         <Header />
         <div className="container mx-auto p-4">
           <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
-            <p className="font-bold">Produk tidak tersedia</p>
+            <p className="font-bold">Not Available</p>
             <p>
               Produk ini tidak memiliki jumlah karbon yang tersedia atau telah
               terjual habis.
@@ -119,7 +119,7 @@ const ProductDetail = () => {
             to="/marketplace"
             className="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Kembali ke Marketplace
+            Back to Marketplace
           </Link>
         </div>
       </div>
@@ -147,7 +147,7 @@ const ProductDetail = () => {
                 clipRule="evenodd"
               />
             </svg>
-            Kembali ke Marketplace
+            Back to Marketplace
           </Link>
         </div>
 
@@ -161,23 +161,25 @@ const ProductDetail = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                    Detail Proyek
+                    Project Details
                   </h2>
                   <div className="space-y-2">
                     <p>
-                      <span className="font-medium">Luas Tanah:</span>{" "}
+                      <span className="font-medium">Land Area:</span>{" "}
                       {product.luasTanah} Ha
                     </p>
                     <p>
-                      <span className="font-medium">Sarana Penyerap:</span>{" "}
+                      <span className="font-medium">Absorption Method:</span>{" "}
                       {product.saranaPenyerapEmisi}
                     </p>
                     <p>
-                      <span className="font-medium">Kepemilikan:</span>{" "}
+                      <span className="font-medium">Ownership:</span>{" "}
                       {product.kepemilikanLahan}
                     </p>
                     <p>
-                      <span className="font-medium">Lembaga Sertifikasi:</span>{" "}
+                      <span className="font-medium">
+                        Certification Institute:
+                      </span>{" "}
                       {product.lembagaSertifikasi}
                     </p>
                   </div>
@@ -185,20 +187,20 @@ const ProductDetail = () => {
 
                 <div>
                   <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                    Informasi Penjual
+                    Seller Information
                   </h2>
                   <div className="space-y-2">
                     <p>
-                      <span className="font-medium">Nama:</span>{" "}
+                      <span className="font-medium">Name:</span>{" "}
                       {product.penggugah
                         ? `${product.penggugah.firstName} ${product.penggugah.lastName}`
-                        : "Tidak tersedia"}
+                        : "Not Available"}
                     </p>
                     <p>
                       <span className="font-medium">Email:</span>{" "}
                       {product.penggugah
                         ? product.penggugah.email
-                        : "Tidak tersedia"}
+                        : "Not Available"}
                     </p>
                   </div>
                 </div>
@@ -206,29 +208,29 @@ const ProductDetail = () => {
 
               <div className="mb-6">
                 <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                  Periode Penyerapan Karbon
+                  Carbon Absorption Period
                 </h2>
                 <div className="space-y-4">
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium">Periode</span>
+                      <span className="font-medium">Period</span>
                       <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
-                        Disetujui
+                        Approved
                       </span>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-gray-500">Tanggal Mulai</p>
+                        <p className="text-sm text-gray-500">Start Date</p>
                         <p>{formatDate(product.tanggalMulai)}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Tanggal Selesai</p>
+                        <p className="text-sm text-gray-500">End Date</p>
                         <p>{formatDate(product.tanggalSelesai)}</p>
                       </div>
                       <div className="col-span-2">
-                        <p className="text-sm text-gray-500">Jumlah Karbon</p>
+                        <p className="text-sm text-gray-500">Carbon Amount</p>
                         <p className="font-medium">
-                          {product.jumlahKarbon} Ton
+                          {product.jumlahKarbon} Tons
                         </p>
                       </div>
                     </div>
@@ -240,7 +242,7 @@ const ProductDetail = () => {
                 product.blockchainData.transactionHash && (
                   <div className="mb-6 p-4 bg-blue-50 rounded-lg">
                     <h2 className="text-lg font-semibold text-blue-700 mb-2">
-                      Verifikasi Blockchain
+                      Blockchain Verification
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
@@ -292,48 +294,46 @@ const ProductDetail = () => {
                   <h2 className="text-2xl font-bold text-gray-800 mb-4">
                     Rp {product.hargaPerTon.toLocaleString("id-ID")}/Ton
                   </h2>
-
                   <div className="mb-4">
                     <div className="flex justify-between py-2 border-b border-gray-200">
-                      <span>Total Karbon</span>
+                      <span>Total Carbon</span>
                       <span className="font-medium">
-                        {product.jumlahKarbon} Ton
+                        {product.jumlahKarbon} Tons
                       </span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-200">
-                      <span>Total Nilai</span>
+                      <span>Total Value</span>
                       <span className="font-medium">
                         Rp {product.totalHarga.toLocaleString("id-ID")}
                       </span>
                     </div>
                   </div>
-
-{product.statusPengajuan === "Diterima" ? (
-  <Link
-    to={`/product/${product._id}/buy`}
-    className="block w-full bg-green-600 hover:bg-green-700 text-white text-center font-medium py-3 px-4 rounded-md transition duration-200"
-  >
-    Beli Sekarang
-  </Link>
-) : (
-  <button className="w-full bg-gray-400 text-white text-center font-medium py-3 px-4 rounded-md cursor-not-allowed">
-    Tidak Tersedia
-  </button>
-)}
+                  {product.statusPengajuan === "Diterima" ? (
+                    <Link
+                      to={`/product/${product._id}/buy`}
+                      className="block w-full bg-green-600 hover:bg-green-700 text-white text-center font-medium py-3 px-4 rounded-md transition duration-200"
+                    >
+                      Buy Now
+                    </Link>
+                  ) : (
+                    <button className="w-full bg-gray-400 text-white text-center font-medium py-3 px-4 rounded-md cursor-not-allowed">
+                      Not Available
+                    </button>
+                  )}{" "}
                 </div>
 
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <h3 className="font-medium text-blue-700 mb-2">
-                    Catatan Penting:
+                    Important Notes:
                   </h3>
                   <ul className="text-sm text-blue-800 space-y-2">
                     <li>
-                      • Sertifikat karbon dapat digunakan untuk offset emisi
-                      perusahaan.
+                      • Carbon certificates can be used to offset company
+                      emissions.
                     </li>
-                    <li>• Semua transaksi diverifikasi melalui blockchain.</li>
+                    <li>• All transactions are verified through blockchain.</li>
                     <li>
-                      • Setiap ton karbon direpresentasikan sebagai NFT pada
+                      • Each ton of carbon is represented as an NFT on the
                       blockchain.
                     </li>
                   </ul>

@@ -1,39 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import * as XLSX from "xlsx";
 
 const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
-  const [loading, setLoading] = useState({});
+  const [expandedCase, setExpandedCase] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState({});
   const [lastClickTime, setLastClickTime] = useState({});
   const [processingIds, setProcessingIds] = useState(new Set());
-  const [expandedCase, setExpandedCase] = useState(null);
+  const [showFileMenu, setShowFileMenu] = useState(null);
+  const userRole = JSON.parse(localStorage.getItem("user"))?.role;
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userRole = user?.role;
-  const userId = user?._id;
-
-  // Filter data berdasarkan role
-  const filteredCases =
-    userRole === "seller"
-      ? cases.filter((caseItem) => caseItem.penggugah?._id === userId)
-      : userRole === "validator" || userRole === "superadmin"
-      ? cases.filter(
-          (caseItem) =>
+  // Filter cases based on user role
+  const filteredCases = userRole === "validator" || userRole === "superadmin"
+    ? cases
+    : cases.filter(
+        (caseItem) =>
             !caseItem.statusPengajuan || caseItem.statusPengajuan === "Diajukan"
-        )
-      : cases;
+        );
 
   const handleDownloadImage = (caseItem, e) => {
-    e.stopPropagation(); // Mencegah toggle expand
+    e.stopPropagation(); // Prevent toggle expand
 
-    // Jika tidak ada file, tampilkan pesan
+    // If no files, show message
     if (!caseItem.files || caseItem.files.length === 0) {
-      alert("Tidak ada gambar yang tersedia untuk diunduh");
+      alert("No images available for download");
       return;
     }
 
-    // Buka link download untuk file pertama (gambar)
+    // Open download link for first file (image)
     window.open(
       `${process.env.REACT_APP_API_BASE_URL}/cases/${caseItem._id}/files/0`,
       "_blank"
@@ -41,78 +36,83 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
   };
 
   const handleDownloadCaseExcel = (caseItem, e) => {
-    e.stopPropagation(); // Mencegah toggle expand
+    e.stopPropagation(); // Prevent toggle expand
 
-    // Format tanggal untuk Excel
+    // Format date for Excel
     const formatExcelDate = (dateStr) => {
       if (!dateStr) return "N/A";
       return new Date(dateStr).toLocaleDateString("id-ID");
     };
 
-    // Data proyek untuk Excel
+    // Project data for Excel
     const caseData = {
-      "Nama Proyek": caseItem.namaProyek,
-      "Luas Tanah (Ha)": caseItem.luasTanah,
-      "Sarana Penyerap Emisi": caseItem.saranaPenyerapEmisi,
-      "Lembaga Sertifikasi": caseItem.lembagaSertifikasi,
-      "Kepemilikan Lahan": caseItem.kepemilikanLahan,
-      "Total Karbon (Ton)": caseItem.jumlahKarbon,
-      "Status Pengajuan": caseItem.statusPengajuan,
-      Penggugah: caseItem.penggugah
+      "Project Name": caseItem.namaProyek,
+      "Land Area (Ha)": caseItem.luasTanah,
+      "Absorption Method": caseItem.saranaPenyerapEmisi,
+      "Certification Institute": caseItem.lembagaSertifikasi,
+      "Land Ownership": caseItem.kepemilikanLahan,
+      "Total Carbon (Tons)": caseItem.jumlahKarbon,
+      "Submission Status": caseItem.statusPengajuan === "Diajukan" 
+        ? "Submitted" 
+        : caseItem.statusPengajuan === "Diterima" 
+        ? "Approved" 
+        : "Rejected",
+      "Submitter": caseItem.penggugah
         ? `${caseItem.penggugah.firstName} ${caseItem.penggugah.lastName}`
         : "N/A",
     };
 
-    // Data blockchain jika ada
+    // Blockchain data if available
     if (caseItem.blockchainData && caseItem.blockchainData.transactionHash) {
       caseData["Transaction Hash"] = caseItem.blockchainData.transactionHash;
       caseData["Block Number"] = caseItem.blockchainData.blockNumber;
-      caseData["Issued On"] = formatExcelDate(caseItem.blockchainData.issuedOn);
+      caseData["Tokens"] = caseItem.blockchainData.tokens
+        ? caseItem.blockchainData.tokens.length
+        : 0;
+      caseData["Issued On"] = caseItem.blockchainData.issuedOn
+        ? formatExcelDate(caseItem.blockchainData.issuedOn)
+        : "N/A";
     }
 
-    // Sheet utama untuk informasi proyek
+    // Project proposals data
+    const proposalsData = caseItem.proposals
+      ? caseItem.proposals.map((proposal) => ({
+          "Start Date": formatExcelDate(proposal.tanggalMulai),
+          "End Date": formatExcelDate(proposal.tanggalSelesai),
+          "Carbon Amount (Tons)": proposal.jumlahKarbon,
+          "Status": proposal.statusProposal === "Diajukan" 
+            ? "Submitted" 
+            : proposal.statusProposal === "Diterima" 
+            ? "Approved" 
+            : "Rejected",
+        }))
+      : [];
+
+    // Create worksheet
     const ws = XLSX.utils.json_to_sheet([caseData]);
-
-    // Worksheet untuk data periode penyerapan karbon
-    const proposalsData =
-      caseItem.proposals && caseItem.proposals.length > 0
-        ? caseItem.proposals.map((proposal, index) => ({
-            "No.": index + 1,
-            "Tanggal Mulai": formatExcelDate(proposal.tanggalMulai),
-            "Tanggal Selesai": formatExcelDate(proposal.tanggalSelesai),
-            "Jumlah Karbon (Ton)": proposal.jumlahKarbon,
-            Status: proposal.statusProposal,
-          }))
-        : [
-            {
-              "No.": 1,
-              Keterangan: "Tidak ada data periode penyerapan karbon",
-            },
-          ];
-
     const proposalsWs = XLSX.utils.json_to_sheet(proposalsData);
 
-    // Buat workbook dan tambahkan worksheets
+    // Create workbook and add worksheets
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Informasi Proyek");
-    XLSX.utils.book_append_sheet(wb, proposalsWs, "Periode Penyerapan");
+    XLSX.utils.book_append_sheet(wb, ws, "Project Information");
+    XLSX.utils.book_append_sheet(wb, proposalsWs, "Absorption Periods");
 
-    // Simpan file
-    const fileName = `Proyek_${caseItem.namaProyek.replace(/\s+/g, "_")}.xlsx`;
+    // Save file
+    const fileName = `Project_${caseItem.namaProyek.replace(/\s+/g, "_")}.xlsx`;
     XLSX.writeFile(wb, fileName);
   };
 
-  // Fungsi untuk mendownload file dokumen
+  // Function to show file menu
   const handleShowFileMenu = (e) => {
-    e.stopPropagation(); // Mencegah toggle expand
-    // Tidak perlu lakukan apa-apa karena dropdown muncul dengan hover
+    e.stopPropagation(); // Prevent toggle expand
+    // No need to do anything as dropdown appears on hover
   };
 
   const handleDelete = async (id) => {
     if (!onDelete) return;
 
     const confirmed = window.confirm(
-      "Apakah Anda yakin ingin menghapus data ini?"
+      "Are you sure you want to delete this data?"
     );
     if (!confirmed) return;
 
@@ -135,22 +135,22 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
     }
   };
 
-  // Fungsi update status pengajuan
+  // Function to update submission status
   const handleStatusUpdate = async (id, newStatus) => {
     const now = Date.now();
     if (lastClickTime[id] && now - lastClickTime[id] < 2000) {
-      console.log("Terlalu cepat klik, mohon tunggu...");
+      console.log("Clicked too quickly, please wait...");
       return;
     }
 
     setLastClickTime((prev) => ({ ...prev, [id]: now }));
 
-    // Jika ID sudah sedang diproses, jangan lakukan apa-apa
+    // If ID is already being processed, do nothing
     if (processingIds.has(id)) return;
 
     const token = localStorage.getItem("token");
 
-    // Tambahkan ID ke daftar yang sedang diproses
+    // Add ID to processing list
     setProcessingIds((prev) => new Set(prev).add(id));
     setLoading((prev) => ({ ...prev, [id]: true }));
 
@@ -163,25 +163,27 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ statusPengajuan: newStatus }),
+          body: JSON.stringify({ 
+            statusPengajuan: newStatus 
+          }),
         }
       );
 
       if (response.ok) {
-        console.log(`Status case ${id} diperbarui ke ${newStatus}`);
+        console.log(`Case status ${id} updated to ${newStatus}`);
         if (refreshCases) {
           await refreshCases();
         }
       } else {
         const data = await response.json();
         setError(data.message);
-        console.error("Gagal mengubah status pengajuan:", data.message);
+        console.error("Failed to change submission status:", data.message);
       }
     } catch (error) {
       console.error("Error updating status:", error);
       setError(error.message);
     } finally {
-      // Hapus ID dari daftar yang sedang diproses
+      // Remove ID from processing list
       setProcessingIds((prev) => {
         const newSet = new Set(prev);
         newSet.delete(id);
@@ -195,24 +197,24 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
     }
   };
 
-  // Fungsi untuk update status proposal individual
+  // Function to update individual proposal status
   const handleProposalStatusUpdate = async (caseId, proposalId, newStatus) => {
-    // Verifikasi agar tidak melakukan double-click
+    // Verify to avoid double-click
     const key = `${caseId}-${proposalId}`;
     const now = Date.now();
     if (lastClickTime[key] && now - lastClickTime[key] < 2000) {
-      console.log("Terlalu cepat klik, mohon tunggu...");
+      console.log("Clicked too quickly, please wait...");
       return;
     }
 
     setLastClickTime((prev) => ({ ...prev, [key]: now }));
 
-    // Jika sudah sedang diproses, jangan lakukan apa-apa
+    // If already being processed, do nothing
     if (processingIds.has(key)) return;
 
     const token = localStorage.getItem("token");
 
-    // Tambahkan ke daftar yang sedang diproses
+    // Add to processing list
     setProcessingIds((prev) => new Set(prev).add(key));
     setLoading((prev) => ({ ...prev, [key]: true }));
 
@@ -234,19 +236,19 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log(`Status proposal ${proposalId} diperbarui ke ${newStatus}`);
+        console.log(`Proposal status ${proposalId} updated to ${newStatus}`);
 
-        // Tampilkan notifikasi sukses
+        // Show success notification
         if (newStatus === "Diterima") {
           alert(
-            `Proposal berhasil diterima${
+            `Proposal successfully approved${
               data.blockchainSuccess
-                ? " dan token karbon berhasil diterbitkan"
+                ? " and carbon tokens successfully issued"
                 : ""
             }`
           );
         } else {
-          alert(`Proposal berhasil ditolak`);
+          alert(`Proposal successfully rejected`);
         }
 
         if (refreshCases) {
@@ -254,7 +256,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
         }
       } else {
         setError(data.message);
-        console.error("Gagal mengubah status proposal:", data.message);
+        console.error("Failed to change proposal status:", data.message);
         alert(`Error: ${data.message}`);
       }
     } catch (error) {
@@ -262,7 +264,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
       setError(error.message);
       alert(`Error: ${error.message}`);
     } finally {
-      // Hapus dari daftar yang sedang diproses
+      // Remove from processing list
       setProcessingIds((prev) => {
         const newSet = new Set(prev);
         newSet.delete(key);
@@ -276,9 +278,9 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
     }
   };
 
-  // Handler untuk menyetujui semua proposal sekaligus
+  // Handler for approving all proposals at once
   const handleApproveAllProposals = async (caseId) => {
-    if (!window.confirm("Apakah Anda yakin ingin menyetujui semua proposal?")) {
+    if (!window.confirm("Are you sure you want to approve all proposals?")) {
       return;
     }
 
@@ -299,14 +301,14 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
       );
 
       if (response.ok) {
-        console.log(`Semua proposal untuk case ${caseId} telah disetujui`);
+        console.log(`All proposals for case ${caseId} have been approved`);
         if (refreshCases) {
           await refreshCases();
         }
       } else {
         const data = await response.json();
         setError(data.message);
-        console.error("Gagal menyetujui semua proposal:", data.message);
+        console.error("Failed to approve all proposals:", data.message);
       }
     } catch (error) {
       console.error("Error approving all proposals:", error);
@@ -320,23 +322,23 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
     }
   };
 
-  // Cek visibility kolom
+  // Check column visibility
   const showUploaderColumn = ["superadmin", "validator"].includes(userRole);
   const showActionColumn = ["superadmin", "validator", "seller"].includes(
     userRole
   );
   const showApprovalColumn = ["superadmin", "validator"].includes(userRole);
 
-  // Format tanggal untuk tampilan
+  // Format date for display
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return format(date, "dd/MM/yyyy");
   };
 
-  // Tampilan yang diperbarui dengan format vertikal
+  // Updated view with vertical format
   return (
     <div className="bg-white shadow rounded p-6">
-      <h2 className="text-xl font-bold mb-4">Data Periode Penyerapan Karbon</h2>
+      <h2 className="text-xl font-bold mb-4">Carbon Absorption Period Data</h2>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -346,7 +348,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
 
       {filteredCases.length === 0 ? (
         <div className="text-center py-4 text-gray-500">
-          Tidak ada data periode yang tersedia.
+          No period data available.
         </div>
       ) : (
         <div className="space-y-4">
@@ -367,13 +369,13 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                   <div>
                     <h3 className="text-lg font-bold">{item.namaProyek}</h3>
                     <p className="text-sm text-gray-600">
-                      Periode:{" "}
+                      Period:{" "}
                       {new Date(item.tanggalMulai).toLocaleDateString()} -{" "}
                       {new Date(item.tanggalSelesai).toLocaleDateString()}
                     </p>
                     {showUploaderColumn && item.penggugah ? (
                       <p className="text-sm text-gray-600">
-                        Diajukan oleh: {item.penggugah.firstName}{" "}
+                        Submitted by: {item.penggugah.firstName}{" "}
                         {item.penggugah.lastName}
                       </p>
                     ) : null}
@@ -389,7 +391,11 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                           : "bg-yellow-100 text-yellow-800"
                       }`}
                     >
-                      {item.statusPengajuan}
+                      {item.statusPengajuan === "Diterima"
+                        ? "Approved"
+                        : item.statusPengajuan === "Ditolak"
+                        ? "Rejected"
+                        : "Submitted"}
                     </div>
                   </div>
                 </div>
@@ -397,13 +403,13 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                   <div>
                     <span className="block text-sm text-gray-500">
-                      Luas Tanah
+                      Land Area
                     </span>
                     <span className="font-medium">{item.luasTanah} Ha</span>
                   </div>
                   <div>
                     <span className="block text-sm text-gray-500">
-                      Sarana Penyerap
+                      Absorption Method
                     </span>
                     <span className="font-medium">
                       {item.saranaPenyerapEmisi}
@@ -411,15 +417,15 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                   </div>
                   <div>
                     <span className="block text-sm text-gray-500">
-                      Jumlah Karbon
+                      Carbon Amount
                     </span>
                     <span className="font-medium text-blue-700">
-                      {item.jumlahKarbon} Ton
+                      {item.jumlahKarbon} Tons
                     </span>
                   </div>
                   <div>
                     <span className="block text-sm text-gray-500">
-                      Lembaga Sertifikasi
+                      Certification Institute
                     </span>
                     <span className="font-medium">
                       {item.lembagaSertifikasi}
@@ -427,11 +433,11 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                   </div>
                 </div>
 
-                {/* Blockchain data jika ada */}
+                {/* Blockchain data if available */}
                 {item.blockchainData && item.blockchainData.transactionHash && (
                   <div className="mb-4 p-3 bg-blue-50 rounded">
                     <h4 className="text-sm font-medium text-blue-700 mb-1">
-                      Data Blockchain
+                      Blockchain Data
                     </h4>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
@@ -450,30 +456,46 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                         <span className="font-medium">Block Number: </span>
                         <span>{item.blockchainData.blockNumber}</span>
                       </div>
+                      <div>
+                        <span className="font-medium">Tokens: </span>
+                        <span>
+                          {item.blockchainData.tokens
+                            ? item.blockchainData.tokens.length
+                            : 0}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="font-medium">Issued On: </span>
+                        <span>
+                          {item.blockchainData.issuedOn
+                            ? new Date(
+                                item.blockchainData.issuedOn
+                              ).toLocaleDateString()
+                            : "N/A"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {/* Download Excel button */}
-                  <button
-                    onClick={(e) => handleDownloadCaseExcel(item, e)}
-                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-sm"
-                  >
-                    Download Excel
-                  </button>
-
-                  {/* Download Files button */}
+                {/* Buttons for actions */}
+                <div className="flex flex-wrap gap-2">
                   {item.files && item.files.length > 0 && (
-                    <div className="relative group">
+                    <div className="relative inline-block">
                       <button
-                        onClick={(e) => handleDownloadImage(item, e)}
-                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-sm"
+                        onClick={handleShowFileMenu}
+                        onMouseEnter={() => setShowFileMenu(item._id)}
+                        onMouseLeave={() => setShowFileMenu(null)}
+                        className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
                       >
-                        Download Gambar
+                        View Files
                       </button>
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block z-10">
-                        <div className="py-1">
+                      {showFileMenu === item._id && (
+                        <div
+                          className="absolute z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+                          onMouseEnter={() => setShowFileMenu(item._id)}
+                          onMouseLeave={() => setShowFileMenu(null)}
+                        >
                           {item.files.map((file, fileIndex) => (
                             <a
                               key={fileIndex}
@@ -486,7 +508,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                             </a>
                           ))}
                         </div>
-                      </div>
+                      )}
                     </div>
                   )}
 
@@ -498,7 +520,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                           onClick={() => {
                             if (item.statusPengajuan === "Diterima") {
                               alert(
-                                "Data yang sudah disetujui tidak dapat diedit"
+                                "Approved data cannot be edited"
                               );
                               return;
                             }
@@ -517,7 +539,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                           onClick={() => {
                             if (item.statusPengajuan === "Diterima") {
                               alert(
-                                "Data yang sudah disetujui tidak dapat dihapus"
+                                "Approved data cannot be deleted"
                               );
                               return;
                             }
@@ -530,13 +552,14 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                           } text-white px-3 py-1 rounded text-sm`}
                           disabled={item.statusPengajuan === "Diterima"}
                         >
-                          Hapus
+                          Delete
                         </button>
                       </>
                     )}
 
                   {/* Approval buttons for validator */}
                   {showApprovalColumn &&
+                    (userRole === "validator" || userRole === "superadmin") &&
                     item.statusPengajuan === "Diajukan" && (
                       <>
                         <button
@@ -550,7 +573,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                           } text-white px-3 py-1 rounded text-sm`}
                           disabled={loading[item._id]}
                         >
-                          {loading[item._id] ? "Memproses..." : "Terima"}
+                          {loading[item._id] ? "Processing..." : "Approve"}
                         </button>
                         <button
                           onClick={() =>
@@ -563,12 +586,73 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                           } text-white px-3 py-1 rounded text-sm`}
                           disabled={loading[item._id]}
                         >
-                          {loading[item._id] ? "Memproses..." : "Tolak"}
+                          {loading[item._id] ? "Processing..." : "Reject"}
                         </button>
                       </>
                     )}
+
+                  <button
+                    onClick={(e) => handleDownloadCaseExcel(item, e)}
+                    className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                  >
+                    Export Excel
+                  </button>
                 </div>
+
+                {/* Expand/collapse button */}
+                <button
+                  onClick={() => toggleExpand(item._id)}
+                  className="mt-4 text-blue-500 hover:text-blue-700 text-sm flex items-center"
+                >
+                  {expandedCase === item._id ? (
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 15l7-7 7 7"
+                        />
+                      </svg>
+                      Hide Details
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                      Show Details
+                    </>
+                  )}
+                </button>
               </div>
+
+              {/* Expanded details */}
+              {expandedCase === item._id && (
+                <div className="p-4 bg-gray-50 border-t border-gray-200">
+                  <h4 className="font-medium text-sm mb-2">
+                    Additional Details
+                  </h4>
+                  {/* You can add more details here */}
+                </div>
+              )}
             </div>
           ))}
         </div>

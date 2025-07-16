@@ -9,7 +9,7 @@ const SignupUser = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "buyer", // Default role saat form dibuka
+    role: "buyer", // Default role when form opens
   });
 
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ const SignupUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      setError("Password tidak cocok.");
+      setError("Passwords don't match.");
       return;
     }
 
@@ -44,7 +44,7 @@ const SignupUser = () => {
             lastName: formData.lastName,
             email: formData.email,
             password: formData.password,
-            role: formData.role, // Kirim role yang dipilih ke server
+            role: formData.role, // Send selected role to server
           }),
         }
       );
@@ -52,18 +52,18 @@ const SignupUser = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Terjadi kesalahan saat mendaftar.");
+        throw new Error(data.message || "An error occurred during registration.");
       }
 
-      // Registrasi berhasil
-      alert("Registrasi berhasil! Silakan login.");
+      // Registration successful
+      alert("Registration successful! Please login.");
       navigate("/login");
     } catch (err) {
-      console.error("Error saat mendaftar:", err);
+      console.error("Error during registration:", err);
       if (err.message.includes("<!DOCTYPE")) {
-        // Masalah respons HTML bukan JSON
+        // HTML response problem, not JSON
         setError(
-          "Server tidak tersedia atau URL tidak ditemukan. Silakan coba lagi nanti."
+          "Server unavailable or URL not found. Please try again later."
         );
       } else {
         setError(err.message);
@@ -79,7 +79,7 @@ const SignupUser = () => {
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
           <h2 className="text-2xl font-bold mb-6 text-center">
-            Daftar Akun Baru
+            Create New Account
           </h2>
 
           {error && (
@@ -97,7 +97,7 @@ const SignupUser = () => {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="firstName"
               >
-                Nama Depan
+                First Name
               </label>
               <input
                 type="text"
@@ -115,7 +115,7 @@ const SignupUser = () => {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="lastName"
               >
-                Nama Belakang
+                Last Name
               </label>
               <input
                 type="text"
@@ -169,7 +169,7 @@ const SignupUser = () => {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="confirmPassword"
               >
-                Konfirmasi Password
+                Confirm Password
               </label>
               <input
                 type="password"
@@ -182,10 +182,10 @@ const SignupUser = () => {
               />
             </div>
 
-            {/* Tambahkan pemilihan role */}
+            {/* Role selection */}
             <div className="mb-6">
               <label className="block text-gray-700 text-sm font-bold mb-2">
-                Daftar Sebagai
+                Register As
               </label>
               <div className="flex items-center space-x-4">
                 <label className="inline-flex items-center">
@@ -197,7 +197,7 @@ const SignupUser = () => {
                     onChange={handleChange}
                     className="form-radio h-5 w-5 text-blue-600"
                   />
-                  <span className="ml-2 text-gray-700">Pembeli (Buyer)</span>
+                  <span className="ml-2 text-gray-700">Buyer</span>
                 </label>
                 <label className="inline-flex items-center">
                   <input
@@ -208,13 +208,13 @@ const SignupUser = () => {
                     onChange={handleChange}
                     className="form-radio h-5 w-5 text-blue-600"
                   />
-                  <span className="ml-2 text-gray-700">Penjual (Seller)</span>
+                  <span className="ml-2 text-gray-700">Seller</span>
                 </label>
               </div>
               <p className="mt-2 text-sm text-gray-600">
                 {formData.role === "buyer"
-                  ? "Sebagai pembeli, Anda dapat membeli kredit karbon dari penjual."
-                  : "Sebagai penjual, Anda dapat mengunggah dan menjual kredit karbon."}
+                  ? "As a buyer, you can purchase carbon credits from sellers."
+                  : "As a seller, you can upload and sell carbon credits."}
               </p>
             </div>
 
@@ -224,15 +224,15 @@ const SignupUser = () => {
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
                 disabled={loading}
               >
-                {loading ? "Mendaftar..." : "Daftar"}
+                {loading ? "Registering..." : "Register"}
               </button>
             </div>
 
             <div className="text-center mt-4">
               <p className="text-sm text-gray-600">
-                Sudah punya akun?{" "}
+                Already have an account?{" "}
                 <a href="/login" className="text-blue-500 hover:text-blue-700">
-                  Login di sini
+                  Login here
                 </a>
               </p>
             </div>

@@ -88,8 +88,7 @@ const Marketplace = () => {
             Carbon Marketplace
           </h1>
           <p className="text-center text-gray-600 max-w-3xl mx-auto">
-            Belilah kredit karbon untuk mengimbangi emisi Anda dan mendukung
-            proyek-proyek yang membantu melestarikan lingkungan.
+            Purchase carbon credits to offset your emissions.
           </p>
         </div>
 
@@ -126,10 +125,10 @@ const Marketplace = () => {
               />
             </svg>
             <h3 className="mt-2 text-lg font-medium text-gray-900">
-              Tidak ada produk yang tersedia
+              No products available
             </h3>
             <p className="mt-1 text-gray-500">
-              Tidak ada proyek karbon yang sesuai dengan pencarian Anda.
+              There are no carbon projects matching your search.
             </p>
           </div>
         ) : (
@@ -145,27 +144,27 @@ const Marketplace = () => {
                       {product.namaProyek}
                     </h2>
                     <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                      Terverifikasi
+                      Verified
                     </span>
                   </div>
 
                   <div className="space-y-2 mb-4">
                     <p>
-                      <span className="font-medium">Sarana Penyerap:</span>{" "}
+                      <span className="font-medium">Absorption Medium:</span>{" "}
                       {product.saranaPenyerapEmisi}
                     </p>
                     <p>
-                      <span className="font-medium">Luas Tanah:</span>{" "}
+                      <span className="font-medium">Land Area:</span>{" "}
                       {product.luasTanah} Ha
                     </p>
                     <p>
-                      <span className="font-medium">Lembaga Sertifikasi:</span>{" "}
+                      <span className="font-medium">Certification Organization:</span>{" "}
                       {product.lembagaSertifikasi}
                     </p>
                   </div>
 
                   <div className="mb-4">
-                    <h3 className="font-medium mb-2">Periode Penyerapan:</h3>
+                    <h3 className="font-medium mb-2">Absorption Period:</h3>
                     <div className="text-sm bg-gray-50 p-2 rounded">
                       <div className="flex justify-between">
                         <span>
@@ -184,13 +183,13 @@ const Marketplace = () => {
 
                   <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
                     <div>
-                      <p className="text-gray-500">Total Karbon</p>
+                      <p className="text-gray-500">Total Carbon</p>
                       <p className="text-xl font-bold text-gray-800">
                         {product.jumlahKarbon} Ton
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-gray-500">Harga per Ton</p>
+                      <p className="text-gray-500">Price per Ton</p>
                       <p className="text-xl font-bold text-green-600">
                         Rp {product.hargaPerTon.toLocaleString("id-ID")}
                       </p>
@@ -214,7 +213,7 @@ const Marketplace = () => {
                       to={`/product/${product._id}`}
                       className="flex items-center text-green-600"
                     >
-                      <span className="mr-1">Lihat Detail</span>
+                      <span className="mr-1">Details</span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-5 w-5"

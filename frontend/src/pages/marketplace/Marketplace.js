@@ -155,7 +155,7 @@ const Marketplace = () => {
                     </p>
                     <p>
                       <span className="font-medium">Land Area:</span>{" "}
-                      {product.luasTanah} Ha
+                      {product.luasTanah} Meter
                     </p>
                     <p>
                       <span className="font-medium">Certification Organization:</span>{" "}
@@ -201,7 +201,7 @@ const Marketplace = () => {
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
                       <div className="text-sm">
-                        <p className="text-gray-500">Penjual</p>
+                        <p className="text-gray-500">Seller</p>
                         <p className="font-medium text-gray-800">
                           {product.penggugah
                             ? `${product.penggugah.firstName} ${product.penggugah.lastName}`

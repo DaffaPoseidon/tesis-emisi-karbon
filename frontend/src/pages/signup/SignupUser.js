@@ -56,7 +56,7 @@ const SignupUser = () => {
       }
 
       // Registration successful
-      alert("Registration successful! Please login.");
+      alert("Registration successful!.");
       navigate("/login");
     } catch (err) {
       console.error("Error during registration:", err);

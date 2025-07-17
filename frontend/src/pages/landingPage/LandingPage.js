@@ -115,7 +115,7 @@ const LandingPage = () => {
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
         <div className="text-center mt-10 p-4 sm:w-full md:w-3/4 lg:w-1/2">
           <h1 className="text-4xl sm:text-5xl font-bold text-blue-600 mb-6">
-            BLOCKCHAIN CARBON EMISSION MARKETPLACE!
+            BLOCKCHAIN CARBON EMISSION MARKETPLACE
           </h1>
           <p className="text-xl sm:text-2xl text-gray-700 mb-6">
             Explore and invest in verified carbon absorption projects.
@@ -241,7 +241,7 @@ const LandingPage = () => {
                               Land Area
                             </span>
                             <p className="font-medium">
-                              {product.luasTanah || 0} Ha
+                              {product.luasTanah || 0} Meter
                             </p>
                           </div>
                           <div>

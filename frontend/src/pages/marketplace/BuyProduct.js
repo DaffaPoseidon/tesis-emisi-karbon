@@ -141,13 +141,13 @@ const BuyProduct = () => {
       const data = await response.json();
 
       alert(
-        "Pembelian berhasil! Silakan cek kepemilikan karbon Anda di halaman Akun."
+        "Transaction successful! Please check your carbon holdings on the Account page."
       );
       navigate("/account");
     } catch (error) {
       console.error("Error processing purchase:", error);
       setError(error.message);
-      alert(`Gagal melakukan pembelian: ${error.message}`);
+      alert(`Failed to process purchase: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -366,7 +366,7 @@ const BuyProduct = () => {
                         onChange={() => setPaymentMethod("emoney")}
                         className="mr-2"
                       />
-                      {/* <label htmlFor="emoney">E-Wallet / QRIS</label> */}
+                      <label htmlFor="emoney">DANA</label>
                     </div>
                   </div>
                 </div>
@@ -376,7 +376,7 @@ const BuyProduct = () => {
                   className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-md transition duration-200"
                   disabled={loading}
                 >
-                  {loading ? "Memproses..." : "Konfirmasi Pembelian"}
+                  {loading ? "Processing..." : "Confirm Purchase"}
                 </button>
               </form>
             </div>
@@ -397,7 +397,7 @@ const BuyProduct = () => {
                   </div>
                   <div>
                     <p className="text-gray-600">Land Area</p>
-                    <p className="font-medium">{product.luasTanah} Ha</p>
+                    <p className="font-medium">{product.luasTanah} Meter</p>
                   </div>
                   <div>
                     <p className="text-gray-600">Certification Organization</p>

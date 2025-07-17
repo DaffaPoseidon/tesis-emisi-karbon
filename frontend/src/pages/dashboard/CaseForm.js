@@ -22,8 +22,8 @@ const CaseForm = ({
       label: "PT Surveyor Indonesia",
     },
     {
-      value: "PT Anindya Wiraputra Konsult Divisi Lembaga Validasi/Verifikasi Gas Rumah Kaca (GRK) dan Nilai Ekonomi Karbon (NEK)",
-      label: "PT Anindya Wiraputra Konsult Divisi Lembaga Validasi/Verifikasi Gas Rumah Kaca (GRK) dan Nilai Ekonomi Karbon (NEK)",
+      value: "PT Anindya Wiraputra",
+      label: "PT Anindya Wiraputra",
     },
     {
       value: "Balai Besar Standardisasi dan Pelayanan Jasa Industri Kulit, Karet, dan Plastik",
@@ -38,8 +38,8 @@ const CaseForm = ({
       label: "PT Mutuagung Lestari",
     },
     {
-      value: "PT Superintending Company of Indonesia (PT SUCOFINDO) –SBU Sertifikasi dan Eco Framework (Sucofindo International Certification Services)",
-      label: "PT Superintending Company of Indonesia (PT SUCOFINDO) –SBU Sertifikasi dan Eco Framework (Sucofindo International Certification Services)",
+      value: "PT Superintending Company of Indonesia",
+      label: "PT Superintending Company of Indonesia",
     },
     {
       value: "PT TUV NORD Indonesia",
@@ -456,12 +456,12 @@ const CaseForm = ({
 
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Land Area (Ha)
+              Land Area (Meter)
             </label>
             <input
               type="text"
               name="luasTanah"
-              placeholder="Land Area (Ha)"
+              placeholder="Land Area (Meter)"
               value={localFormData.luasTanah || ""}
               onChange={handleInputChange}
               className="border border-gray-300 rounded p-2 w-full"

@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract CarbonCertificate is ERC721Enumerable, Ownable {
+    
     using Counters for Counters.Counter;
     using Strings for uint256;
     

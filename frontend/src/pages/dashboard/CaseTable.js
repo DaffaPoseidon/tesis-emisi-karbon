@@ -405,7 +405,7 @@ const CaseTable = ({ cases, onEdit, onDelete, refreshCases }) => {
                     <span className="block text-sm text-gray-500">
                       Land Area
                     </span>
-                    <span className="font-medium">{item.luasTanah} Ha</span>
+                    <span className="font-medium">{item.luasTanah} Meter</span>
                   </div>
                   <div>
                     <span className="block text-sm text-gray-500">

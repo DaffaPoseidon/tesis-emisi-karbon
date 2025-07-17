@@ -166,7 +166,7 @@ const ProductDetail = () => {
                   <div className="space-y-2">
                     <p>
                       <span className="font-medium">Land Area:</span>{" "}
-                      {product.luasTanah} Ha
+                      {product.luasTanah} Meter
                     </p>
                     <p>
                       <span className="font-medium">Absorption Method:</span>{" "}
@@ -186,9 +186,6 @@ const ProductDetail = () => {
                 </div>
 
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                    Seller Information
-                  </h2>
                   <div className="space-y-2">
                     <p>
                       <span className="font-medium">Name:</span>{" "}

@@ -233,7 +233,7 @@ const DataKandidat = () => {
             onClick={goToHome}
             className="text-blue-500 hover:text-blue-700 font-bold text-lg"
           >
-            Kembali ke Beranda
+            Back to Home
           </button>
         </div>
 

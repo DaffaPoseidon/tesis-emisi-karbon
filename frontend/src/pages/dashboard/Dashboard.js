@@ -271,13 +271,13 @@ const Dashboard = () => {
       );
 
       if (response.ok) {
-        alert("Data berhasil diperbarui");
+        alert("Data updated successfully");
         setLocalFormData(initialFormState);
         setEditMode(false);
         fetchCases();
       } else {
         const errorData = await response.json();
-        alert(`Gagal memperbarui data: ${errorData.message}`);
+        alert(`Failed to update data ${errorData.message}`);
       }
     } catch (error) {
       alert(`Error: ${error.message}`);
@@ -296,17 +296,17 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold text-gray-700 mb-1">Dashboard</h1>
             {user?.role === "validator" && (
               <p className="text-gray-500">
-                Mode Validator - Anda dapat melihat dan memvalidasi data
+                Validator Account - You can view and validate data
               </p>
             )}
             {user?.role === "seller" && (
               <p className="text-gray-500">
-                Mode Seller - Anda dapat mengelola data pengajuan Anda
+                Seller Account - You can manage your submission data
               </p>
             )}
             {user?.role === "superadmin" && (
               <p className="text-gray-500">
-                Mode Superadmin - Anda memiliki akses penuh
+                Superadmin Account - You have full access
               </p>
             )}
           </div>
@@ -314,7 +314,7 @@ const Dashboard = () => {
             onClick={goToHome}
             className="text-blue-500 hover:text-blue-700 font-bold text-lg"
           >
-            Kembali ke Beranda
+            Back to Home
           </button>
         </div>
 
@@ -323,7 +323,7 @@ const Dashboard = () => {
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-6 rounded shadow-lg">
               <p className="text-red-500 text-lg font-bold">
-                File harus diunggah!
+                File must be uploaded to update the proposal.
               </p>
               <button
                 onClick={() => setShowModal(false)}
@@ -352,7 +352,7 @@ const Dashboard = () => {
         <div className="mb-6 flex items-center space-x-4">
           <input
             type="text"
-            placeholder="Cari berdasarkan nama penggugat..."
+            placeholder="Search by land ownership ..."
             value={searchQuery}
             onChange={handleSearchChange}
             className="px-4 py-2 w-full sm:w-80 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -361,7 +361,7 @@ const Dashboard = () => {
             onClick={handleDownloadExcel}
             className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
           >
-            Download Semua Data Dalam Excel
+            Download All Data in Excel
           </button>
         </div>
 

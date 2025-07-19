@@ -83,10 +83,20 @@ const LandingPage = () => {
     }
   };
 
-  const handleDashboardClick = () => {
-    navigate("/dashboard");
-  };
-
+const handleDashboardClick = () => {
+  // Ambil data user dan role dari localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userRole = user?.role;
+  
+  // Arahkan ke dashboard yang sesuai berdasarkan role
+  if (userRole === "validator") {
+    navigate("/dashboard-validator");
+  } else if (userRole === "seller") {
+    navigate("/dashboard-seller");
+  } else if (userRole === "superadmin") {
+    navigate("/dashboard-validator");
+  }
+};
   const handleLoginClick = () => {
     navigate("/login");
   };

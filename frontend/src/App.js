@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/login/Login";
 import SignupValidator from "./pages/signup/SignupValidator";
 import SignupUser from "./pages/signup/SignupUser";
-import Dashboard from "./pages/dashboard/Dashboard";
+import DashboardValidator from "./pages/dashboard/DashboardValidator";
+import DashboardSeller from "./pages/dashboard/DashboardSeller";
 import LandingPage from "./pages/landingPage/LandingPage";
 import DataKandidat from "./pages/dataKandidat/DataKandidat";
 import ProtectedRouteValidator from "./components/ProtectedRouteValidator";
@@ -23,10 +24,13 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         {/* <Route path="/register" element={<Signup />} /> */}
-
         <Route
-          path="/dashboard"
-          element={<ProtectedRouteSeller element={<Dashboard />} />}
+          path="/dashboard-seller"
+          element={<ProtectedRouteSeller element={<DashboardSeller />} />}
+        />
+        <Route
+          path="/dashboard-validator"
+          element={<ProtectedRouteSeller element={<DashboardValidator />} />}
         />
         <Route
           path="/product/:id/buy"

@@ -175,7 +175,7 @@ const processPurchase = async (req, res) => {
 const updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { statusPengajuan } = req.body;
+    const { statusPengajuan, rejectionReason } = req.body;
 
     // Validasi status
     if (
@@ -185,14 +185,26 @@ const updateStatus = async (req, res) => {
       return res.status(400).json({ message: "Status pengajuan tidak valid" });
     }
 
-    // Ambil data kasus
-    const caseData = await Case.findById(id).populate("penggugah");
-    if (!caseData) {
-      return res.status(404).json({ message: "Case not found" });
+    // If status is "Ditolak", require a rejection reason
+    if (statusPengajuan === "Ditolak" && !rejectionReason) {
+      return res.status(400).json({
+        message: "Reason for rejection is required.",
+      });
+    }
+
+    // Find the case
+    const carbonCase = await Case.findById(id);
+    if (!carbonCase) {
+      return res.status(404).json({ message: "Proposal not found" });
     }
 
     // Update status
-    caseData.statusPengajuan = statusPengajuan;
+    carbonCase.statusPengajuan = statusPengajuan;
+
+    // If rejected, add rejection reason
+    if (statusPengajuan === "Ditolak") {
+      carbonCase.rejectionReason = rejectionReason;
+    }
 
     let blockchainSuccess = false;
 
@@ -201,7 +213,7 @@ const updateStatus = async (req, res) => {
       try {
         // Ambil alamat penerima
         const recipientAddress =
-          caseData.penggugah.walletAddress ||
+          carbonCase.penggugah.walletAddress ||
           process.env.DEFAULT_RECIPIENT_ADDRESS;
 
         if (!recipientAddress) {
@@ -209,7 +221,7 @@ const updateStatus = async (req, res) => {
         }
 
         console.log(
-          `Processing blockchain for case ${caseData._id} with recipient ${recipientAddress}`
+          `Processing blockchain for case ${carbonCase._id} with recipient ${recipientAddress}`
         );
 
         // Debugging sebelum blockchain process
@@ -220,16 +232,16 @@ const updateStatus = async (req, res) => {
         const blockchainResult = await issueCarbonCertificate(
           recipientAddress,
           {
-            _id: caseData._id,
-            namaProyek: caseData.namaProyek,
-            luasTanah: caseData.luasTanah,
-            saranaPenyerapEmisi: caseData.saranaPenyerapEmisi,
-            lembagaSertifikasi: caseData.lembagaSertifikasi,
-            kepemilikanLahan: caseData.kepemilikanLahan,
-            jumlahKarbon: caseData.jumlahKarbon,
-            tanggalMulai: caseData.tanggalMulai,
-            tanggalSelesai: caseData.tanggalSelesai,
-            proposalId: caseData._id, // Gunakan ID yang sama sebagai proposal ID
+            _id: carbonCase._id,
+            namaProyek: carbonCase.namaProyek,
+            luasTanah: carbonCase.luasTanah,
+            saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
+            lembagaSertifikasi: carbonCase.lembagaSertifikasi,
+            kepemilikanLahan: carbonCase.kepemilikanLahan,
+            jumlahKarbon: carbonCase.jumlahKarbon,
+            tanggalMulai: carbonCase.tanggalMulai,
+            tanggalSelesai: carbonCase.tanggalSelesai,
+            proposalId: carbonCase._id, // Gunakan ID yang sama sebagai proposal ID
           }
         );
 
@@ -249,7 +261,7 @@ const updateStatus = async (req, res) => {
           }
 
           // Simpan data blockchain
-          caseData.blockchainData = {
+          carbonCase.blockchainData = {
             transactionHash: blockchainResult.transactionHash,
             blockNumber: blockchainResult.blockNumber,
             tokens: blockchainResult.tokens || [],
@@ -276,7 +288,7 @@ const updateStatus = async (req, res) => {
     }
 
     // Simpan perubahan ke MongoDB
-    const savedCase = await caseData.save();
+    const savedCase = await carbonCase.save();
     console.log(
       "Case saved to MongoDB with blockchain data:",
       savedCase.blockchainData ? "Yes" : "No"

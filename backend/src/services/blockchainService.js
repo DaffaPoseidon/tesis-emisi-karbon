@@ -388,16 +388,6 @@ async function debugSmartContract() {
     }
     console.log("Contract code exists, length:", code.length);
 
-    // List available contract functions
-    if (carbonContract.interface && carbonContract.interface.fragments) {
-      const functions = carbonContract.interface.fragments
-        .filter((f) => f.type === "function")
-        .map((f) => f.name);
-      console.log("Available contract functions:", functions);
-    } else {
-      console.log("Contract interface functions not accessible");
-    }
-
     // Check contract owner
     try {
       const owner = await carbonContract.owner();
@@ -409,15 +399,7 @@ async function debugSmartContract() {
     } catch (e) {
       console.log("Could not get owner, might not be available:", e.message);
     }
-
-    // Check token ID counter
-    try {
-      const tokenIds = await carbonContract._tokenIdCounter();
-      console.log("Current token ID counter:", tokenIds.toString());
-    } catch (e) {
-      console.log("Could not get _tokenIdCounter:", e.message);
-    }
-
+    
     console.log("===== DEBUG COMPLETE =====");
     return { success: true };
   } catch (error) {

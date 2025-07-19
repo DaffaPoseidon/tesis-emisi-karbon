@@ -48,7 +48,7 @@ const Login = () => {
         if (result.user && result.user._id) {
           localStorage.setItem("user", JSON.stringify(result.user));
           localStorage.setItem("token", result.token);
-          navigate("/dashboard");
+          navigate("/");
         } else {
           console.error("Login failed, user data not found");
         }

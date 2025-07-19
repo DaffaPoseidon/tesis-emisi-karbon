@@ -20,7 +20,6 @@ const caseSchema = new mongoose.Schema(
     saranaPenyerapEmisi: { type: String, required: true },
     lembagaSertifikasi: { type: String, required: true },
     kepemilikanLahan: { type: String, required: true },
-
     tanggalMulai: { type: Date, required: true },
     tanggalSelesai: { type: Date, required: true },
     jumlahKarbon: { type: Number, required: true },
@@ -47,6 +46,10 @@ const caseSchema = new mongoose.Schema(
       type: String,
       enum: ["Diajukan", "Diterima", "Ditolak"],
       default: "Diajukan",
+    },
+    rejectionReason: {
+      type: String,
+      default: "",
     },
 
     // Data blockchain

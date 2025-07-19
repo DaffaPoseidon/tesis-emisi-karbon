@@ -108,7 +108,7 @@ const Header = () => {
 
                     {userRole === "seller" && (
                       <Link
-                        to="/dashboard"
+                        to="/dashboard-seller"
                         className="block px-4 py-2 text-gray-700 hover:bg-green-100"
                         onClick={() => setDropdownOpen(false)}
                       >

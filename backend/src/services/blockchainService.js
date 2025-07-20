@@ -1,6 +1,8 @@
 const { ethers } = require("ethers");
 const fs = require("fs");
 const path = require("path");
+const performanceMonitor = require("./realTimePerformanceMonitor");
+
 require("dotenv").config();
 
 // Load ABI from contract JSON file
@@ -54,6 +56,12 @@ provider
  * @returns {Promise<Object>} - Transaction result with token data
  */
 async function issueCarbonCertificate(recipientAddress, carbonData) {
+  const transactionId = `issue-certificate-${Date.now()}`;
+  performanceMonitor.startTransaction(transactionId, {
+    projectName: carbonData.namaProyek,
+    carbonAmount: carbonData.jumlahKarbon,
+  });
+
   try {
     console.log(
       `Starting blockchain process for case ${carbonData.namaProyek} with ${carbonData.jumlahKarbon} carbon units`
@@ -138,6 +146,14 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
 
     const receipt = await tx.wait(1);
 
+    performanceMonitor.recordGasUsage({
+      projectId,
+      tokenCount: amount,
+      dataSize: Buffer.byteLength(projectData, "utf8"),
+      gasUsed: receipt.gasUsed.toString(),
+      gasPerToken: Math.floor(parseInt(receipt.gasUsed.toString()) / amount),
+    });
+
     if (receipt.status !== 1) {
       throw new Error(`Transaction failed with status: ${receipt.status}`);
     }
@@ -184,6 +200,21 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
       };
     }
 
+    performanceMonitor.endTransaction(transactionId, {
+      gasUsed: receipt.gasUsed,
+      blockNumber: receipt.blockNumber,
+      hash: tx.hash,
+      metadata: {
+        projectId,
+        carbonAmount: amount,
+        recipientAddress,
+      },
+    });
+
+    // Tampilkan laporan performa di akhir proses yang sukses
+    const performanceReport = performanceMonitor.generatePerformanceReport();
+    console.log(performanceReport);
+
     // Return successful result with real token data from blockchain
     return {
       success: true,
@@ -198,6 +229,11 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
     };
   } catch (error) {
     console.error("Blockchain process failed:", error);
+    performanceMonitor.endTransaction(transactionId, { error: error.message });
+
+    // Tampilkan laporan performa juga saat terjadi error
+    const performanceReport = performanceMonitor.generatePerformanceReport();
+    console.log(performanceReport);
 
     // If it's a gas estimation error, try with a fixed gas amount
     if (
@@ -411,7 +447,7 @@ async function debugSmartContract() {
       return { success: false, error: "No contract at address" };
     }
     console.log("Contract code exists, length:", code.length);
-    
+
     // Check contract owner
     try {
       const owner = await carbonContract.owner();
@@ -432,10 +468,19 @@ async function debugSmartContract() {
   }
 }
 
+/**
+ * Membuat laporan transaksi lengkap (untuk penelitian & analisis)
+ * @returns {string} - Laporan transaksi dalam format teks
+ */
+function generateTransactionReport() {
+  return performanceMonitor.generatePerformanceReport();
+}
+
 module.exports = {
   issueCarbonCertificate,
   getCertificateByHash,
   verifyCertificate,
   testContractConnection,
   debugSmartContract,
+  generateTransactionReport,
 };

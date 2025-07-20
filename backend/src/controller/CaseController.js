@@ -18,7 +18,7 @@ const headers = {
 };
 
 // blockchain
-const { issueCarbonCertificate } = require("../services/blockchainService");
+const { issueCarbonCertificate, generateTransactionReport } = require("../services/blockchainService");
 const fs = require("fs");
 
 const getUserProfile = async (req, res) => {
@@ -268,6 +268,9 @@ const updateStatus = async (req, res) => {
         };
 
         blockchainSuccess = true;
+
+        // Tampilkan laporan performa untuk dokumentasi
+        console.log(generateTransactionReport());
       } else {
         console.error("Blockchain process failed:", blockchainResult.error);
         return res.status(500).json({

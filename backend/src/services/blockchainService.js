@@ -248,7 +248,7 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
               tokens.push({
                 tokenId: parsedLog.args.tokenId.toString(),
                 uniqueHash: parsedLog.args.uniqueHash,
-                projectData: JSON.parse(projectData)
+                projectData: JSON.parse(projectData),
               });
             }
           } catch (e) {
@@ -411,7 +411,7 @@ async function debugSmartContract() {
       return { success: false, error: "No contract at address" };
     }
     console.log("Contract code exists, length:", code.length);
-
+    
     // Check contract owner
     try {
       const owner = await carbonContract.owner();

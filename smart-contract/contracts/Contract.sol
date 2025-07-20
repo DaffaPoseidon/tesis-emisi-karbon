@@ -20,6 +20,7 @@ contract CarbonCertificate is ERC721Enumerable, Ownable {
         string projectId;
         uint256 issueDate;
         string uniqueHash;
+        string projectData;
     }
     
     // Penyimpanan mapping
@@ -33,7 +34,8 @@ event CertificateIssued(
     address recipient,
     uint256 carbonAmount,
     string projectId,
-    string uniqueHash
+    string uniqueHash,
+    string projectData
 );
     
     constructor() ERC721("Carbon Credit Certificate", "CARBON") {}
@@ -43,17 +45,19 @@ event CertificateIssued(
      * @param recipient Alamat yang akan menerima sertifikat
      * @param amount Jumlah sertifikat yang akan diterbitkan (1 sertifikat = 1 ton)
      * @param projectId ID proyek dari MongoDB
+     * @param projectData Data lengkap proyek dalam format JSON
      */
-    function issueCertificate(
-        address recipient,
-        uint256 amount,
-        string memory projectId
-    ) public onlyOwner returns (bool) {
-        require(amount > 0, "Amount must be greater than zero");
-        require(bytes(projectId).length > 0, "Project ID cannot be empty");
-        
-        // Membuat token sejumlah yang ditentukan
-for (uint256 i = 0; i < amount; i++) {
+function issueCertificate(
+    address recipient,
+    uint256 amount,
+    string memory projectId,
+    string memory projectData // Tambahkan parameter baru
+) public onlyOwner returns (bool) {
+    require(amount > 0, "Amount must be greater than zero");
+    require(bytes(projectId).length > 0, "Project ID cannot be empty");
+    
+    // Membuat token sejumlah yang ditentukan
+    for (uint256 i = 0; i < amount; i++) {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         
@@ -63,13 +67,14 @@ for (uint256 i = 0; i < amount; i++) {
         // Mint token
         _safeMint(recipient, tokenId);
         
-        // Simpan certificate data
+        // Simpan certificate data dengan data lengkap
         Certificate memory newCertificate = Certificate({
             tokenId: tokenId,
             carbonAmount: 1,
             projectId: projectId,
             issueDate: block.timestamp,
-            uniqueHash: uniqueHash
+            uniqueHash: uniqueHash,
+            projectData: projectData // Simpan data lengkap
         });
         
         _certificates[tokenId] = newCertificate;
@@ -82,12 +87,13 @@ for (uint256 i = 0; i < amount; i++) {
             recipient,
             1, // 1 ton per sertifikat
             projectId,
-            uniqueHash
+            uniqueHash,
+            projectData // Tambahkan projectData ke event
         );
     }
-        
-        return true;
-    }
+    
+    return true;
+}
     
     /**
      * Menghasilkan hash unik untuk sertifikat

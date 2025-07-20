@@ -14,17 +14,6 @@ try {
   const abiFile = fs.readFileSync(contractABIPath, "utf8");
   const contractData = JSON.parse(abiFile);
   contractABI = contractData.abi;
-
-  // Verify ABI contains issueCertificate function
-  const issueCertFunc = contractABI.find(
-    (item) => item.type === "function" && item.name === "issueCertificate"
-  );
-
-  if (!issueCertFunc) {
-    console.error("WARNING: issueCertificate function not found in ABI!");
-  } else {
-    console.log("issueCertificate function found in ABI");
-  }
 } catch (error) {
   console.error(`Error loading ABI file from ${contractABIPath}:`, error);
 }
@@ -67,15 +56,28 @@ provider
 async function issueCarbonCertificate(recipientAddress, carbonData) {
   try {
     console.log(
-      `Starting blockchain process for case ${carbonData._id} with ${carbonData.jumlahKarbon} carbon units`
+      `Starting blockchain process for case ${carbonData.namaProyek} with ${carbonData.jumlahKarbon} carbon units`
     );
 
     // Input validation
     if (!recipientAddress) throw new Error("Recipient address is required");
     if (!carbonData) throw new Error("Carbon data is required");
-    if (!carbonData._id) throw new Error("Carbon data must have _id");
-    if (!carbonData.proposalId)
-      throw new Error("Carbon data must have proposalId");
+
+    // Validate essential fields
+    const requiredFields = [
+      "namaProyek",
+      "luasTanah",
+      "saranaPenyerapEmisi",
+      "lembagaSertifikasi",
+      "kepemilikanLahan",
+      "tanggalMulai",
+      "tanggalSelesai",
+      "jumlahKarbon",
+    ];
+
+    for (const field of requiredFields) {
+      if (!carbonData[field]) throw new Error(`${field} is required`);
+    }
 
     // Date validation
     const startDate = new Date(carbonData.tanggalMulai);
@@ -90,27 +92,50 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
       throw new Error("Carbon amount must be a positive number");
     }
 
-    // Create project ID for the certificate
-    const projectId = `${carbonData._id.toString()}-${carbonData.proposalId.toString()}`;
+    // Create complete project data for blockchain
+    // Format string data to avoid storage issues
+    const projectData = JSON.stringify({
+      namaProyek: carbonData.namaProyek,
+      luasTanah: carbonData.luasTanah,
+      saranaPenyerapEmisi: carbonData.saranaPenyerapEmisi,
+      lembagaSertifikasi: carbonData.lembagaSertifikasi,
+      kepemilikanLahan: carbonData.kepemilikanLahan,
+      tanggalMulai: startDate.toISOString(),
+      tanggalSelesai: endDate.toISOString(),
+      jumlahKarbon: amount,
+      jumlahSertifikat: amount,
+      penggugah: carbonData.penggugahName || "unknown", // Store account name directly
+      statusPengajuan: "Diterima",
+      createdAt: new Date().toISOString(),
+    });
+
+    // Create a unique project ID that's not ObjectId-based
+    const projectId = `${carbonData.namaProyek.replace(
+      /\s+/g,
+      "-"
+    )}-${Date.now()}`;
     console.log(
       `Issuing ${amount} carbon certificates for project ${projectId} to ${recipientAddress}`
     );
 
-    // Send transaction to the smart contract
-    console.log("Calling contract issueCertificate function...");
+    // Send transaction to the smart contract with complete data
+    console.log(
+      "Calling contract issueCertificate function with complete data..."
+    );
     const tx = await carbonContract.issueCertificate(
       recipientAddress,
       amount,
       projectId,
+      projectData, // Parameter data lengkap JSON yang sudah ada
       {
-        gasLimit: 9000000, // Set a high gas limit to ensure transaction goes through
+        gasLimit: 9000000,
       }
     );
 
+    // Rest of the function remains similar, but update token structure
     console.log("Transaction sent with hash:", tx.hash);
     console.log("Waiting for transaction confirmation...");
 
-    // Wait for transaction confirmation
     const receipt = await tx.wait(1);
 
     if (receipt.status !== 1) {
@@ -119,14 +144,12 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
 
     console.log("Transaction confirmed in block:", receipt.blockNumber);
 
-    // Extract token data from event logs
+    // Extract token data from event logs with enhanced information
     const tokens = [];
     let foundEvents = false;
 
-    // Process each log to find CertificateIssued events
     for (const log of receipt.logs) {
       try {
-        // Try to parse the log
         const parsedLog = carbonContract.interface.parseLog({
           topics: log.topics,
           data: log.data,
@@ -137,13 +160,13 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
           const tokenData = {
             tokenId: parsedLog.args.tokenId.toString(),
             uniqueHash: parsedLog.args.uniqueHash,
-            proposalId: carbonData.proposalId.toString(),
+            // Store complete project data instead of just IDs
+            projectData: JSON.parse(projectData),
           };
           tokens.push(tokenData);
-          console.log("Found token:", tokenData);
+          console.log("Found token:", tokenData.tokenId, tokenData.uniqueHash);
         }
       } catch (e) {
-        // Skip logs that can't be parsed
         console.log("Could not parse log:", e.message);
       }
     }
@@ -170,6 +193,7 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
       recipient: recipientAddress,
       carbonAmount: amount,
       projectId,
+      projectData: JSON.parse(projectData),
       issuedOn: Date.now(),
     };
   } catch (error) {
@@ -224,7 +248,7 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
               tokens.push({
                 tokenId: parsedLog.args.tokenId.toString(),
                 uniqueHash: parsedLog.args.uniqueHash,
-                proposalId: carbonData.proposalId.toString(),
+                projectData: JSON.parse(projectData)
               });
             }
           } catch (e) {
@@ -399,7 +423,7 @@ async function debugSmartContract() {
     } catch (e) {
       console.log("Could not get owner, might not be available:", e.message);
     }
-    
+
     console.log("===== DEBUG COMPLETE =====");
     return { success: true };
   } catch (error) {

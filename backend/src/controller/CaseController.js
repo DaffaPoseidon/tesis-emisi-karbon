@@ -209,82 +209,79 @@ const updateStatus = async (req, res) => {
     let blockchainSuccess = false;
 
     // Jika status Diterima, proses ke blockchain
-    if (statusPengajuan === "Diterima") {
-      try {
-        // Ambil alamat penerima
-        const recipientAddress =
-          carbonCase.penggugah.walletAddress ||
-          process.env.DEFAULT_RECIPIENT_ADDRESS;
+    try {
+      // Ambil alamat penerima
+      const recipientAddress =
+        carbonCase.penggugah.walletAddress ||
+        process.env.DEFAULT_RECIPIENT_ADDRESS;
 
-        if (!recipientAddress) {
-          throw new Error("No recipient address available");
+      if (!recipientAddress) {
+        throw new Error("No recipient address available");
+      }
+
+      console.log(
+        `Processing blockchain for case ${carbonCase.namaProyek} with recipient ${recipientAddress}`
+      );
+
+      // Debugging sebelum blockchain process
+      const { debugSmartContract } = require("../services/blockchainService");
+      await debugSmartContract();
+
+      // Get submitter name instead of just ID
+      const submitterName =
+        carbonCase.penggugah.firstName && carbonCase.penggugah.lastName
+          ? `${carbonCase.penggugah.firstName} ${carbonCase.penggugah.lastName}`
+          : carbonCase.penggugah.username || "Unknown";
+
+      // Proses ke blockchain dengan data lengkap
+      const blockchainResult = await issueCarbonCertificate(recipientAddress, {
+        namaProyek: carbonCase.namaProyek,
+        luasTanah: carbonCase.luasTanah,
+        saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
+        lembagaSertifikasi: carbonCase.lembagaSertifikasi,
+        kepemilikanLahan: carbonCase.kepemilikanLahan,
+        jumlahKarbon: carbonCase.jumlahKarbon,
+        tanggalMulai: carbonCase.tanggalMulai,
+        tanggalSelesai: carbonCase.tanggalSelesai,
+        penggugahName: submitterName, // Nama penggugah langsung
+        statusPengajuan: carbonCase.statusPengajuan,
+      });
+
+      console.log("Blockchain result:", JSON.stringify(blockchainResult));
+
+      if (blockchainResult.success) {
+        console.log("Blockchain process successful, updating MongoDB document");
+
+        // Verifikasi tokens
+        if (!blockchainResult.tokens || blockchainResult.tokens.length === 0) {
+          console.warn("Warning: No tokens returned from blockchain process");
         }
 
-        console.log(
-          `Processing blockchain for case ${carbonCase._id} with recipient ${recipientAddress}`
-        );
+        // Simpan data blockchain tanpa ObjectId references
+        carbonCase.blockchainData = {
+          transactionHash: blockchainResult.transactionHash,
+          blockNumber: blockchainResult.blockNumber,
+          tokens: blockchainResult.tokens || [],
+          issuedOn: blockchainResult.issuedOn || Date.now(),
+          recipientAddress: recipientAddress,
+          projectData: blockchainResult.projectData || {},
+        };
 
-        // Debugging sebelum blockchain process
-        const { debugSmartContract } = require("../services/blockchainService");
-        await debugSmartContract();
-
-        // Proses ke blockchain dengan data yang benar
-        const blockchainResult = await issueCarbonCertificate(
-          recipientAddress,
-          {
-            _id: carbonCase._id,
-            namaProyek: carbonCase.namaProyek,
-            luasTanah: carbonCase.luasTanah,
-            saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
-            lembagaSertifikasi: carbonCase.lembagaSertifikasi,
-            kepemilikanLahan: carbonCase.kepemilikanLahan,
-            jumlahKarbon: carbonCase.jumlahKarbon,
-            tanggalMulai: carbonCase.tanggalMulai,
-            tanggalSelesai: carbonCase.tanggalSelesai,
-            proposalId: carbonCase._id, // Gunakan ID yang sama sebagai proposal ID
-          }
-        );
-
-        console.log("Blockchain result:", JSON.stringify(blockchainResult));
-
-        if (blockchainResult.success) {
-          console.log(
-            "Blockchain process successful, updating MongoDB document"
-          );
-
-          // Verifikasi tokens
-          if (
-            !blockchainResult.tokens ||
-            blockchainResult.tokens.length === 0
-          ) {
-            console.warn("Warning: No tokens returned from blockchain process");
-          }
-
-          // Simpan data blockchain
-          carbonCase.blockchainData = {
-            transactionHash: blockchainResult.transactionHash,
-            blockNumber: blockchainResult.blockNumber,
-            tokens: blockchainResult.tokens || [],
-            issuedOn: blockchainResult.issuedOn || Date.now(),
-            recipientAddress: recipientAddress,
-          };
-
-          blockchainSuccess = true;
-        } else {
-          console.error("Blockchain process failed:", blockchainResult.error);
-          return res.status(500).json({
-            message: "Gagal memproses data ke blockchain",
-            error: blockchainResult.error,
-            details: blockchainResult.details,
-          });
-        }
-      } catch (error) {
-        console.error("Error dalam proses blockchain:", error);
+        blockchainSuccess = true;
+      } else {
+        console.error("Blockchain process failed:", blockchainResult.error);
         return res.status(500).json({
           message: "Gagal memproses data ke blockchain",
-          error: error.message,
+          error: blockchainResult.error,
+          details: blockchainResult.details,
         });
       }
+    } catch (error) {
+      console.error("Error dalam proses blockchain:", error);
+      return res.status(500).json({
+        message: "Gagal memproses data ke blockchain",
+        error: error.message,
+      });
     }
 
     // Simpan perubahan ke MongoDB
@@ -469,6 +466,7 @@ const createCase = async (req, res) => {
       jumlahKarbon: carbonAmount,
       jumlahSertifikat: carbonAmount,
       penggugah: userId,
+      penggugahName: `${req.user.firstName} ${req.user.lastName}`,
       files: uploadedFiles,
     });
 

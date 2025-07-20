@@ -32,6 +32,7 @@ const caseSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    penggugahName: String,
 
     // File lampiran
     files: [

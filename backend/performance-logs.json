@@ -11,51 +11,51 @@
   },
   "transactions": [
     {
-      "id": "issue-certificate-1753023359669",
-      "timestamp": "2025-07-20T14:56:15.891Z",
-      "executionTime": 16221.436298,
-      "gasUsed": "1347547",
-      "blockNumber": 172,
-      "transactionHash": "0x52156a62d6c553b4ab59a357d3bfe1b4e30d1df96c55627a9783fd4b5d7f69b6",
-      "tokenCount": 2,
+      "id": "issue-certificate-1753704045050",
+      "timestamp": "2025-07-28T12:00:57.261Z",
+      "executionTime": 12211.101754000003,
+      "gasUsed": "1987496",
+      "blockNumber": 4403,
+      "transactionHash": "0x9701fccb3925740aaf92a514ae9e4d4bc88d83e7c5671a55548b31d8395dd81f",
+      "tokenCount": 3,
       "metadata": {
-        "projectId": "Test-1-1753023359669",
-        "carbonAmount": 2,
+        "projectId": "test-4-1753704045050",
+        "carbonAmount": 3,
         "recipientAddress": "0xF84D3c1248c04D7791f7E732B110EF1d337F1CaA"
       },
       "dataSize": 117,
       "latency": {
         "mining": null,
-        "confirmation": 16221.436298
+        "confirmation": 12211.101754000003
       }
     }
   ],
   "latencyMeasurements": [],
   "gasUsage": [
     {
-      "timestamp": "2025-07-20T14:56:15.862Z",
-      "projectId": "Test-1-1753023359669",
-      "tokenCount": 2,
-      "dataSize": 362,
-      "gasUsed": "1347547",
-      "gasPerToken": 673773
+      "timestamp": "2025-07-28T12:00:57.250Z",
+      "projectId": "test-4-1753704045050",
+      "tokenCount": 3,
+      "dataSize": 360,
+      "gasUsed": "1987496",
+      "gasPerToken": 662498
     }
   ],
   "summaryStats": {
-    "tokenCount": 2,
+    "tokenCount": 3,
     "executionTime": {
-      "value": 16221.436298,
-      "perToken": 8110.718149
+      "value": 12211.101754000003,
+      "perToken": 4070.3672513333345
     },
     "gasUsage": {
-      "value": 1347547,
-      "perToken": 673773
+      "value": 1987496,
+      "perToken": 662498
     },
     "latency": {
       "mining": null,
-      "confirmation": 16221.436298
+      "confirmation": 12211.101754000003
     },
     "dataSize": 117
   },
-  "lastUpdated": "2025-07-20T14:56:15.891Z"
+  "lastUpdated": "2025-07-28T12:00:57.261Z"
 }

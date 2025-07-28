@@ -77,8 +77,8 @@ const CaseTable = ({
           : caseItem.statusPengajuan === "Diterima"
           ? "Approved"
           : "Rejected",
-      Submitter: caseItem.penggugah
-        ? `${caseItem.penggugah.firstName} ${caseItem.penggugah.lastName}`
+      Submitter: caseItem.pengunggah
+        ? `${caseItem.pengunggah.firstName} ${caseItem.pengunggah.lastName}`
         : "N/A",
     };
 
@@ -245,6 +245,17 @@ const CaseTable = ({
                       {item.lembagaSertifikasi}
                     </span>
                   </div>
+                    <div>
+    <span className="block text-sm text-gray-500">Submitter</span>
+    <span className="font-medium">
+      {item.pengunggah 
+        ? `${item.pengunggah.firstName} ${item.pengunggah.lastName}`
+        : "Unknown"}
+    </span>
+    {item.pengunggah?.email && (
+      <span className="block text-sm text-gray-500">{item.pengunggah.email}</span>
+    )}
+  </div>
                 </div>
 
                 {/* Blockchain data if available */}

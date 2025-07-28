@@ -26,13 +26,12 @@ const caseSchema = new mongoose.Schema(
 
     jumlahSertifikat: { type: Number }, // Sama dengan jumlahKarbon
 
-    // Referensi penggugah dan validasi
-    penggugah: {
+    // Referensi pengunggah dan validasi
+    pengunggah: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    penggugahName: String,
 
     // File lampiran
     files: [

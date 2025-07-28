@@ -203,8 +203,8 @@ const Marketplace = () => {
                       <div className="text-sm">
                         <p className="text-gray-500">Seller</p>
                         <p className="font-medium text-gray-800">
-                          {product.penggugah
-                            ? `${product.penggugah.firstName} ${product.penggugah.lastName}`
+                          {product.pengunggah
+                            ? `${product.pengunggah.firstName} ${product.pengunggah.lastName}`
                             : "Unknown"}
                         </p>
                       </div>

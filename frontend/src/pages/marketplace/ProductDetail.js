@@ -189,14 +189,14 @@ const ProductDetail = () => {
                   <div className="space-y-2">
                     <p>
                       <span className="font-medium">Name:</span>{" "}
-                      {product.penggugah
-                        ? `${product.penggugah.firstName} ${product.penggugah.lastName}`
+                      {product.pengunggah
+                        ? `${product.pengunggah.firstName} ${product.pengunggah.lastName}`
                         : "Not Available"}
                     </p>
                     <p>
                       <span className="font-medium">Email:</span>{" "}
-                      {product.penggugah
-                        ? product.penggugah.email
+                      {product.pengunggah
+                        ? product.pengunggah.email
                         : "Not Available"}
                     </p>
                   </div>

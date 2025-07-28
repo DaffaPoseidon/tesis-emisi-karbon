@@ -110,9 +110,9 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
       kepemilikanLahan: carbonData.kepemilikanLahan,
       tanggalMulai: startDate.toISOString(),
       tanggalSelesai: endDate.toISOString(),
-      jumlahKarbon: amount,
-      jumlahSertifikat: amount,
-      penggugah: carbonData.penggugahName || "unknown", // Store account name directly
+      jumlahKarbon: carbonData.jumlahKarbon,
+      jumlahSertifikat: carbonData.jumlahKarbon, // Same as jumlahKarbon
+      pengunggah: carbonData.pengunggah || "unknown", // Store account name directly
       statusPengajuan: "Diterima",
       createdAt: new Date().toISOString(),
     });

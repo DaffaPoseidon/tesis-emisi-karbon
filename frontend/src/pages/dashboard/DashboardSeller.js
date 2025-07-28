@@ -79,7 +79,7 @@ const DashboardSeller = () => {
   // Filter cases to only show the current seller's cases
   const filteredCases =
     user?.role === "seller"
-      ? cases.filter((caseItem) => caseItem.penggugah?._id === user?._id)
+      ? cases.filter((caseItem) => caseItem.pengunggah?._id === user?._id)
       : cases; // For superadmin or other roles, show all cases
 
   const handleDownloadExcel = () => {
@@ -119,11 +119,11 @@ const DashboardSeller = () => {
           ? caseItem.proposals.filter((p) => p.statusProposal === "Ditolak")
               .length
           : 0,
-        Penggugah: caseItem.penggugah
-          ? `${caseItem.penggugah.firstName} ${caseItem.penggugah.lastName}`
+        Pengunggah: caseItem.pengunggah
+          ? `${caseItem.pengunggah.firstName} ${caseItem.pengunggah.lastName}`
           : "N/A",
-        "Email Penggugah": caseItem.penggugah
-          ? caseItem.penggugah.email
+        "Email Pengunggah": caseItem.pengunggah
+          ? caseItem.pengunggah.email
           : "N/A",
         "Tanggal Pengajuan": formatExcelDate(caseItem.createdAt),
         "Tanggal Update": formatExcelDate(caseItem.updatedAt),
@@ -165,8 +165,8 @@ const DashboardSeller = () => {
             ).toLocaleDateString("id-ID"),
             "Jumlah Karbon (Ton)": proposal.jumlahKarbon,
             Status: proposal.statusProposal,
-            Penggugah: caseItem.penggugah
-              ? `${caseItem.penggugah.firstName} ${caseItem.penggugah.lastName}`
+            Pengunggah: caseItem.pengunggah
+              ? `${caseItem.pengunggah.firstName} ${caseItem.pengunggah.lastName}`
               : "N/A",
           });
         });

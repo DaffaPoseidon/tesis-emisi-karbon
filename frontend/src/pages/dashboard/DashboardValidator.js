@@ -34,10 +34,23 @@ const DashboardValidator = () => {
       if (response.ok) {
         const data = await response.json();
         // Filter cases for validator (only show Diajukan status)
-        const validatorCases = data.cases.filter(
-          (caseItem) =>
-            !caseItem.statusPengajuan || caseItem.statusPengajuan === "Diajukan"
-        );
+        const validatorCases = data.cases
+          .filter(
+            (caseItem) =>
+              !caseItem.statusPengajuan ||
+              caseItem.statusPengajuan === "Diajukan"
+          )
+          .map((caseItem) => ({
+            ...caseItem,
+            // Tambahkan fallback jika pengunggah null/undefined
+            pengunggahName: caseItem.pengunggah
+              ? `${caseItem.pengunggah.firstName || ""} ${
+                  caseItem.pengunggah.lastName || ""
+                }`.trim()
+              : "Unknown",
+          }));
+
+        console.log("Fetched cases:", validatorCases); // Debug
         setCases(validatorCases);
         setLoading(false);
         return true;
@@ -48,7 +61,7 @@ const DashboardValidator = () => {
         return false;
       }
     } catch (error) {
-      console.error("Error:", error.message);
+      console.error("Error fetching cases:", error);
       setError(error.message);
       setLoading(false);
       return false;
@@ -97,11 +110,11 @@ const DashboardValidator = () => {
           ? caseItem.proposals.filter((p) => p.statusProposal === "Ditolak")
               .length
           : 0,
-        Penggugah: caseItem.penggugah
-          ? `${caseItem.penggugah.firstName} ${caseItem.penggugah.lastName}`
+        Pengunggah: caseItem.pengunggah
+          ? `${caseItem.pengunggah.firstName} ${caseItem.pengunggah.lastName}`
           : "N/A",
-        "Email Penggugah": caseItem.penggugah
-          ? caseItem.penggugah.email
+        "Email Pengunggah": caseItem.pengunggah
+          ? caseItem.pengunggah.email
           : "N/A",
         "Tanggal Pengajuan": formatExcelDate(caseItem.createdAt),
         "Tanggal Update": formatExcelDate(caseItem.updatedAt),
@@ -129,8 +142,8 @@ const DashboardValidator = () => {
             ).toLocaleDateString("id-ID"),
             "Jumlah Karbon (Ton)": proposal.jumlahKarbon,
             Status: proposal.statusProposal,
-            Penggugah: caseItem.penggugah
-              ? `${caseItem.penggugah.firstName} ${caseItem.penggugah.lastName}`
+            Pengunggah: caseItem.pengunggah
+              ? `${caseItem.pengunggah.firstName} ${caseItem.pengunggah.lastName}`
               : "N/A",
           });
         });
@@ -411,12 +424,21 @@ const DashboardValidator = () => {
                         {new Date(item.tanggalMulai).toLocaleDateString()} -{" "}
                         {new Date(item.tanggalSelesai).toLocaleDateString()}
                       </p>
-                      {item.penggugah && (
-                        <p className="text-sm text-gray-600">
-                          Submitted by: {item.penggugah.firstName}{" "}
-                          {item.penggugah.lastName}
-                        </p>
-                      )}
+                      <p className="text-sm text-gray-600">
+                        Submitted by:{" "}
+                        {item.pengunggah &&
+                        typeof item.pengunggah === "object" ? (
+                          <span className="font-medium">
+                            {`${item.pengunggah.firstName || ""} ${
+                              item.pengunggah.lastName || ""
+                            }`.trim() || "Unknown"}
+                          </span>
+                        ) : (
+                          <span className="italic text-gray-400">
+                            Not Available
+                          </span>
+                        )}
+                      </p>
                     </div>
 
                     <div className="flex items-center space-x-2">

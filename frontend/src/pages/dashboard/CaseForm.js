@@ -273,7 +273,7 @@ const CaseForm = ({
 
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
-    const penggugah = user ? user._id : "Unknown";
+    const pengunggah = user ? user._id : "Unknown";
 
     // MAIN CHANGE: Send each period as a separate entry
     try {
@@ -313,8 +313,6 @@ const CaseForm = ({
           );
         }
         formDataToSend.append("jumlahKarbon", carbonAmount.toString());
-
-        formDataToSend.append("penggugah", penggugah);
 
         // Send to server
         const response = await fetch(

@@ -283,9 +283,9 @@ const handleDashboardClick = () => {
                         <div className="mb-3">
                           <span className="text-sm text-gray-500">Seller</span>
                           <p className="text-sm font-medium truncate">
-                            {product.penggugah
-                              ? `${product.penggugah.firstName || ""} ${
-                                  product.penggugah.lastName || ""
+                            {product.pengunggah
+                              ? `${product.pengunggah.firstName || ""} ${
+                                  product.pengunggah.lastName || ""
                                 }`
                               : "Seller information not available"}
                           </p>

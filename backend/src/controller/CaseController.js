@@ -114,7 +114,9 @@ const processPurchase = async (req, res) => {
     }
 
     // Check if case exists and has enough carbon credits
-    const carbonCase = await Case.findById(caseId);
+const carbonCase = await Case.findById(caseId)
+      .populate('pengunggah', 'firstName lastName email walletAddress');
+
     if (!carbonCase) {
       return res.status(404).json({ message: "Case not found" });
     }
@@ -146,7 +148,7 @@ const processPurchase = async (req, res) => {
     // Create purchase record
     const purchase = new Purchase({
       buyer: userId,
-      seller: carbonCase.penggugah,
+      seller: carbonCase.pengunggah._id,
       case: caseId,
       quantity,
       totalPrice,
@@ -154,6 +156,12 @@ const processPurchase = async (req, res) => {
     });
 
     await purchase.save();
+
+        // Populate purchase untuk response
+    const populatedPurchase = await Purchase.findById(purchase._id)
+      .populate('buyer', 'firstName lastName email')
+      .populate('seller', 'firstName lastName email')
+      .populate('case', 'namaProyek jumlahKarbon');
 
     res.status(200).json({
       message: "Purchase successful",
@@ -192,11 +200,23 @@ const updateStatus = async (req, res) => {
       });
     }
 
-    // Find the case
-    const carbonCase = await Case.findById(id);
-    if (!carbonCase) {
-      return res.status(404).json({ message: "Proposal not found" });
-    }
+const carbonCase = await Case.findById(id).populate("pengunggah", "firstName lastName username walletAddress");
+
+if (!carbonCase) {
+  return res.status(404).json({ message: "Proposal not found" });
+}
+
+const submitterName =
+  carbonCase.pengunggah.firstName && carbonCase.pengunggah.lastName
+    ? `${carbonCase.pengunggah.firstName} ${carbonCase.pengunggah.lastName}`
+    : carbonCase.pengunggah.username || "Unknown";
+
+// Jika tetap "Unknown", tolak proses
+if (submitterName === "Unknown") {
+  return res.status(400).json({
+    message: "Nama pengunggah tidak valid. Data tidak bisa diproses ke blockchain.",
+  });
+}
 
     // Update status
     carbonCase.statusPengajuan = statusPengajuan;
@@ -212,7 +232,7 @@ const updateStatus = async (req, res) => {
     try {
       // Ambil alamat penerima
       const recipientAddress =
-        carbonCase.penggugah.walletAddress ||
+        carbonCase.pengunggah.walletAddress ||
         process.env.DEFAULT_RECIPIENT_ADDRESS;
 
       if (!recipientAddress) {
@@ -227,12 +247,6 @@ const updateStatus = async (req, res) => {
       const { debugSmartContract } = require("../services/blockchainService");
       await debugSmartContract();
 
-      // Get submitter name instead of just ID
-      const submitterName =
-        carbonCase.penggugah.firstName && carbonCase.penggugah.lastName
-          ? `${carbonCase.penggugah.firstName} ${carbonCase.penggugah.lastName}`
-          : carbonCase.penggugah.username || "Unknown";
-
       // Proses ke blockchain dengan data lengkap
       const blockchainResult = await issueCarbonCertificate(recipientAddress, {
         namaProyek: carbonCase.namaProyek,
@@ -243,9 +257,25 @@ const updateStatus = async (req, res) => {
         jumlahKarbon: carbonCase.jumlahKarbon,
         tanggalMulai: carbonCase.tanggalMulai,
         tanggalSelesai: carbonCase.tanggalSelesai,
-        penggugahName: submitterName, // Nama penggugah langsung
+        jumlahKarbon: carbonCase.jumlahKarbon,
+        pengunggah: submitterName, // Nama pengunggah langsung
         statusPengajuan: carbonCase.statusPengajuan,
       });
+
+      console.log("Blockchain input:", {
+  recipientAddress,
+  namaProyek: carbonCase.namaProyek,
+  luasTanah: carbonCase.luasTanah,
+  saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
+  lembagaSertifikasi: carbonCase.lembagaSertifikasi,
+  kepemilikanLahan: carbonCase.kepemilikanLahan,
+  tanggalMulai: carbonCase.tanggalMulai,
+  tanggalSelesai: carbonCase.tanggalSelesai,
+  jumlahKarbon: carbonCase.jumlahKarbon,
+  jumlahSertifikat: carbonCase.jumlahKarbon, // Same as jumlahKarbon
+  pengunggah: submitterName,
+  statusPengajuan: carbonCase.statusPengajuan,
+});
 
       console.log("Blockchain result:", JSON.stringify(blockchainResult));
 
@@ -468,16 +498,19 @@ const createCase = async (req, res) => {
       tanggalSelesai: endDate,
       jumlahKarbon: carbonAmount,
       jumlahSertifikat: carbonAmount,
-      penggugah: userId,
-      penggugahName: `${req.user.firstName} ${req.user.lastName}`,
+      pengunggah: userId,
       files: uploadedFiles,
     });
 
     const savedCase = await newCase.save();
 
+    // Populate pengunggah agar frontend dapat nama lengkap
+    const populatedCase = await Case.findById(savedCase._id)
+      .populate("pengunggah", "firstName lastName email");
+
     res.status(201).json({
       message: "Data berhasil disimpan",
-      case: savedCase,
+      case: populatedCase,
     });
   } catch (error) {
     console.error("Error creating case:", error);
@@ -501,10 +534,11 @@ const getCase = async (req, res) => {
       return res.status(400).json({ message: "Format ID tidak valid" });
     }
 
-    const caseItem = await Case.findById(id).populate(
-      "penggugah",
-      "firstName lastName email walletAddress"
-    );
+    const caseItem = await Case.findById(id)
+      .populate({
+        path: 'pengunggah',
+        select: 'firstName lastName email role walletAddress'
+      });
 
     if (!caseItem) {
       return res.status(404).json({ message: "Case tidak ditemukan" });
@@ -525,7 +559,7 @@ const getApprovedCases = async (req, res) => {
     const approvedCases = await Case.find({
       statusPengajuan: "Diterima",
       blockchainData: { $exists: true },
-    }).populate("penggugah", "firstName lastName email walletAddress");
+    }).populate("pengunggah", "firstName lastName email walletAddress");
 
     console.log(`Found ${approvedCases.length} approved cases`);
     res.json(approvedCases);
@@ -537,20 +571,18 @@ const getApprovedCases = async (req, res) => {
 
 const getAllCases = async (req, res) => {
   try {
-    const { page = 1, filter = "" } = req.query;
-    const query = filter ? { status: filter } : {};
-
-    const cases = await Case.find(query)
-      .populate("penggugah", "firstName lastName email role") // ✅ Populate data user
-      .sort({ createdAt: 1 }) // Urutkan berdasarkan waktu input (ascending)
-      .skip((page - 1) * 10000)
-      .limit(10000);
-
+    // Tambahkan populate untuk pengunggah
+    const cases = await Case.find()
+      .populate('pengunggah', 'firstName lastName email role walletAddress')
+      .sort({ createdAt: -1 });
+    
+    // Log untuk debug
+    console.log(`Sending ${cases.length} cases with populated pengunggah data`);
+    
     res.status(200).json({ cases });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Gagal mendapatkan data", error: error.message });
+    console.error("Error getting cases:", error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -569,7 +601,7 @@ const updateCase = async (req, res) => {
 
     // Hanya pemilik atau superadmin yang dapat mengupdate
     if (
-      existingCase.penggugah.toString() !== userId &&
+      existingCase.pengunggah.toString() !== userId &&
       req.user.role !== "superadmin"
     ) {
       return res.status(403).json({

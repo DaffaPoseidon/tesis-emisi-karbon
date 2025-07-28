@@ -112,7 +112,7 @@ async function verifyBlockchainData(transactionHash) {
           console.log("- Tanggal Mulai:", projectData.tanggalMulai);
           console.log("- Tanggal Selesai:", projectData.tanggalSelesai);
           console.log("- Jumlah Karbon:", projectData.jumlahKarbon);
-          console.log("- Penggugah:", projectData.penggugah);
+          console.log("- pengunggah:", projectData.pengunggah);
           console.log("- Status Pengajuan:", projectData.statusPengajuan);
           console.log("- Created At:", projectData.createdAt);
         } catch (e) {

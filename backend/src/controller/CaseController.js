@@ -29,18 +29,33 @@ const getUserProfile = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const user = await User.findById(userId)
-      .select("-password") // Exclude password
-      .populate({
-        path: "carbonCredits.purchaseId", 
-        select: "tokens carbonCreditDetails blockchainData quantity transactionId purchaseDate"
-      });
+    // Jangan gunakan populate yang menyebabkan error
+    const user = await User.findById(userId).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({ user });
+    // Jika user memiliki carbonCredits, lakukan populate manual
+    if (user.carbonCredits && user.carbonCredits.length > 0) {
+      // Ambil semua ID purchase
+      const purchaseIds = user.carbonCredits
+        .filter(credit => credit.purchaseId)
+        .map(credit => credit.purchaseId);
+
+      // Fetch purchase details
+      const purchases = await Purchase.find({
+        _id: { $in: purchaseIds }
+      });
+
+      // Attach purchase details to response
+      res.status(200).json({ 
+        user: user,
+        purchases: purchases
+      });
+    } else {
+      res.status(200).json({ user });
+    }
   } catch (error) {
     console.error("Error fetching user profile:", error);
     res.status(500).json({ message: error.message });

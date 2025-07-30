@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "../../components/Header";
 
@@ -10,55 +10,45 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchProductDetails = async () => {
-    try {
-      console.log("Fetching product with ID:", id);
-      setLoading(true);
+  const fetchProductDetails = useCallback(async () => {
+  try {
+    console.log("Fetching product with ID:", id);
+    setLoading(true);
 
-      if (!id) {
-        throw new Error("ID produk tidak valid");
-      }
-
-      // Tambahkan token autentikasi
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Tambahkan header Authorization
-          },
-        }
-      );
-
-      console.log("API response status:", response.status);
-
-      if (!response.ok) {
-        throw new Error("Gagal mengambil data produk");
-      }
-
-      const data = await response.json();
-      console.log("Product data received:", data);
-
-      // Verifikasi status produk
-      if (data.statusPengajuan !== "Diterima") {
-        throw new Error("Produk ini belum disetujui");
-      }
-
-      // Set data produk dengan harga
-      setProduct({
-        ...data,
-        jumlahKarbon: Number(data.jumlahKarbon) || 0,
-        hargaPerTon: 100000,
-        totalHarga: (Number(data.jumlahKarbon) || 0) * 100000,
-      });
-    } catch (error) {
-      console.error("Error fetching product:", error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
+    if (!id) {
+      throw new Error("ID produk tidak valid");
     }
-  };
+
+    // Gunakan endpoint public
+    const response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/cases/public/${id}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Gagal mengambil data produk");
+    }
+
+    const data = await response.json();
+    
+    // Verifikasi status produk
+    if (data.statusPengajuan !== "Diterima") {
+      throw new Error("Produk ini belum disetujui");
+    }
+
+    // Set data produk dengan harga
+    setProduct({
+      ...data,
+      jumlahKarbon: Number(data.jumlahKarbon) || 0,
+      hargaPerTon: 100000, // Harga tetap per ton
+      totalHarga: (Number(data.jumlahKarbon) || 0) * 100000, // Total harga
+    });
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    setError(error.message);
+  } finally {
+    setLoading(false);
+  }
+}, [id]);
 
   useEffect(() => {
     if (id) {

@@ -36,6 +36,8 @@ const Account = () => {
           return;
         }
 
+        console.log("Using token:", token.substring(0, 15) + "...");
+
         const response = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/users/profile`,
           {
@@ -45,25 +47,49 @@ const Account = () => {
           }
         );
 
+        console.log("Profile response status:", response.status);
+
         if (!response.ok) {
+          if (response.status === 403) {
+            // Token expired atau invalid, redirect ke login
+            localStorage.removeItem("token");
+            navigate("/login");
+            return;
+          }
           throw new Error("Failed to fetch user profile");
         }
 
         const data = await response.json();
-        setUser(data.user);
+        setUser(data.user || data); // Handle kedua format response
 
         // Initialize form data
         setFormData({
-          firstName: data.user.firstName || "",
-          lastName: data.user.lastName || "",
-          phoneNumber: data.user.phoneNumber || "",
-          personalAddress: data.user.personalAddress || "",
+          firstName: data.user?.firstName || data.firstName || "",
+          lastName: data.user?.lastName || data.lastName || "",
+          phoneNumber: data.user?.phoneNumber || data.phoneNumber || "",
+          personalAddress:
+            data.user?.personalAddress || data.personalAddress || "",
           companyDetails: {
-            name: data.user.companyDetails?.name || "",
-            address: data.user.companyDetails?.address || "",
-            phone: data.user.companyDetails?.phone || "",
-            taxId: data.user.companyDetails?.taxId || "",
-            industry: data.user.companyDetails?.industry || "",
+            name:
+              data.user?.companyDetails?.name ||
+              data.companyDetails?.name ||
+              "",
+            address:
+              data.user?.companyDetails?.address ||
+              data.companyDetails?.address ||
+              "",
+            phone:
+              data.user?.companyDetails?.phone ||
+              data.companyDetails?.phone ||
+              "",
+            taxId:
+              data.user?.companyDetails?.taxId ||
+              data.companyDetails?.taxId ||
+              "",
+            industry:
+              data.user?.companyDetails?.industry ||
+              data.companyDetails?.industry ||
+              "",
           },
         });
       } catch (error) {
@@ -95,23 +121,14 @@ const Account = () => {
           throw new Error("Failed to fetch user data");
         }
 
-        const userData = await response.json();
-        setUser(userData);
+        const data = await response.json();
 
-        // If carbonCredits exist, fetch purchase details
-        if (userData.carbonCredits && userData.carbonCredits.length > 0) {
-          const purchaseDetails = await Promise.all(
-            userData.carbonCredits.map((credit) =>
-              fetch(
-                `${process.env.REACT_APP_API_BASE_URL}/purchases/${credit.purchaseId}`,
-                {
-                  headers: { Authorization: `Bearer ${token}` },
-                }
-              ).then((res) => res.json())
-            )
-          );
+        // Set user data
+        setUser(data.user);
 
-          setUserPurchases(purchaseDetails);
+        // Set purchases if available
+        if (data.purchases && data.purchases.length > 0) {
+          setUserPurchases(data.purchases);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -635,15 +652,19 @@ const Account = () => {
                             </h4>
                             <div className="grid grid-cols-2 gap-4 text-sm">
                               <div>
-                                <p className="text-gray-600">Transaction Hash</p>
+                                <p className="text-gray-600">
+                                  Transaction Hash
+                                </p>
                                 <p className="font-medium break-all">
-                                  {purchase.blockchainData?.transactionHash || "N/A"}
+                                  {purchase.blockchainData?.transactionHash ||
+                                    "N/A"}
                                 </p>
                               </div>
                               <div>
                                 <p className="text-gray-600">Block Number</p>
                                 <p className="font-medium">
-                                  {purchase.blockchainData?.blockNumber || "N/A"}
+                                  {purchase.blockchainData?.blockNumber ||
+                                    "N/A"}
                                 </p>
                               </div>
                             </div>
@@ -662,9 +683,14 @@ const Account = () => {
                                 </p>
                               </div>
                               <div>
-                                <p className="text-gray-600">Absorption Medium</p>
+                                <p className="text-gray-600">
+                                  Absorption Medium
+                                </p>
                                 <p className="font-medium">
-                                  {purchase.carbonCreditDetails?.saranaPenyerapEmisi}
+                                  {
+                                    purchase.carbonCreditDetails
+                                      ?.saranaPenyerapEmisi
+                                  }
                                 </p>
                               </div>
                               <div>
@@ -672,13 +698,19 @@ const Account = () => {
                                   Certification Institute
                                 </p>
                                 <p className="font-medium">
-                                  {purchase.carbonCreditDetails?.lembagaSertifikasi}
+                                  {
+                                    purchase.carbonCreditDetails
+                                      ?.lembagaSertifikasi
+                                  }
                                 </p>
                               </div>
                               <div>
                                 <p className="text-gray-600">Land Ownership</p>
                                 <p className="font-medium">
-                                  {purchase.carbonCreditDetails?.kepemilikanLahan}
+                                  {
+                                    purchase.carbonCreditDetails
+                                      ?.kepemilikanLahan
+                                  }
                                 </p>
                               </div>
                             </div>
@@ -697,7 +729,9 @@ const Account = () => {
                                     className="mb-2 pb-2 border-b border-gray-200 last:border-0"
                                   >
                                     <p>
-                                      <span className="font-medium">Token ID:</span>{" "}
+                                      <span className="font-medium">
+                                        Token ID:
+                                      </span>{" "}
                                       {token.tokenId}
                                     </p>
                                     <p>
@@ -720,9 +754,9 @@ const Account = () => {
                               <div>
                                 <p className="text-gray-600">Purchase Date</p>
                                 <p className="font-medium">
-                                  {new Date(purchase.purchaseDate).toLocaleDateString(
-                                    "id-ID"
-                                  )}
+                                  {new Date(
+                                    purchase.purchaseDate
+                                  ).toLocaleDateString("id-ID")}
                                 </p>
                               </div>
                               <div>
@@ -763,7 +797,8 @@ const Account = () => {
                       Transaction History
                     </h2>
 
-                    {user.transactionHistory && user.transactionHistory.length > 0 ? (
+                    {user.transactionHistory &&
+                    user.transactionHistory.length > 0 ? (
                       <div className="bg-white border rounded-lg overflow-hidden">
                         <table className="min-w-full divide-y divide-gray-200">
                           <thead className="bg-gray-50">
@@ -786,37 +821,52 @@ const Account = () => {
                             </tr>
                           </thead>
                           <tbody className="bg-white divide-y divide-gray-200">
-                            {user.transactionHistory.map((transaction, index) => (
-                              <tr key={index}>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                  {new Date(transaction.date).toLocaleDateString("id-ID")}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                  {transaction.description}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                  {transaction.transactionId?.substring(0, 8)}...
-                                </td>
-                                <td className={`px-6 py-4 whitespace-nowrap text-sm text-right font-medium ${
-                                  transaction.type === 'purchase' ? 'text-red-600' : 'text-green-600'
-                                }`}>
-                                  {transaction.type === 'purchase' ? '-' : '+'} 
-                                  Rp {transaction.amount.toLocaleString("id-ID")}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
-                                  {transaction.blockchainData?.transactionHash ? (
-                                    <a 
-                                      href={`${process.env.REACT_APP_EXPLORER_URL}/tx/${transaction.blockchainData.transactionHash}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-blue-500 hover:text-blue-700"
-                                    >
-                                      View
-                                    </a>
-                                  ) : 'N/A'}
-                                </td>
-                              </tr>
-                            ))}
+                            {user.transactionHistory.map(
+                              (transaction, index) => (
+                                <tr key={index}>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {new Date(
+                                      transaction.date
+                                    ).toLocaleDateString("id-ID")}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {transaction.description}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {transaction.transactionId?.substring(0, 8)}
+                                    ...
+                                  </td>
+                                  <td
+                                    className={`px-6 py-4 whitespace-nowrap text-sm text-right font-medium ${
+                                      transaction.type === "purchase"
+                                        ? "text-red-600"
+                                        : "text-green-600"
+                                    }`}
+                                  >
+                                    {transaction.type === "purchase"
+                                      ? "-"
+                                      : "+"}
+                                    Rp{" "}
+                                    {transaction.amount.toLocaleString("id-ID")}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
+                                    {transaction.blockchainData
+                                      ?.transactionHash ? (
+                                      <a
+                                        href={`${process.env.REACT_APP_EXPLORER_URL}/tx/${transaction.blockchainData.transactionHash}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 hover:text-blue-700"
+                                      >
+                                        View
+                                      </a>
+                                    ) : (
+                                      "N/A"
+                                    )}
+                                  </td>
+                                </tr>
+                              )
+                            )}
                           </tbody>
                         </table>
                       </div>

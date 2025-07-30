@@ -11,18 +11,18 @@
   },
   "transactions": [
     {
-      "id": "purchase-tx-1753848287566",
-      "timestamp": "2025-07-30T04:05:03.782Z",
-      "executionTime": 16215.65036900001,
-      "gasUsed": "31144",
-      "blockNumber": 1599,
-      "transactionHash": "0x8b5f3ea3ff9477f88b02d16d0c516e4b5b9d148085ed41f98f4043e3aa488f8d",
+      "id": "purchase-tx-1753852955337",
+      "timestamp": "2025-07-30T05:22:43.576Z",
+      "executionTime": 8238.795060999997,
+      "gasUsed": "33256",
+      "blockNumber": 2531,
+      "transactionHash": "0x8d5d0c7495e5ad64973042b06932d8b2cf6977283da00a76e897cb333b0028b2",
       "tokenCount": 1,
       "metadata": {},
       "dataSize": 0,
       "latency": {
         "mining": null,
-        "confirmation": 16215.65036900001
+        "confirmation": 8238.795060999997
       }
     }
   ],
@@ -40,18 +40,18 @@
   "summaryStats": {
     "tokenCount": 1,
     "executionTime": {
-      "value": 16215.65036900001,
-      "perToken": 16215.65036900001
+      "value": 8238.795060999997,
+      "perToken": 8238.795060999997
     },
     "gasUsage": {
-      "value": 31144,
-      "perToken": 31144
+      "value": 33256,
+      "perToken": 33256
     },
     "latency": {
       "mining": null,
-      "confirmation": 16215.65036900001
+      "confirmation": 8238.795060999997
     },
     "dataSize": 0
   },
-  "lastUpdated": "2025-07-30T04:05:03.782Z"
+  "lastUpdated": "2025-07-30T05:22:43.576Z"
 }

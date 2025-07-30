@@ -23,7 +23,11 @@ const isSellerMiddleware = require('../middleware/isSellerMiddleware'); // Tamba
 const router = express.Router();
 
 // Protected routes - require authentication
-router.get("/profile", authenticateToken, getUserProfile);
+router.get("/profile", (req, res, next) => {
+  // Debugging - cetak header untuk melihat token
+  console.log("Auth header:", req.headers.authorization);
+  next();
+}, authenticateToken, getUserProfile);
 router.get("/:id", authenticateToken, getPurchaseById);
 router.put("/profile", authenticateToken, updateUserProfile);
 router.post("/purchase", authenticateToken, processPurchase);
@@ -34,6 +38,7 @@ router.put("/:id", authenticateToken, isSellerMiddleware, upload.array("files", 
 router.delete("/:id", authenticateToken, isSellerMiddleware, deleteCase);
 
 router.get("/:id", getCase);
+router.get("/public/:id", getCase);
 router.get('/approved-cases', getApprovedCases);
 router.get("/", getAllCases);
 router.get("/:id/files/:fileIndex", getFileByIndex);

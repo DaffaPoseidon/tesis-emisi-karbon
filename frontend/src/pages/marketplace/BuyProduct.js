@@ -20,30 +20,22 @@ const BuyProduct = () => {
   });
 
   const fetchProductDetails = useCallback(async () => {
-try {
-    console.log("Fetching product with ID:", id);
-    setLoading(true);
+    try {
+      console.log("Fetching product with ID:", id);
+      setLoading(true);
 
-    if (!id) {
-      throw new Error("ID produk tidak valid");
-    }
-
-    // Tambahkan token autentikasi
-    const token = localStorage.getItem("token");
-    
-    const response = await fetch(
-      `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}` // Tambahkan header Authorization
-        }
+      if (!id) {
+        throw new Error("ID produk tidak valid");
       }
-    );
 
-    if (!response.ok) {
-      throw new Error("Gagal mengambil data produk");
-    }
+      // Gunakan endpoint public seperti di ProductDetail.js
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/cases/public/${id}`
+      );
 
+      if (!response.ok) {
+        throw new Error("Gagal mengambil data produk");
+      }
 
       const data = await response.json();
 

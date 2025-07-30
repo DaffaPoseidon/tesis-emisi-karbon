@@ -1,16 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/explorer": "pages/explorer.js",
-  "/api/blockGetByNumber": "pages/api/blockGetByNumber.js",
-  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
-  "/contracts": "pages/contracts.js",
-  "/api/getChainId": "pages/api/getChainId.js",
-  "/validators": "pages/validators.js",
-  "/api/validatorsGetCurrent": "pages/api/validatorsGetCurrent.js",
-  "/api/validatorsGetPendingVotes": "pages/api/validatorsGetPendingVotes.js",
-  "/nodes": "pages/nodes.js",
-  "/api/nodeGetDetails": "pages/api/nodeGetDetails.js",
-  "/api/nodeGetPeers": "pages/api/nodeGetPeers.js"
-}
+{}

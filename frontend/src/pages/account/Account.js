@@ -128,7 +128,13 @@ const Account = () => {
 
         // Set purchases if available
         if (data.purchases && data.purchases.length > 0) {
-          setUserPurchases(data.purchases);
+          // Hanya ambil purchase yang dimiliki oleh user saat ini
+          const userPurchases = data.purchases.filter(
+            (purchase) =>
+              purchase.buyer === data.user._id ||
+              (purchase.buyer && purchase.buyer._id === data.user._id)
+          );
+          setUserPurchases(userPurchases);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -263,16 +269,7 @@ const Account = () => {
                     Profile
                   </button>
 
-                  <button
-                    onClick={() => setActiveTab("balance")}
-                    className={`w-full text-left px-4 py-2 rounded ${
-                      activeTab === "balance"
-                        ? "bg-green-100 text-green-800"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
-                  >
-                    Balance
-                  </button>
+                  {/* Balance tab removed */}
 
                   <button
                     onClick={() => setActiveTab("carbon")}
@@ -531,72 +528,7 @@ const Account = () => {
                 </div>
               )}
 
-              {/* Balance Tab */}
-              {activeTab === "balance" && (
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-800 mb-6">
-                    Account Balance
-                  </h1>
-
-                  <div className="bg-gradient-to-r from-green-400 to-green-600 rounded-lg p-6 text-white mb-6">
-                    <p className="text-xl font-semibold mb-1">Total Balance</p>
-                    <p className="text-4xl font-bold">
-                      Rp {user.balance?.toLocaleString("id-ID") || "0"}
-                    </p>
-                  </div>
-
-                  <div className="mb-6">
-                    <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                      Transaction History
-                    </h2>
-
-                    {user.carbonCredits && user.carbonCredits.length > 0 ? (
-                      <div className="bg-white border rounded-lg overflow-hidden">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Date
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Description
-                              </th>
-                              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Amount
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            {user.carbonCredits.map((credit, index) => (
-                              <tr key={index}>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                  {new Date(
-                                    credit.purchaseDate
-                                  ).toLocaleDateString("id-ID")}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                  Carbon credit purchase{" "}
-                                  {credit.caseId?.namaProyek || "Project"}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">
-                                  -Rp{" "}
-                                  {(credit.quantity * 100000).toLocaleString(
-                                    "id-ID"
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    ) : (
-                      <div className="bg-gray-50 p-4 rounded text-center text-gray-500">
-                        No transaction history
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+              {/* Balance Tab removed */}
 
               {/* Carbon Credits Tab */}
               {activeTab === "carbon" && (
@@ -615,7 +547,7 @@ const Account = () => {
                           (total, credit) => total + credit.quantity,
                           0
                         ) || 0}{" "}
-                        Tons
+                        Certificate
                       </span>
                     </div>
                     <p className="text-sm text-green-700">
@@ -815,9 +747,7 @@ const Account = () => {
                               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Amount
                               </th>
-                              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Blockchain
-                              </th>
+                              {/* Blockchain column removed */}
                             </tr>
                           </thead>
                           <tbody className="bg-white divide-y divide-gray-200">
@@ -849,21 +779,7 @@ const Account = () => {
                                     Rp{" "}
                                     {transaction.amount.toLocaleString("id-ID")}
                                   </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
-                                    {transaction.blockchainData
-                                      ?.transactionHash ? (
-                                      <a
-                                        href={`${process.env.REACT_APP_EXPLORER_URL}/tx/${transaction.blockchainData.transactionHash}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-500 hover:text-blue-700"
-                                      >
-                                        View
-                                      </a>
-                                    ) : (
-                                      "N/A"
-                                    )}
-                                  </td>
+                                  {/* Blockchain cell removed */}
                                 </tr>
                               )
                             )}

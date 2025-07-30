@@ -20,21 +20,30 @@ const BuyProduct = () => {
   });
 
   const fetchProductDetails = useCallback(async () => {
-    try {
-      console.log("Fetching product with ID:", id);
-      setLoading(true);
+try {
+    console.log("Fetching product with ID:", id);
+    setLoading(true);
 
-      if (!id) {
-        throw new Error("ID produk tidak valid");
+    if (!id) {
+      throw new Error("ID produk tidak valid");
+    }
+
+    // Tambahkan token autentikasi
+    const token = localStorage.getItem("token");
+    
+    const response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}` // Tambahkan header Authorization
+        }
       }
+    );
 
-      const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`
-      );
+    if (!response.ok) {
+      throw new Error("Gagal mengambil data produk");
+    }
 
-      if (!response.ok) {
-        throw new Error("Gagal mengambil data produk");
-      }
 
       const data = await response.json();
 
@@ -143,6 +152,38 @@ const BuyProduct = () => {
       alert(
         "Transaction successful! Please check your carbon holdings on the Account page."
       );
+
+      // Jika response berhasil dan ada data blockchain
+      if (data.purchase.blockchainData) {
+        // Tambahkan informasi blockchain ke UI
+        return (
+          <div className="bg-green-50 p-4 rounded-lg mt-4 border border-green-200">
+            <h3 className="font-medium text-green-700 mb-2">
+              Blockchain Verification
+            </h3>
+            <div className="text-sm">
+              <p>
+                <span className="font-medium">Transaction Hash:</span>{" "}
+                {data.purchase.blockchainData.transactionHash}
+              </p>
+              <p>
+                <span className="font-medium">Block Number:</span>{" "}
+                {data.purchase.blockchainData.blockNumber}
+              </p>
+              <p>
+                <span className="font-medium">Timestamp:</span>{" "}
+                {new Date(
+                  data.purchase.blockchainData.timestamp
+                ).toLocaleString()}
+              </p>
+              <p className="mt-2 text-xs text-green-600">
+                This transaction has been permanently recorded on the blockchain
+              </p>
+            </div>
+          </div>
+        );
+      }
+
       navigate("/account");
     } catch (error) {
       console.error("Error processing purchase:", error);

@@ -4,6 +4,7 @@ const signupValidator = require("./routes/SignupValidatorRoutes");
 const signupUser = require("./routes/SignupUserRoutes");
 const loginRoute = require("./routes/LoginRoutes");
 const authenticatedRoute = require("./routes/Authenticated");
+const purchaseRoutes = require("./routes/PurchaseRoutes");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { createSuperAdminAccount } = require("./scripts/setup");
@@ -25,6 +26,7 @@ app.use("/auth", loginRoute);
 app.use("/api", authenticatedRoute);
 app.use("/api/cases", routes);
 app.use("/api/users", routes);
+app.use("/api/purchases", purchaseRoutes);
 
 // KHUSUS BLOCKCHAIN
 // 

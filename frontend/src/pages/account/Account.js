@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 const Account = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [userPurchases, setUserPurchases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
@@ -75,6 +76,50 @@ const Account = () => {
 
     fetchUserProfile();
   }, [navigate]);
+
+  // Fetch user data and purchases
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/users/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const userData = await response.json();
+        setUser(userData);
+
+        // If carbonCredits exist, fetch purchase details
+        if (userData.carbonCredits && userData.carbonCredits.length > 0) {
+          const purchaseDetails = await Promise.all(
+            userData.carbonCredits.map((credit) =>
+              fetch(
+                `${process.env.REACT_APP_API_BASE_URL}/purchases/${credit.purchaseId}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              ).then((res) => res.json())
+            )
+          );
+
+          setUserPurchases(purchaseDetails);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -221,6 +266,17 @@ const Account = () => {
                     }`}
                   >
                     Carbon Ownership
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab("financial")}
+                    className={`w-full text-left px-4 py-2 rounded ${
+                      activeTab === "financial"
+                        ? "bg-green-100 text-green-800"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    Financial
                   </button>
                 </div>
               </div>
@@ -555,47 +611,126 @@ const Account = () => {
                     Ownership Details
                   </h2>
 
-                  {user.carbonCredits && user.carbonCredits.length > 0 ? (
+                  {userPurchases && userPurchases.length > 0 ? (
                     <div className="space-y-4">
-                      {user.carbonCredits.map((credit, index) => (
+                      {userPurchases.map((purchase, index) => (
                         <div
                           key={index}
-                          className="bg-white border rounded-lg p-4 shadow-sm"
+                          className="bg-white border rounded-lg p-6 shadow-sm"
                         >
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="font-medium text-gray-800">
-                              {credit.caseId?.namaProyek || "Carbon Credit"}
+                          <div className="flex justify-between items-start mb-4">
+                            <h3 className="font-medium text-xl text-gray-800">
+                              {purchase.carbonCreditDetails?.namaProyek ||
+                                "Carbon Credit"}
                             </h3>
-                            <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                              {credit.quantity} Tons
+                            <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded">
+                              {purchase.quantity} Tons
                             </span>
                           </div>
-                          <div className="grid grid-cols-2 gap-2 text-sm">
-                            <div>
-                              <p className="text-gray-500">Transaction ID</p>
-                              <p className="truncate">{credit.transactionId}</p>
+
+                          {/* Blockchain Verification Section */}
+                          <div className="mb-4 bg-blue-50 p-4 rounded-lg">
+                            <h4 className="font-semibold text-blue-800 mb-2">
+                              Blockchain Verification
+                            </h4>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <p className="text-gray-600">Transaction Hash</p>
+                                <p className="font-medium break-all">
+                                  {purchase.blockchainData?.transactionHash || "N/A"}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-gray-600">Block Number</p>
+                                <p className="font-medium">
+                                  {purchase.blockchainData?.blockNumber || "N/A"}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-gray-500">Purchase Date</p>
-                              <p>
-                                {new Date(
-                                  credit.purchaseDate
-                                ).toLocaleDateString("id-ID")}
-                              </p>
+                          </div>
+
+                          {/* Project Details Section */}
+                          <div className="mb-4">
+                            <h4 className="font-semibold text-gray-700 mb-2">
+                              Project Details
+                            </h4>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <p className="text-gray-600">Land Area</p>
+                                <p className="font-medium">
+                                  {purchase.carbonCreditDetails?.luasTanah} m²
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-gray-600">Absorption Medium</p>
+                                <p className="font-medium">
+                                  {purchase.carbonCreditDetails?.saranaPenyerapEmisi}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-gray-600">
+                                  Certification Institute
+                                </p>
+                                <p className="font-medium">
+                                  {purchase.carbonCreditDetails?.lembagaSertifikasi}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-gray-600">Land Ownership</p>
+                                <p className="font-medium">
+                                  {purchase.carbonCreditDetails?.kepemilikanLahan}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-gray-500">Absorption Method</p>
-                              <p>
-                                {credit.caseId?.saranaPenyerapEmisi || "N/A"}
-                              </p>
+                          </div>
+
+                          {/* Token Details */}
+                          <div className="mb-4">
+                            <h4 className="font-semibold text-gray-700 mb-2">
+                              Token Details
+                            </h4>
+                            <div className="text-sm bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
+                              {purchase.tokens &&
+                                purchase.tokens.map((token, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="mb-2 pb-2 border-b border-gray-200 last:border-0"
+                                  >
+                                    <p>
+                                      <span className="font-medium">Token ID:</span>{" "}
+                                      {token.tokenId}
+                                    </p>
+                                    <p>
+                                      <span className="font-medium">Hash:</span>{" "}
+                                      <span className="break-all">
+                                        {token.uniqueHash}
+                                      </span>
+                                    </p>
+                                  </div>
+                                ))}
                             </div>
-                            <div>
-                              <p className="text-gray-500">
-                                Certification Institute
-                              </p>
-                              <p>
-                                {credit.caseId?.lembagaSertifikasi || "N/A"}
-                              </p>
+                          </div>
+
+                          {/* Purchase Information */}
+                          <div className="border-t pt-4">
+                            <h4 className="font-semibold text-gray-700 mb-2">
+                              Purchase Information
+                            </h4>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <p className="text-gray-600">Purchase Date</p>
+                                <p className="font-medium">
+                                  {new Date(purchase.purchaseDate).toLocaleDateString(
+                                    "id-ID"
+                                  )}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-gray-600">Transaction ID</p>
+                                <p className="font-medium truncate">
+                                  {purchase.transactionId}
+                                </p>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -606,6 +741,91 @@ const Account = () => {
                       You don't have any carbon credits yet
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Financial Tab */}
+              {activeTab === "financial" && (
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-800 mb-6">
+                    Financial Information
+                  </h1>
+
+                  <div className="bg-gradient-to-r from-green-400 to-green-600 rounded-lg p-6 text-white mb-6">
+                    <p className="text-xl font-semibold mb-1">Total Balance</p>
+                    <p className="text-4xl font-bold">
+                      Rp {user.balance?.toLocaleString("id-ID") || "0"}
+                    </p>
+                  </div>
+
+                  <div className="mb-6">
+                    <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                      Transaction History
+                    </h2>
+
+                    {user.transactionHistory && user.transactionHistory.length > 0 ? (
+                      <div className="bg-white border rounded-lg overflow-hidden">
+                        <table className="min-w-full divide-y divide-gray-200">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Date
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Description
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Transaction ID
+                              </th>
+                              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Amount
+                              </th>
+                              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Blockchain
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            {user.transactionHistory.map((transaction, index) => (
+                              <tr key={index}>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                  {new Date(transaction.date).toLocaleDateString("id-ID")}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  {transaction.description}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  {transaction.transactionId?.substring(0, 8)}...
+                                </td>
+                                <td className={`px-6 py-4 whitespace-nowrap text-sm text-right font-medium ${
+                                  transaction.type === 'purchase' ? 'text-red-600' : 'text-green-600'
+                                }`}>
+                                  {transaction.type === 'purchase' ? '-' : '+'} 
+                                  Rp {transaction.amount.toLocaleString("id-ID")}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
+                                  {transaction.blockchainData?.transactionHash ? (
+                                    <a 
+                                      href={`${process.env.REACT_APP_EXPLORER_URL}/tx/${transaction.blockchainData.transactionHash}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-500 hover:text-blue-700"
+                                    >
+                                      View
+                                    </a>
+                                  ) : 'N/A'}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <div className="bg-gray-50 p-4 rounded text-center text-gray-500">
+                        No transaction history
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

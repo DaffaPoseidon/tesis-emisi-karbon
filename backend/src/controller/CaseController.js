@@ -4,6 +4,7 @@ const Case = require("../models/Case");
 const User = require("../models/User");
 const mongoose = require("mongoose");
 const Purchase = require("../models/Purchase");
+const blockchainService = require("../services/blockchainService");
 
 // Konfigurasi multer untuk menyimpan file di memori
 const storage = multer.memoryStorage(); // Gunakan penyimpanan memori
@@ -18,7 +19,10 @@ const headers = {
 };
 
 // blockchain
-const { issueCarbonCertificate, generateTransactionReport } = require("../services/blockchainService");
+const {
+  issueCarbonCertificate,
+  generateTransactionReport,
+} = require("../services/blockchainService");
 const fs = require("fs");
 
 const getUserProfile = async (req, res) => {
@@ -28,9 +32,8 @@ const getUserProfile = async (req, res) => {
     const user = await User.findById(userId)
       .select("-password") // Exclude password
       .populate({
-        path: "carbonCredits.caseId",
-        select:
-          "namaProyek saranaPenyerapEmisi jumlahKarbon lembagaSertifikasi tanggalMulai tanggalSelesai",
+        path: "carbonCredits.purchaseId", 
+        select: "tokens carbonCreditDetails blockchainData quantity transactionId purchaseDate"
       });
 
     if (!user) {
@@ -88,64 +91,160 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+// const processPurchase = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+//     const { caseId, quantity, totalPrice } = req.body;
+
+//     if (!mongoose.Types.ObjectId.isValid(caseId)) {
+//       return res.status(400).json({ message: "Invalid case ID" });
+//     }
+
+//     // Validate inputs
+//     if (!quantity || quantity <= 0 || !totalPrice || totalPrice <= 0) {
+//       return res.status(400).json({ message: "Invalid quantity or price" });
+//     }
+
+//     // Get the user
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     // Check if user has enough balance
+//     if (user.balance < totalPrice) {
+//       return res.status(400).json({ message: "Insufficient balance" });
+//     }
+
+//     // Check if case exists and has enough carbon credits
+// const carbonCase = await Case.findById(caseId)
+//       .populate('pengunggah', 'firstName lastName email walletAddress');
+
+//     if (!carbonCase) {
+//       return res.status(404).json({ message: "Case not found" });
+//     }
+
+//     if (carbonCase.jumlahKarbon < quantity) {
+//       return res
+//         .status(400)
+//         .json({ message: "Not enough carbon credits available" });
+//     }
+
+//     // Update user balance
+//     user.balance -= totalPrice;
+
+//     // Add carbon credits to user
+//     const transactionId = new mongoose.Types.ObjectId().toString();
+//     user.carbonCredits.push({
+//       caseId,
+//       quantity,
+//       purchaseDate: new Date(),
+//       transactionId,
+//     });
+
+//     // Update case carbon amount
+//     carbonCase.jumlahKarbon -= quantity;
+
+//     // Save changes
+//     await Promise.all([user.save(), carbonCase.save()]);
+
+//     // Create purchase record
+//     const purchase = new Purchase({
+//       buyer: userId,
+//       seller: carbonCase.pengunggah._id,
+//       case: caseId,
+//       quantity,
+//       totalPrice,
+//       transactionId,
+//     });
+
+//     await purchase.save();
+
+//         // Populate purchase untuk response
+//     const populatedPurchase = await Purchase.findById(purchase._id)
+//       .populate('buyer', 'firstName lastName email')
+//       .populate('seller', 'firstName lastName email')
+//       .populate('case', 'namaProyek jumlahKarbon');
+
+//     res.status(200).json({
+//       message: "Purchase successful",
+//       purchase: {
+//         transactionId,
+//         case: carbonCase.namaProyek,
+//         quantity,
+//         totalPrice,
+//         remainingBalance: user.balance,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Error processing purchase:", error);
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 const processPurchase = async (req, res) => {
   try {
     const userId = req.user.id;
     const { caseId, quantity, totalPrice } = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(caseId)) {
-      return res.status(400).json({ message: "Invalid case ID" });
-    }
-
-    // Validate inputs
-    if (!quantity || quantity <= 0 || !totalPrice || totalPrice <= 0) {
-      return res.status(400).json({ message: "Invalid quantity or price" });
-    }
-
-    // Get the user
+    
+    // Dapatkan data user dan case
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const carbonCase = await Case.findById(caseId)
+      .populate("pengunggah", "firstName lastName email walletAddress");
+    
+    if (!user || !carbonCase) {
+      return res.status(404).json({ 
+        message: !user ? "User not found" : "Carbon case not found" 
+      });
     }
-
-    // Check if user has enough balance
-    if (user.balance < totalPrice) {
-      return res.status(400).json({ message: "Insufficient balance" });
-    }
-
-    // Check if case exists and has enough carbon credits
-const carbonCase = await Case.findById(caseId)
-      .populate('pengunggah', 'firstName lastName email walletAddress');
-
-    if (!carbonCase) {
-      return res.status(404).json({ message: "Case not found" });
-    }
-
+    
+    // Verifikasi jumlah karbon yang tersedia
     if (carbonCase.jumlahKarbon < quantity) {
-      return res
-        .status(400)
-        .json({ message: "Not enough carbon credits available" });
+      return res.status(400).json({ 
+        message: "Not enough carbon credits available" 
+      });
     }
-
-    // Update user balance
-    user.balance -= totalPrice;
-
-    // Add carbon credits to user
+    
+    // Verifikasi saldo user
+    if (user.balance < totalPrice) {
+      return res.status(400).json({
+        message: "Insufficient balance"
+      });
+    }
+    
+    // Buat ID transaksi
     const transactionId = new mongoose.Types.ObjectId().toString();
-    user.carbonCredits.push({
-      caseId,
-      quantity,
-      purchaseDate: new Date(),
-      transactionId,
-    });
-
-    // Update case carbon amount
-    carbonCase.jumlahKarbon -= quantity;
-
-    // Save changes
-    await Promise.all([user.save(), carbonCase.save()]);
-
-    // Create purchase record
+    
+    // TAHAP 1: Verifikasi data produk di blockchain
+    if (carbonCase.blockchainData && carbonCase.blockchainData.tokens && carbonCase.blockchainData.tokens.length > 0) {
+      console.log(`Verifikasi data produk sebelum pembelian...`);
+      
+      // Verifikasi dengan jumlah token yang dibeli
+      const verificationResult = await blockchainService.verifyNFTBeforePurchase(carbonCase, quantity);
+      
+      if (!verificationResult.success) {
+        return res.status(500).json({
+          message: "Gagal memverifikasi data produk di blockchain",
+          error: verificationResult.error
+        });
+      }
+      
+      if (!verificationResult.isValid) {
+        return res.status(400).json({
+          message: "Verifikasi token gagal",
+          details: verificationResult.message,
+          validTokens: verificationResult.validTokens,
+          totalTokens: verificationResult.totalTokens
+        });
+      }
+      
+      console.log(`Verifikasi berhasil: ${verificationResult.message}`);
+    }
+    
+    // Ambil tokens yang akan ditransfer
+    const tokensToTransfer = carbonCase.blockchainData?.tokens?.slice(0, quantity) || [];
+    
+    // TAHAP 2: Buat record pembelian dengan detail carbon credit
     const purchase = new Purchase({
       buyer: userId,
       seller: carbonCase.pengunggah._id,
@@ -153,16 +252,107 @@ const carbonCase = await Case.findById(caseId)
       quantity,
       totalPrice,
       transactionId,
+      
+      // Simpan tokens yang dibeli langsung di purchase
+      tokens: tokensToTransfer,
+      
+      // Simpan detail carbon credit
+      carbonCreditDetails: {
+        namaProyek: carbonCase.namaProyek,
+        luasTanah: carbonCase.luasTanah,
+        saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
+        lembagaSertifikasi: carbonCase.lembagaSertifikasi,
+        kepemilikanLahan: carbonCase.kepemilikanLahan,
+        tanggalMulai: carbonCase.tanggalMulai,
+        tanggalSelesai: carbonCase.tanggalSelesai
+      }
     });
+    
+    // TAHAP 3: Simpan data transaksi di blockchain
+    const sellerName = carbonCase.pengunggah
+      ? `${carbonCase.pengunggah.firstName || ""} ${carbonCase.pengunggah.lastName || ""}`.trim()
+      : "Unknown";
+    const buyerName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
 
-    await purchase.save();
-
-        // Populate purchase untuk response
-    const populatedPurchase = await Purchase.findById(purchase._id)
-      .populate('buyer', 'firstName lastName email')
-      .populate('seller', 'firstName lastName email')
-      .populate('case', 'namaProyek jumlahKarbon');
-
+    // Simpan transaksi di blockchain
+    const blockchainResult = await blockchainService.storeTransactionData({
+      tokens: tokensToTransfer,
+      buyer: buyerName,
+      seller: sellerName,
+      buyerWalletAddress: user.walletAddress,
+      price: totalPrice,
+      quantity,
+      transactionId,
+      projectData: {
+        namaProyek: carbonCase.namaProyek,
+        luasTanah: carbonCase.luasTanah,
+        saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
+        lembagaSertifikasi: carbonCase.lembagaSertifikasi,
+        kepemilikanLahan: carbonCase.kepemilikanLahan,
+        previousOwner: sellerName,
+        newOwner: buyerName
+      }
+    });
+    
+    // TAHAP 4: Update case asli - hapus token yang sudah dibeli
+    carbonCase.jumlahKarbon -= quantity;
+    carbonCase.jumlahSertifikat -= quantity; // Juga kurangi jumlah sertifikat
+    
+    // Hapus token yang sudah dibeli dari penjual
+    if (carbonCase.blockchainData && carbonCase.blockchainData.tokens) {
+      carbonCase.blockchainData.tokens = carbonCase.blockchainData.tokens.slice(quantity);
+    }
+    
+    // TAHAP 5: Update saldo user
+    user.balance -= totalPrice;
+    
+    // TAHAP 6: Update data user untuk menambahkan carbon credit ke profile
+    if (!user.carbonCredits) {
+      user.carbonCredits = [];
+    }
+    
+    // Tambahkan record kepemilikan carbon credit
+    user.carbonCredits.push({
+      purchaseId: purchase._id,
+      quantity: quantity,
+      purchaseDate: Date.now(),
+      transactionId: transactionId,
+      transactionHash: blockchainResult.transactionHash,
+      blockNumber: blockchainResult.blockNumber
+    });
+    
+    // TAHAP 7: Update transaction history
+    if (!user.transactionHistory) {
+      user.transactionHistory = [];
+    }
+    
+    user.transactionHistory.push({
+      type: 'purchase',
+      amount: totalPrice,
+      description: `Purchase of ${quantity} carbon credits from project ${carbonCase.namaProyek}`,
+      date: Date.now(),
+      transactionId: transactionId,
+      blockchainData: {
+        transactionHash: blockchainResult.transactionHash,
+        blockNumber: blockchainResult.blockNumber
+      }
+    });
+    
+    // Update data blockchain di purchase record
+    purchase.blockchainData = {
+      transactionHash: blockchainResult.transactionHash,
+      blockNumber: blockchainResult.blockNumber,
+      timestamp: blockchainResult.timestamp
+    };
+    
+    // Simpan semua perubahan secara atomic
+    await Promise.all([
+      user.save(),
+      carbonCase.save(),
+      purchase.save()
+    ]);
+    
+    // Return success response dengan data blockchain
     res.status(200).json({
       message: "Purchase successful",
       purchase: {
@@ -171,7 +361,12 @@ const carbonCase = await Case.findById(caseId)
         quantity,
         totalPrice,
         remainingBalance: user.balance,
-      },
+        blockchainData: blockchainResult.success ? {
+          transactionHash: blockchainResult.transactionHash,
+          blockNumber: blockchainResult.blockNumber,
+          timestamp: blockchainResult.timestamp
+        } : null
+      }
     });
   } catch (error) {
     console.error("Error processing purchase:", error);
@@ -200,23 +395,27 @@ const updateStatus = async (req, res) => {
       });
     }
 
-const carbonCase = await Case.findById(id).populate("pengunggah", "firstName lastName username walletAddress");
+    const carbonCase = await Case.findById(id).populate(
+      "pengunggah",
+      "firstName lastName username walletAddress"
+    );
 
-if (!carbonCase) {
-  return res.status(404).json({ message: "Proposal not found" });
-}
+    if (!carbonCase) {
+      return res.status(404).json({ message: "Proposal not found" });
+    }
 
-const submitterName =
-  carbonCase.pengunggah.firstName && carbonCase.pengunggah.lastName
-    ? `${carbonCase.pengunggah.firstName} ${carbonCase.pengunggah.lastName}`
-    : carbonCase.pengunggah.username || "Unknown";
+    const submitterName =
+      carbonCase.pengunggah.firstName && carbonCase.pengunggah.lastName
+        ? `${carbonCase.pengunggah.firstName} ${carbonCase.pengunggah.lastName}`
+        : carbonCase.pengunggah.username || "Unknown";
 
-// Jika tetap "Unknown", tolak proses
-if (submitterName === "Unknown") {
-  return res.status(400).json({
-    message: "Nama pengunggah tidak valid. Data tidak bisa diproses ke blockchain.",
-  });
-}
+    // Jika tetap "Unknown", tolak proses
+    if (submitterName === "Unknown") {
+      return res.status(400).json({
+        message:
+          "Nama pengunggah tidak valid. Data tidak bisa diproses ke blockchain.",
+      });
+    }
 
     // Update status
     carbonCase.statusPengajuan = statusPengajuan;
@@ -263,19 +462,19 @@ if (submitterName === "Unknown") {
       });
 
       console.log("Blockchain input:", {
-  recipientAddress,
-  namaProyek: carbonCase.namaProyek,
-  luasTanah: carbonCase.luasTanah,
-  saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
-  lembagaSertifikasi: carbonCase.lembagaSertifikasi,
-  kepemilikanLahan: carbonCase.kepemilikanLahan,
-  tanggalMulai: carbonCase.tanggalMulai,
-  tanggalSelesai: carbonCase.tanggalSelesai,
-  jumlahKarbon: carbonCase.jumlahKarbon,
-  jumlahSertifikat: carbonCase.jumlahKarbon, // Same as jumlahKarbon
-  pengunggah: submitterName,
-  statusPengajuan: carbonCase.statusPengajuan,
-});
+        recipientAddress,
+        namaProyek: carbonCase.namaProyek,
+        luasTanah: carbonCase.luasTanah,
+        saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
+        lembagaSertifikasi: carbonCase.lembagaSertifikasi,
+        kepemilikanLahan: carbonCase.kepemilikanLahan,
+        tanggalMulai: carbonCase.tanggalMulai,
+        tanggalSelesai: carbonCase.tanggalSelesai,
+        jumlahKarbon: carbonCase.jumlahKarbon,
+        jumlahSertifikat: carbonCase.jumlahKarbon, // Same as jumlahKarbon
+        pengunggah: submitterName,
+        statusPengajuan: carbonCase.statusPengajuan,
+      });
 
       console.log("Blockchain result:", JSON.stringify(blockchainResult));
 
@@ -505,8 +704,10 @@ const createCase = async (req, res) => {
     const savedCase = await newCase.save();
 
     // Populate pengunggah agar frontend dapat nama lengkap
-    const populatedCase = await Case.findById(savedCase._id)
-      .populate("pengunggah", "firstName lastName email");
+    const populatedCase = await Case.findById(savedCase._id).populate(
+      "pengunggah",
+      "firstName lastName email"
+    );
 
     res.status(201).json({
       message: "Data berhasil disimpan",
@@ -534,11 +735,10 @@ const getCase = async (req, res) => {
       return res.status(400).json({ message: "Format ID tidak valid" });
     }
 
-    const caseItem = await Case.findById(id)
-      .populate({
-        path: 'pengunggah',
-        select: 'firstName lastName email role walletAddress'
-      });
+    const caseItem = await Case.findById(id).populate({
+      path: "pengunggah",
+      select: "firstName lastName email role walletAddress",
+    });
 
     if (!caseItem) {
       return res.status(404).json({ message: "Case tidak ditemukan" });
@@ -573,12 +773,12 @@ const getAllCases = async (req, res) => {
   try {
     // Tambahkan populate untuk pengunggah
     const cases = await Case.find()
-      .populate('pengunggah', 'firstName lastName email role walletAddress')
+      .populate("pengunggah", "firstName lastName email role walletAddress")
       .sort({ createdAt: -1 });
-    
+
     // Log untuk debug
     console.log(`Sending ${cases.length} cases with populated pengunggah data`);
-    
+
     res.status(200).json({ cases });
   } catch (error) {
     console.error("Error getting cases:", error);

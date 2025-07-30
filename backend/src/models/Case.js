@@ -65,6 +65,18 @@ const caseSchema = new mongoose.Schema(
       ],
       recipientAddress: String,
     },
+
+    // Penanda apakah case tampil di marketplace
+    visibleInMarketplace: {
+      type: Boolean,
+      default: true,
+    },
+
+    // Field baru untuk menandai pemilik (buyer)
+    pemilik: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );

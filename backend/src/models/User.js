@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["superadmin", "validator", "seller", "buyer", "guest"],
     default: "guest",
-  }, 
+  },
   cases: [{ type: mongoose.Schema.Types.ObjectId, ref: "Case" }],
   walletAddress: String,
   balance: { type: Number, default: 1000000000 }, // Default 1 Milyar
@@ -24,10 +24,50 @@ const userSchema = new mongoose.Schema({
   phoneNumber: String,
   carbonCredits: [
     {
-      caseId: { type: mongoose.Schema.Types.ObjectId, ref: "Case" },
-      quantity: Number,
-      purchaseDate: Date,
+      purchaseId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Purchase",
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+      purchaseDate: {
+        type: Date,
+        default: Date.now,
+      },
       transactionId: String,
+      transactionHash: String,
+      blockNumber: Number,
+    },
+  ],
+  balance: {
+    type: Number,
+    default: 0,
+  },
+
+  // Riwayat transaksi
+  transactionHistory: [
+    {
+      type: {
+        type: String,
+        enum: ["purchase", "deposit", "withdrawal"],
+        required: true,
+      },
+      amount: {
+        type: Number,
+        required: true,
+      },
+      description: String,
+      date: {
+        type: Date,
+        default: Date.now,
+      },
+      transactionId: String,
+      blockchainData: {
+        transactionHash: String,
+        blockNumber: Number,
+      },
     },
   ],
   createdAt: { type: Date, default: Date.now },

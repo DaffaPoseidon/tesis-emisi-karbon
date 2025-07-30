@@ -17,12 +17,14 @@ const {
   verifyCertificate
 } = require('../controller/CaseController');
 
+const { getPurchaseById } = require("../controller/PurchaseController");
 const { authenticateToken } = require("../utils/authMiddleware");
 const isSellerMiddleware = require('../middleware/isSellerMiddleware'); // Tambahkan import
 const router = express.Router();
 
 // Protected routes - require authentication
 router.get("/profile", authenticateToken, getUserProfile);
+router.get("/:id", authenticateToken, getPurchaseById);
 router.put("/profile", authenticateToken, updateUserProfile);
 router.post("/purchase", authenticateToken, processPurchase);
 

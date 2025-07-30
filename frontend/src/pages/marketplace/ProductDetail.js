@@ -19,8 +19,16 @@ const ProductDetail = () => {
         throw new Error("ID produk tidak valid");
       }
 
+      // Tambahkan token autentikasi
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`
+        `${process.env.REACT_APP_API_BASE_URL}/cases/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan header Authorization
+          },
+        }
       );
 
       console.log("API response status:", response.status);

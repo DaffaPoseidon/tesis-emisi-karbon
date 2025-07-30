@@ -29,29 +29,33 @@ const getUserProfile = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Jangan gunakan populate yang menyebabkan error
-    const user = await User.findById(userId).select("-password");
+    // Gunakan populate untuk mendapatkan data lengkap
+    const user = await User.findById(userId).select("-password").populate({
+      path: "carbonCredits.purchaseId",
+      select:
+        "carbonCreditDetails blockchainData tokens quantity transactionId purchaseDate",
+    });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Jika user memiliki carbonCredits, lakukan populate manual
+    // Jika user memiliki carbonCredits, lakukan fetch purchases lengkap
     if (user.carbonCredits && user.carbonCredits.length > 0) {
       // Ambil semua ID purchase
       const purchaseIds = user.carbonCredits
-        .filter(credit => credit.purchaseId)
-        .map(credit => credit.purchaseId);
+        .filter((credit) => credit.purchaseId)
+        .map((credit) => credit.purchaseId._id || credit.purchaseId);
 
       // Fetch purchase details
       const purchases = await Purchase.find({
-        _id: { $in: purchaseIds }
-      });
+        _id: { $in: purchaseIds },
+      }).populate("case", "namaProyek");
 
       // Attach purchase details to response
-      res.status(200).json({ 
+      res.status(200).json({
         user: user,
-        purchases: purchases
+        purchases: purchases,
       });
     } else {
       res.status(200).json({ user });
@@ -201,64 +205,72 @@ const processPurchase = async (req, res) => {
   try {
     const userId = req.user.id;
     const { caseId, quantity, totalPrice } = req.body;
-    
+
     // Dapatkan data user dan case
     const user = await User.findById(userId);
-    const carbonCase = await Case.findById(caseId)
-      .populate("pengunggah", "firstName lastName email walletAddress");
-    
+    const carbonCase = await Case.findById(caseId).populate(
+      "pengunggah",
+      "firstName lastName email walletAddress"
+    );
+
     if (!user || !carbonCase) {
-      return res.status(404).json({ 
-        message: !user ? "User not found" : "Carbon case not found" 
+      return res.status(404).json({
+        message: !user ? "User not found" : "Carbon case not found",
       });
     }
-    
+
     // Verifikasi jumlah karbon yang tersedia
     if (carbonCase.jumlahKarbon < quantity) {
-      return res.status(400).json({ 
-        message: "Not enough carbon credits available" 
+      return res.status(400).json({
+        message: "Not enough carbon credits available",
       });
     }
-    
+
     // Verifikasi saldo user
     if (user.balance < totalPrice) {
       return res.status(400).json({
-        message: "Insufficient balance"
+        message: "Insufficient balance",
       });
     }
-    
+
     // Buat ID transaksi
     const transactionId = new mongoose.Types.ObjectId().toString();
-    
+
     // TAHAP 1: Verifikasi data produk di blockchain
-    if (carbonCase.blockchainData && carbonCase.blockchainData.tokens && carbonCase.blockchainData.tokens.length > 0) {
+    if (
+      carbonCase.blockchainData &&
+      carbonCase.blockchainData.tokens &&
+      carbonCase.blockchainData.tokens.length > 0
+    ) {
       console.log(`Verifikasi data produk sebelum pembelian...`);
-      
+
       // Verifikasi dengan jumlah token yang dibeli
-      const verificationResult = await blockchainService.verifyNFTBeforePurchase(carbonCase, quantity);
-      
+      const verificationResult =
+        await blockchainService.verifyNFTBeforePurchase(carbonCase, quantity);
+
       if (!verificationResult.success) {
         return res.status(500).json({
           message: "Gagal memverifikasi data produk di blockchain",
-          error: verificationResult.error
+          error: verificationResult.error,
         });
       }
-      
+
       if (!verificationResult.isValid) {
         return res.status(400).json({
           message: "Verifikasi token gagal",
           details: verificationResult.message,
           validTokens: verificationResult.validTokens,
-          totalTokens: verificationResult.totalTokens
+          totalTokens: verificationResult.totalTokens,
         });
       }
-      
+
       console.log(`Verifikasi berhasil: ${verificationResult.message}`);
     }
-    
+
     // Ambil tokens yang akan ditransfer
-    const tokensToTransfer = carbonCase.blockchainData?.tokens?.slice(0, quantity) || [];
-    
+    const tokensToTransfer =
+      carbonCase.blockchainData?.tokens?.slice(0, quantity) || [];
+
     // TAHAP 2: Buat record pembelian dengan detail carbon credit
     const purchase = new Purchase({
       buyer: userId,
@@ -267,10 +279,10 @@ const processPurchase = async (req, res) => {
       quantity,
       totalPrice,
       transactionId,
-      
+
       // Simpan tokens yang dibeli langsung di purchase
       tokens: tokensToTransfer,
-      
+
       // Simpan detail carbon credit
       carbonCreditDetails: {
         namaProyek: carbonCase.namaProyek,
@@ -279,13 +291,15 @@ const processPurchase = async (req, res) => {
         lembagaSertifikasi: carbonCase.lembagaSertifikasi,
         kepemilikanLahan: carbonCase.kepemilikanLahan,
         tanggalMulai: carbonCase.tanggalMulai,
-        tanggalSelesai: carbonCase.tanggalSelesai
-      }
+        tanggalSelesai: carbonCase.tanggalSelesai,
+      },
     });
-    
+
     // TAHAP 3: Simpan data transaksi di blockchain
     const sellerName = carbonCase.pengunggah
-      ? `${carbonCase.pengunggah.firstName || ""} ${carbonCase.pengunggah.lastName || ""}`.trim()
+      ? `${carbonCase.pengunggah.firstName || ""} ${
+          carbonCase.pengunggah.lastName || ""
+        }`.trim()
       : "Unknown";
     const buyerName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
 
@@ -305,27 +319,28 @@ const processPurchase = async (req, res) => {
         lembagaSertifikasi: carbonCase.lembagaSertifikasi,
         kepemilikanLahan: carbonCase.kepemilikanLahan,
         previousOwner: sellerName,
-        newOwner: buyerName
-      }
+        newOwner: buyerName,
+      },
     });
-    
+
     // TAHAP 4: Update case asli - hapus token yang sudah dibeli
     carbonCase.jumlahKarbon -= quantity;
     carbonCase.jumlahSertifikat -= quantity; // Juga kurangi jumlah sertifikat
-    
+
     // Hapus token yang sudah dibeli dari penjual
     if (carbonCase.blockchainData && carbonCase.blockchainData.tokens) {
-      carbonCase.blockchainData.tokens = carbonCase.blockchainData.tokens.slice(quantity);
+      carbonCase.blockchainData.tokens =
+        carbonCase.blockchainData.tokens.slice(quantity);
     }
-    
+
     // TAHAP 5: Update saldo user
     user.balance -= totalPrice;
-    
+
     // TAHAP 6: Update data user untuk menambahkan carbon credit ke profile
     if (!user.carbonCredits) {
       user.carbonCredits = [];
     }
-    
+
     // Tambahkan record kepemilikan carbon credit
     user.carbonCredits.push({
       purchaseId: purchase._id,
@@ -333,40 +348,38 @@ const processPurchase = async (req, res) => {
       purchaseDate: Date.now(),
       transactionId: transactionId,
       transactionHash: blockchainResult.transactionHash,
-      blockNumber: blockchainResult.blockNumber
+      blockNumber: blockchainResult.blockNumber,
+      tokens: tokensToTransfer, // Tambahkan tokens yang ditransfer ke pembeli
     });
-    
+
     // TAHAP 7: Update transaction history
     if (!user.transactionHistory) {
       user.transactionHistory = [];
     }
-    
+
     user.transactionHistory.push({
-      type: 'purchase',
+      type: "purchase",
       amount: totalPrice,
       description: `Purchase of ${quantity} carbon credits from project ${carbonCase.namaProyek}`,
       date: Date.now(),
       transactionId: transactionId,
       blockchainData: {
         transactionHash: blockchainResult.transactionHash,
-        blockNumber: blockchainResult.blockNumber
-      }
+        blockNumber: blockchainResult.blockNumber,
+      },
     });
-    
+
     // Update data blockchain di purchase record
     purchase.blockchainData = {
       transactionHash: blockchainResult.transactionHash,
       blockNumber: blockchainResult.blockNumber,
-      timestamp: blockchainResult.timestamp
+      timestamp: blockchainResult.timestamp,
+      tokens: tokensToTransfer, // Pastikan tokens disimpan dalam blockchainData
     };
-    
+
     // Simpan semua perubahan secara atomic
-    await Promise.all([
-      user.save(),
-      carbonCase.save(),
-      purchase.save()
-    ]);
-    
+    await Promise.all([user.save(), carbonCase.save(), purchase.save()]);
+
     // Return success response dengan data blockchain
     res.status(200).json({
       message: "Purchase successful",
@@ -376,12 +389,14 @@ const processPurchase = async (req, res) => {
         quantity,
         totalPrice,
         remainingBalance: user.balance,
-        blockchainData: blockchainResult.success ? {
-          transactionHash: blockchainResult.transactionHash,
-          blockNumber: blockchainResult.blockNumber,
-          timestamp: blockchainResult.timestamp
-        } : null
-      }
+        blockchainData: blockchainResult.success
+          ? {
+              transactionHash: blockchainResult.transactionHash,
+              blockNumber: blockchainResult.blockNumber,
+              timestamp: blockchainResult.timestamp,
+            }
+          : null,
+      },
     });
   } catch (error) {
     console.error("Error processing purchase:", error);

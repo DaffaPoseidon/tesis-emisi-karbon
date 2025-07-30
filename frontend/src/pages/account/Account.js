@@ -654,26 +654,47 @@ const Account = () => {
                               Token Details
                             </h4>
                             <div className="text-sm bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
-                              {purchase.tokens &&
-                                purchase.tokens.map((token, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="mb-2 pb-2 border-b border-gray-200 last:border-0"
-                                  >
-                                    <p>
-                                      <span className="font-medium">
-                                        Token ID:
-                                      </span>{" "}
-                                      {token.tokenId}
-                                    </p>
-                                    <p>
-                                      <span className="font-medium">Hash:</span>{" "}
-                                      <span className="break-all">
-                                        {token.uniqueHash}
-                                      </span>
-                                    </p>
-                                  </div>
-                                ))}
+                              {purchase.blockchainData && purchase.blockchainData.tokens && 
+                                purchase.blockchainData.tokens.length > 0 ? (
+                                  purchase.blockchainData.tokens.map((token, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="mb-2 pb-2 border-b border-gray-200 last:border-0"
+                                    >
+                                      <p>
+                                        <span className="font-medium">Token ID:</span>{" "}
+                                        {token.tokenId}
+                                      </p>
+                                      <p>
+                                        <span className="font-medium">Hash:</span>{" "}
+                                        <span className="break-all">
+                                          {token.uniqueHash}
+                                        </span>
+                                      </p>
+                                    </div>
+                                  ))
+                                ) : purchase.tokens && purchase.tokens.length > 0 ? (
+                                  // Alternatif jika tokens disimpan langsung di purchase
+                                  purchase.tokens.map((token, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="mb-2 pb-2 border-b border-gray-200 last:border-0"
+                                    >
+                                      <p>
+                                        <span className="font-medium">Token ID:</span>{" "}
+                                        {token.tokenId}
+                                      </p>
+                                      <p>
+                                        <span className="font-medium">Hash:</span>{" "}
+                                        <span className="break-all">
+                                          {token.uniqueHash}
+                                        </span>
+                                      </p>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <p className="text-gray-500 text-center">No token details available</p>
+                                )}
                             </div>
                           </div>
 

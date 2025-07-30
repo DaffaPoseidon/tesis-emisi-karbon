@@ -11,47 +11,47 @@
   },
   "transactions": [
     {
-      "id": "purchase-tx-1753852955337",
-      "timestamp": "2025-07-30T05:22:43.576Z",
-      "executionTime": 8238.795060999997,
-      "gasUsed": "33256",
-      "blockNumber": 2531,
-      "transactionHash": "0x8d5d0c7495e5ad64973042b06932d8b2cf6977283da00a76e897cb333b0028b2",
+      "id": "purchase-tx-1753864749628",
+      "timestamp": "2025-07-30T08:39:25.904Z",
+      "executionTime": 16275.405161000032,
+      "gasUsed": "37416",
+      "blockNumber": 3737,
+      "transactionHash": "0x5667c652999622f05b212e7a177597090b9f019a218e4774772cbf7f9bcdbb45",
       "tokenCount": 1,
       "metadata": {},
       "dataSize": 0,
       "latency": {
         "mining": null,
-        "confirmation": 8238.795060999997
+        "confirmation": 16275.405161000032
       }
     }
   ],
   "latencyMeasurements": [],
   "gasUsage": [
     {
-      "timestamp": "2025-07-30T04:04:21.012Z",
-      "projectId": "Test-1-1753848240811",
-      "tokenCount": 5,
-      "dataSize": 355,
-      "gasUsed": "3266636",
-      "gasPerToken": 653327
+      "timestamp": "2025-07-30T08:38:47.314Z",
+      "projectId": "Test-1-1753864715040",
+      "tokenCount": 10,
+      "dataSize": 357,
+      "gasUsed": "6465562",
+      "gasPerToken": 646556
     }
   ],
   "summaryStats": {
     "tokenCount": 1,
     "executionTime": {
-      "value": 8238.795060999997,
-      "perToken": 8238.795060999997
+      "value": 16275.405161000032,
+      "perToken": 16275.405161000032
     },
     "gasUsage": {
-      "value": 33256,
-      "perToken": 33256
+      "value": 37416,
+      "perToken": 37416
     },
     "latency": {
       "mining": null,
-      "confirmation": 8238.795060999997
+      "confirmation": 16275.405161000032
     },
     "dataSize": 0
   },
-  "lastUpdated": "2025-07-30T05:22:43.576Z"
+  "lastUpdated": "2025-07-30T08:39:25.904Z"
 }

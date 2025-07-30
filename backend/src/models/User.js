@@ -22,25 +22,32 @@ const userSchema = new mongoose.Schema({
   },
   personalAddress: String,
   phoneNumber: String,
-  carbonCredits: [
-    {
-      purchaseId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Purchase",
-      },
-      quantity: {
-        type: Number,
-        required: true,
-      },
-      purchaseDate: {
-        type: Date,
-        default: Date.now,
-      },
-      transactionId: String,
-      transactionHash: String,
-      blockNumber: Number,
+carbonCredits: [
+  {
+    purchaseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Purchase",
     },
-  ],
+    quantity: {
+      type: Number,
+      required: true,
+    },
+    purchaseDate: {
+      type: Date,
+      default: Date.now,
+    },
+    transactionId: String,
+    transactionHash: String,
+    blockNumber: Number,
+    // Tambahkan field tokens untuk menyimpan token yang dimiliki
+    tokens: [
+      {
+        tokenId: String,
+        uniqueHash: String
+      }
+    ]
+  },
+],
   balance: {
     type: Number,
     default: 0,

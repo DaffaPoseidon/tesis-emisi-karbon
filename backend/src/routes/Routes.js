@@ -24,8 +24,6 @@ const router = express.Router();
 
 // Protected routes - require authentication
 router.get("/profile", (req, res, next) => {
-  // Debugging - cetak header untuk melihat token
-  console.log("Auth header:", req.headers.authorization);
   next();
 }, authenticateToken, getUserProfile);
 router.get("/:id", authenticateToken, getPurchaseById);

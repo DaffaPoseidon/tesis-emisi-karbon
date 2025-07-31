@@ -1,7 +1,6 @@
 const { ethers } = require("ethers");
 const fs = require("fs");
 const path = require("path");
-const performanceMonitor = require("./realTimePerformanceMonitor");
 
 require("dotenv").config();
 
@@ -57,10 +56,6 @@ provider
  */
 async function issueCarbonCertificate(recipientAddress, carbonData) {
   const transactionId = `issue-certificate-${Date.now()}`;
-  performanceMonitor.startTransaction(transactionId, {
-    projectName: carbonData.namaProyek,
-    carbonAmount: carbonData.jumlahKarbon,
-  });
 
   try {
     console.log(
@@ -146,14 +141,6 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
 
     const receipt = await tx.wait(1);
 
-    performanceMonitor.recordGasUsage({
-      projectId,
-      tokenCount: amount,
-      dataSize: Buffer.byteLength(projectData, "utf8"),
-      gasUsed: receipt.gasUsed.toString(),
-      gasPerToken: Math.floor(parseInt(receipt.gasUsed.toString()) / amount),
-    });
-
     if (receipt.status !== 1) {
       throw new Error(`Transaction failed with status: ${receipt.status}`);
     }
@@ -200,21 +187,6 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
       };
     }
 
-    performanceMonitor.endTransaction(transactionId, {
-      gasUsed: receipt.gasUsed,
-      blockNumber: receipt.blockNumber,
-      hash: tx.hash,
-      metadata: {
-        projectId,
-        carbonAmount: amount,
-        recipientAddress,
-      },
-    });
-
-    // Tampilkan laporan performa di akhir proses yang sukses
-    const performanceReport = performanceMonitor.generatePerformanceReport();
-    console.log(performanceReport);
-
     // Return successful result with real token data from blockchain
     return {
       success: true,
@@ -229,11 +201,6 @@ async function issueCarbonCertificate(recipientAddress, carbonData) {
     };
   } catch (error) {
     console.error("Blockchain process failed:", error);
-    performanceMonitor.endTransaction(transactionId, { error: error.message });
-
-    // Tampilkan laporan performa juga saat terjadi error
-    const performanceReport = performanceMonitor.generatePerformanceReport();
-    console.log(performanceReport);
 
     // If it's a gas estimation error, try with a fixed gas amount
     if (
@@ -449,12 +416,6 @@ async function verifyNFTBeforePurchase(caseData, quantity = 1) {
  */
 async function storeTransactionData(transactionData) {
   const txId = `purchase-tx-${Date.now()}`;
-  performanceMonitor.startTransaction(txId, {
-    type: "purchase",
-    buyer: transactionData.buyer,
-    seller: transactionData.seller,
-    tokenCount: transactionData.tokens ? transactionData.tokens.length : 1,
-  });
 
   try {
     console.log(`Menyimpan data transaksi untuk pembelian ${transactionData.quantity} token`);
@@ -546,12 +507,6 @@ async function storeTransactionData(transactionData) {
       // Lanjutkan proses meski transfer gagal
     }
 
-    performanceMonitor.endTransaction(txId, {
-      gasUsed: receipt.gasUsed,
-      blockNumber: receipt.blockNumber,
-      hash: txResponse.hash,
-    });
-
     return {
       success: true,
       transactionHash: txResponse.hash,
@@ -560,7 +515,6 @@ async function storeTransactionData(transactionData) {
     };
   } catch (error) {
     console.error("Error menyimpan data transaksi:", error);
-    performanceMonitor.endTransaction(txId, { error: error.message });
 
     // Coba dengan fallback method jika gagal
     try {
@@ -737,14 +691,6 @@ async function debugSmartContract() {
   }
 }
 
-/**
- * Membuat laporan transaksi lengkap (untuk penelitian & analisis)
- * @returns {string} - Laporan transaksi dalam format teks
- */
-function generateTransactionReport() {
-  return performanceMonitor.generatePerformanceReport();
-}
-
 module.exports = {
   issueCarbonCertificate,
   getCertificateByHash,
@@ -752,6 +698,5 @@ module.exports = {
   verifyNFTBeforePurchase,
   testContractConnection,
   debugSmartContract,
-  generateTransactionReport,
   storeTransactionData,
 };

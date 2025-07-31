@@ -20,12 +20,14 @@ const {
 const { getPurchaseById } = require("../controller/PurchaseController");
 const { authenticateToken } = require("../utils/authMiddleware");
 const isSellerMiddleware = require('../middleware/isSellerMiddleware'); // Tambahkan import
+const { getMyRejectedProposals } = require("../controller/CaseController");
 const router = express.Router();
 
 // Protected routes - require authentication
 router.get("/profile", (req, res, next) => {
   next();
 }, authenticateToken, getUserProfile);
+router.get('/seller-rejected-list', authenticateToken, getMyRejectedProposals);
 router.get("/:id", authenticateToken, getPurchaseById);
 router.put("/profile", authenticateToken, updateUserProfile);
 router.post("/purchase", authenticateToken, processPurchase);

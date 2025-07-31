@@ -23,6 +23,8 @@ const Account = () => {
       industry: "",
     },
   });
+  const [rejectedProposals, setRejectedProposals] = useState([]);
+  const [loadingRejected, setLoadingRejected] = useState(false);
 
   // Fetch user profile
   useEffect(() => {
@@ -143,6 +145,44 @@ const Account = () => {
 
     fetchUserData();
   }, []);
+
+  // Fetch rejected proposals
+  useEffect(() => {
+    const fetchRejectedProposals = async () => {
+      if (activeTab !== "rejectedProposals") return;
+
+      try {
+        setLoadingRejected(true);
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/cases/seller-rejected-list`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch rejected proposals");
+        }
+
+        const data = await response.json();
+        setRejectedProposals(data.cases || []);
+      } catch (error) {
+        console.error("Error fetching rejected proposals:", error);
+      } finally {
+        setLoadingRejected(false);
+      }
+    };
+
+    fetchRejectedProposals();
+  }, [activeTab, navigate]);
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -269,8 +309,6 @@ const Account = () => {
                     Profile
                   </button>
 
-                  {/* Balance tab removed */}
-
                   <button
                     onClick={() => setActiveTab("carbon")}
                     className={`w-full text-left px-4 py-2 rounded ${
@@ -291,6 +329,17 @@ const Account = () => {
                     }`}
                   >
                     Financial
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab("rejectedProposals")}
+                    className={`w-full text-left px-4 py-2 rounded ${
+                      activeTab === "rejectedProposals"
+                        ? "bg-green-100 text-green-800"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    Rejected Proposals
                   </button>
                 </div>
               </div>
@@ -654,47 +703,59 @@ const Account = () => {
                               Token Details
                             </h4>
                             <div className="text-sm bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
-                              {purchase.blockchainData && purchase.blockchainData.tokens && 
-                                purchase.blockchainData.tokens.length > 0 ? (
-                                  purchase.blockchainData.tokens.map((token, idx) => (
+                              {purchase.blockchainData &&
+                              purchase.blockchainData.tokens &&
+                              purchase.blockchainData.tokens.length > 0 ? (
+                                purchase.blockchainData.tokens.map(
+                                  (token, idx) => (
                                     <div
                                       key={idx}
                                       className="mb-2 pb-2 border-b border-gray-200 last:border-0"
                                     >
                                       <p>
-                                        <span className="font-medium">Token ID:</span>{" "}
+                                        <span className="font-medium">
+                                          Token ID:
+                                        </span>{" "}
                                         {token.tokenId}
                                       </p>
                                       <p>
-                                        <span className="font-medium">Hash:</span>{" "}
+                                        <span className="font-medium">
+                                          Hash:
+                                        </span>{" "}
                                         <span className="break-all">
                                           {token.uniqueHash}
                                         </span>
                                       </p>
                                     </div>
-                                  ))
-                                ) : purchase.tokens && purchase.tokens.length > 0 ? (
-                                  // Alternatif jika tokens disimpan langsung di purchase
-                                  purchase.tokens.map((token, idx) => (
-                                    <div
-                                      key={idx}
-                                      className="mb-2 pb-2 border-b border-gray-200 last:border-0"
-                                    >
-                                      <p>
-                                        <span className="font-medium">Token ID:</span>{" "}
-                                        {token.tokenId}
-                                      </p>
-                                      <p>
-                                        <span className="font-medium">Hash:</span>{" "}
-                                        <span className="break-all">
-                                          {token.uniqueHash}
-                                        </span>
-                                      </p>
-                                    </div>
-                                  ))
-                                ) : (
-                                  <p className="text-gray-500 text-center">No token details available</p>
-                                )}
+                                  )
+                                )
+                              ) : purchase.tokens &&
+                                purchase.tokens.length > 0 ? (
+                                // Alternatif jika tokens disimpan langsung di purchase
+                                purchase.tokens.map((token, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="mb-2 pb-2 border-b border-gray-200 last:border-0"
+                                  >
+                                    <p>
+                                      <span className="font-medium">
+                                        Token ID:
+                                      </span>{" "}
+                                      {token.tokenId}
+                                    </p>
+                                    <p>
+                                      <span className="font-medium">Hash:</span>{" "}
+                                      <span className="break-all">
+                                        {token.uniqueHash}
+                                      </span>
+                                    </p>
+                                  </div>
+                                ))
+                              ) : (
+                                <p className="text-gray-500 text-center">
+                                  No token details available
+                                </p>
+                              )}
                             </div>
                           </div>
 
@@ -741,7 +802,7 @@ const Account = () => {
                   <div className="bg-gradient-to-r from-green-400 to-green-600 rounded-lg p-6 text-white mb-6">
                     <p className="text-xl font-semibold mb-1">Total Balance</p>
                     <p className="text-4xl font-bold">
-                      Rp {user.balance?.toLocaleString("id-ID") || "0"}
+                      Rp {user.balance?.toLocaleString("id-ID") || "1000000000"}
                     </p>
                   </div>
 
@@ -812,6 +873,80 @@ const Account = () => {
                         No transaction history
                       </div>
                     )}
+                  </div>
+                </div>
+              )}
+
+              {/* Rejected Proposals Tab */}
+              {activeTab === "rejectedProposals" && (
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-800 mb-6">
+                    Rejected Proposals
+                  </h1>
+
+                  {loadingRejected ? (
+                    <div className="flex justify-center items-center h-40">
+                      <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-green-500"></div>
+                    </div>
+                  ) : rejectedProposals.length === 0 ? (
+                    <div className="bg-gray-50 p-4 rounded text-center text-gray-500">
+                      You don't have any rejected proposals
+                    </div>
+                  ) : (
+                    <div className="bg-white border rounded-lg overflow-hidden">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Project Name
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Submission Date
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Carbon Amount
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Rejection Reason
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {rejectedProposals.map((proposal) => (
+                            <tr key={proposal._id}>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900">
+                                  {proposal.namaProyek}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  ID: {proposal._id.substring(0, 8)}...
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {new Date(proposal.createdAt).toLocaleDateString("id-ID")}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {proposal.jumlahKarbon} Tons
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-500">
+                                <div className="max-w-xs">
+                                  <p className="text-red-600 font-medium">
+                                    {proposal.rejectionReason || "No reason provided"}
+                                  </p>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                  
+                  <div className="mt-4 bg-yellow-50 border border-yellow-200 p-4 rounded">
+                    <h3 className="text-yellow-800 font-medium mb-2">What should I do with rejected proposals?</h3>
+                    <p className="text-yellow-700 text-sm">
+                      If your proposal was rejected, you can submit a new one with corrections based on the feedback provided. Make sure to address all the issues mentioned in the rejection reason.
+                    </p>
                   </div>
                 </div>
               )}

@@ -316,7 +316,7 @@ const CaseTable = ({
 
                   {/* Edit/Delete buttons for seller */}
                   <>
-                    <button
+                    {/* <button
                       onClick={() => {
                         if (item.statusPengajuan === "Diterima") {
                           alert("Approved data cannot be edited");
@@ -332,7 +332,7 @@ const CaseTable = ({
                       disabled={item.statusPengajuan === "Diterima"}
                     >
                       Edit
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => {
                         if (item.statusPengajuan === "Diterima") {
@@ -476,9 +476,9 @@ const CaseTable = ({
                         <ol className="list-decimal pl-5 space-y-1">
                           <li>Review the rejection reason carefully</li>
                           <li>Make necessary changes to your submission</li>
-                          <li>
+                          {/* <li>
                             Click the "Edit" button to update your proposal
-                          </li>
+                          </li> */}
                           <li>Submit the revised proposal for validation</li>
                         </ol>
                       </div>

@@ -19,10 +19,7 @@ const headers = {
 };
 
 // blockchain
-const {
-  issueCarbonCertificate,
-  generateTransactionReport,
-} = require("../services/blockchainService");
+const { issueCarbonCertificate } = require("../services/blockchainService");
 const fs = require("fs");
 
 const getUserProfile = async (req, res) => {
@@ -450,100 +447,114 @@ const updateStatus = async (req, res) => {
     // Update status
     carbonCase.statusPengajuan = statusPengajuan;
 
-    // If rejected, add rejection reason
+    // If rejected, add rejection reason and skip blockchain processing
     if (statusPengajuan === "Ditolak") {
       carbonCase.rejectionReason = rejectionReason;
+      await carbonCase.save();
+
+      return res.status(200).json({
+        message: `Status pengajuan diperbarui ke ${statusPengajuan}`,
+        case: carbonCase,
+        blockchainSuccess: false,
+      });
     }
 
     let blockchainSuccess = false;
 
     // Jika status Diterima, proses ke blockchain
-    try {
-      // Ambil alamat penerima
-      const recipientAddress =
-        carbonCase.pengunggah.walletAddress ||
-        process.env.DEFAULT_RECIPIENT_ADDRESS;
+    if (statusPengajuan === "Diterima") {
+      try {
+        // Ambil alamat penerima
+        const recipientAddress =
+          carbonCase.pengunggah.walletAddress ||
+          process.env.DEFAULT_RECIPIENT_ADDRESS;
 
-      if (!recipientAddress) {
-        throw new Error("No recipient address available");
-      }
-
-      console.log(
-        `Processing blockchain for case ${carbonCase.namaProyek} with recipient ${recipientAddress}`
-      );
-
-      // Debugging sebelum blockchain process
-      const { debugSmartContract } = require("../services/blockchainService");
-      await debugSmartContract();
-
-      // Proses ke blockchain dengan data lengkap
-      const blockchainResult = await issueCarbonCertificate(recipientAddress, {
-        namaProyek: carbonCase.namaProyek,
-        luasTanah: carbonCase.luasTanah,
-        saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
-        lembagaSertifikasi: carbonCase.lembagaSertifikasi,
-        kepemilikanLahan: carbonCase.kepemilikanLahan,
-        jumlahKarbon: carbonCase.jumlahKarbon,
-        tanggalMulai: carbonCase.tanggalMulai,
-        tanggalSelesai: carbonCase.tanggalSelesai,
-        jumlahKarbon: carbonCase.jumlahKarbon,
-        pengunggah: submitterName, // Nama pengunggah langsung
-        statusPengajuan: carbonCase.statusPengajuan,
-      });
-
-      console.log("Blockchain input:", {
-        recipientAddress,
-        namaProyek: carbonCase.namaProyek,
-        luasTanah: carbonCase.luasTanah,
-        saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
-        lembagaSertifikasi: carbonCase.lembagaSertifikasi,
-        kepemilikanLahan: carbonCase.kepemilikanLahan,
-        tanggalMulai: carbonCase.tanggalMulai,
-        tanggalSelesai: carbonCase.tanggalSelesai,
-        jumlahKarbon: carbonCase.jumlahKarbon,
-        jumlahSertifikat: carbonCase.jumlahKarbon, // Same as jumlahKarbon
-        pengunggah: submitterName,
-        statusPengajuan: carbonCase.statusPengajuan,
-      });
-
-      console.log("Blockchain result:", JSON.stringify(blockchainResult));
-
-      if (blockchainResult.success) {
-        console.log("Blockchain process successful, updating MongoDB document");
-
-        // Verifikasi tokens
-        if (!blockchainResult.tokens || blockchainResult.tokens.length === 0) {
-          console.warn("Warning: No tokens returned from blockchain process");
+        if (!recipientAddress) {
+          throw new Error("No recipient address available");
         }
 
-        // Simpan data blockchain tanpa ObjectId references
-        carbonCase.blockchainData = {
-          transactionHash: blockchainResult.transactionHash,
-          blockNumber: blockchainResult.blockNumber,
-          tokens: blockchainResult.tokens || [],
-          issuedOn: blockchainResult.issuedOn || Date.now(),
-          recipientAddress: recipientAddress,
-          projectData: blockchainResult.projectData || {},
-        };
+        console.log(
+          `Processing blockchain for case ${carbonCase.namaProyek} with recipient ${recipientAddress}`
+        );
 
-        blockchainSuccess = true;
+        // Debugging sebelum blockchain process
+        const { debugSmartContract } = require("../services/blockchainService");
+        await debugSmartContract();
 
-        // Tampilkan laporan performa untuk dokumentasi
-        console.log(generateTransactionReport());
-      } else {
-        console.error("Blockchain process failed:", blockchainResult.error);
+        // Proses ke blockchain dengan data lengkap
+        const blockchainResult = await issueCarbonCertificate(
+          recipientAddress,
+          {
+            namaProyek: carbonCase.namaProyek,
+            luasTanah: carbonCase.luasTanah,
+            saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
+            lembagaSertifikasi: carbonCase.lembagaSertifikasi,
+            kepemilikanLahan: carbonCase.kepemilikanLahan,
+            jumlahKarbon: carbonCase.jumlahKarbon,
+            tanggalMulai: carbonCase.tanggalMulai,
+            tanggalSelesai: carbonCase.tanggalSelesai,
+            jumlahKarbon: carbonCase.jumlahKarbon,
+            pengunggah: submitterName, // Nama pengunggah langsung
+            statusPengajuan: carbonCase.statusPengajuan,
+          }
+        );
+
+        console.log("Blockchain input:", {
+          recipientAddress,
+          namaProyek: carbonCase.namaProyek,
+          luasTanah: carbonCase.luasTanah,
+          saranaPenyerapEmisi: carbonCase.saranaPenyerapEmisi,
+          lembagaSertifikasi: carbonCase.lembagaSertifikasi,
+          kepemilikanLahan: carbonCase.kepemilikanLahan,
+          tanggalMulai: carbonCase.tanggalMulai,
+          tanggalSelesai: carbonCase.tanggalSelesai,
+          jumlahKarbon: carbonCase.jumlahKarbon,
+          jumlahSertifikat: carbonCase.jumlahKarbon, // Same as jumlahKarbon
+          pengunggah: submitterName,
+          statusPengajuan: carbonCase.statusPengajuan,
+        });
+
+        console.log("Blockchain result:", JSON.stringify(blockchainResult));
+
+        if (blockchainResult.success) {
+          console.log(
+            "Blockchain process successful, updating MongoDB document"
+          );
+
+          // Verifikasi tokens
+          if (
+            !blockchainResult.tokens ||
+            blockchainResult.tokens.length === 0
+          ) {
+            console.warn("Warning: No tokens returned from blockchain process");
+          }
+
+          // Simpan data blockchain tanpa ObjectId references
+          carbonCase.blockchainData = {
+            transactionHash: blockchainResult.transactionHash,
+            blockNumber: blockchainResult.blockNumber,
+            tokens: blockchainResult.tokens || [],
+            issuedOn: blockchainResult.issuedOn || Date.now(),
+            recipientAddress: recipientAddress,
+            projectData: blockchainResult.projectData || {},
+          };
+
+          blockchainSuccess = true;
+        } else {
+          console.error("Blockchain process failed:", blockchainResult.error);
+          return res.status(500).json({
+            message: "Gagal memproses data ke blockchain",
+            error: blockchainResult.error,
+            details: blockchainResult.details,
+          });
+        }
+      } catch (error) {
+        console.error("Error dalam proses blockchain:", error);
         return res.status(500).json({
           message: "Gagal memproses data ke blockchain",
-          error: blockchainResult.error,
-          details: blockchainResult.details,
+          error: error.message,
         });
       }
-    } catch (error) {
-      console.error("Error dalam proses blockchain:", error);
-      return res.status(500).json({
-        message: "Gagal memproses data ke blockchain",
-        error: error.message,
-      });
     }
 
     // Simpan perubahan ke MongoDB
@@ -746,6 +757,36 @@ const createCase = async (req, res) => {
   } catch (error) {
     console.error("Error creating case:", error);
     res.status(500).json({ message: error.message });
+  }
+};
+
+// Fungsi untuk mendapatkan proposal yang ditolak dari user yang login
+const getMyRejectedProposals = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Debug
+    console.log(`Fetching rejected proposals for user ID: ${userId}`);
+    
+    // Cari cases yang ditolak milik user ini
+    const rejectedCases = await Case.find({
+      pengunggah: userId,
+      statusPengajuan: "Ditolak"
+    }).sort({ updatedAt: -1 });
+    
+    console.log(`Found ${rejectedCases.length} rejected proposals`);
+    
+    res.status(200).json({
+      success: true,
+      count: rejectedCases.length,
+      cases: rejectedCases
+    });
+  } catch (error) {
+    console.error("Error fetching rejected proposals:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
 };
 
@@ -1079,6 +1120,7 @@ module.exports = {
   updateUserProfile,
   processPurchase,
   createCase,
+  getMyRejectedProposals,
   getCase,
   getApprovedCases,
   getAllCases,

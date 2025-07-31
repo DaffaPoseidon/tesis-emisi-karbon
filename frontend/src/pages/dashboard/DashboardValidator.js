@@ -31,14 +31,13 @@ const DashboardValidator = () => {
         }
       );
 
+      // Dalam fungsi fetchCases di DashboardValidator.js
       if (response.ok) {
         const data = await response.json();
-        // Filter cases for validator (only show Diajukan status)
+        // Filter cases for validator (ONLY show Diajukan status)
         const validatorCases = data.cases
           .filter(
-            (caseItem) =>
-              !caseItem.statusPengajuan ||
-              caseItem.statusPengajuan === "Diajukan"
+            (caseItem) => caseItem.statusPengajuan === "Diajukan" // Hanya tampilkan yang Diajukan
           )
           .map((caseItem) => ({
             ...caseItem,

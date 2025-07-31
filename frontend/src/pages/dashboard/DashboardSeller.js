@@ -56,12 +56,17 @@ const DashboardSeller = () => {
         }
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Cases fetched successfully:", data.cases.length);
-        setCases(data.cases);
-        return true; // Return success for promise chaining
-      } else {
+if (response.ok) {
+  const data = await response.json();
+  
+  // Filter cases untuk tidak menampilkan yang statusnya "Ditolak"
+  const filteredData = data.cases.filter(
+    (caseItem) => caseItem.statusPengajuan !== "Ditolak"
+  );
+  
+  setCases(filteredData);
+  return true;
+} else {
         console.error("Gagal mengambil data");
         return false;
       }
@@ -76,11 +81,15 @@ const DashboardSeller = () => {
     fetchCases();
   }, [fetchCases]);
 
-  // Filter cases to only show the current seller's cases
+  // Filter cases untuk hanya menampilkan milik seller saat ini dan bukan yang ditolak
   const filteredCases =
     user?.role === "seller"
-      ? cases.filter((caseItem) => caseItem.pengunggah?._id === user?._id)
-      : cases; // For superadmin or other roles, show all cases
+      ? cases.filter(
+          (caseItem) =>
+            caseItem.pengunggah?._id === user?._id &&
+            caseItem.statusPengajuan !== "Ditolak"
+        )
+      : cases.filter((caseItem) => caseItem.statusPengajuan !== "Ditolak"); // Untuk superadmin
 
   const handleDownloadExcel = () => {
     // Modifikasi data untuk format Excel

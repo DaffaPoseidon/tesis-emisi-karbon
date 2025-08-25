@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
   phoneNumber: String,
 carbonCredits: [
   {
+        caseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Case",
+    },
     purchaseId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Purchase",
@@ -58,7 +62,7 @@ carbonCredits: [
     {
       type: {
         type: String,
-        enum: ["purchase", "deposit", "withdrawal"],
+        enum: ["purchase", "deposit", "withdrawal", "sale"],
         required: true,
       },
       amount: {

@@ -447,12 +447,12 @@ async function storeTransactionData(transactionData) {
     console.log("Data transaksi yang akan disimpan:", dataToStore);
 
     // Buat transaksi tanpa smart contract
-    const tx = {
-      to: "0x0000000000000000000000000000000000000000", // Zero address, bukan null
-      data: ethers.hexlify(ethers.toUtf8Bytes(dataToStore)),
-      gasLimit: 100000,
-      gasPrice: 0, // Explicitly set gas price to 0 for Besu private network
-    };
+    // const tx = {
+    //   to: "0x0000000000000000000000000000000000000000", // Zero address, bukan null
+    //   data: ethers.hexlify(ethers.toUtf8Bytes(dataToStore)),
+    //   gasLimit: 100000,
+    //   gasPrice: 0, // Explicitly set gas price to 0 for Besu private network
+    // };
 
     console.log("Mengirim transaksi ke blockchain...");
 

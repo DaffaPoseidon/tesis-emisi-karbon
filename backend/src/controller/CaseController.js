@@ -320,15 +320,22 @@ const processPurchase = async (req, res) => {
       },
     });
 
-    // TAHAP 4: Update case asli - hapus token yang sudah dibeli
-    carbonCase.jumlahKarbon -= quantity;
-    carbonCase.jumlahSertifikat -= quantity; // Juga kurangi jumlah sertifikat
+// TAHAP 4: Update case asli - hapus token yang sudah dibeli
+carbonCase.jumlahKarbon -= quantity;
+carbonCase.jumlahSertifikat -= quantity; // Juga kurangi jumlah sertifikat
 
-    // Hapus token yang sudah dibeli dari penjual
-    if (carbonCase.blockchainData && carbonCase.blockchainData.tokens) {
-      carbonCase.blockchainData.tokens =
-        carbonCase.blockchainData.tokens.slice(quantity);
-    }
+// Hapus token yang sudah dibeli dari penjual secara spesifik
+if (carbonCase.blockchainData && carbonCase.blockchainData.tokens) {
+  // Dapatkan IDs token yang dibeli
+  const soldTokenIds = tokensToTransfer.map(token => token.tokenId);
+  
+  // Filter tokens dengan mempertahankan yang tidak terjual
+  carbonCase.blockchainData.tokens = carbonCase.blockchainData.tokens.filter(
+    token => !soldTokenIds.includes(token.tokenId)
+  );
+  
+  console.log(`Case now has ${carbonCase.blockchainData.tokens.length} tokens remaining`);
+}
 
     // TAHAP 5: Update saldo user
     user.balance -= totalPrice;
@@ -374,27 +381,107 @@ const processPurchase = async (req, res) => {
       tokens: tokensToTransfer, // Pastikan tokens disimpan dalam blockchainData
     };
 
+    // TAHAP 8: Update seller's data
+try {
+  const seller = await User.findById(carbonCase.pengunggah._id);
+  if (seller) {
+    // Update seller's balance - Pastikan balance sudah diinisialisasi
+    seller.balance = (seller.balance || 0) + totalPrice;
+    console.log(`Updated seller balance from ${seller.balance - totalPrice} to ${seller.balance}`);
+    
+    // Update seller's transaction history
+    if (!seller.transactionHistory) {
+      seller.transactionHistory = [];
+    }
+    
+    // Tambahkan record transaksi ke history seller
+    seller.transactionHistory.push({
+      type: "sale", // Pastikan 'sale' adalah nilai yang valid dalam enum
+      amount: totalPrice,
+      description: `Sale of ${quantity} carbon credits to ${user.firstName || ""} ${user.lastName || ""}`.trim(),
+      date: Date.now(),
+      transactionId: transactionId,
+      blockchainData: {
+        transactionHash: blockchainResult.transactionHash,
+        blockNumber: blockchainResult.blockNumber,
+      },
+    });
+    
+    // Debug
+    console.log(`Added transaction to seller history with type: sale, amount: ${totalPrice}`);
+    
+    // Kurangi carbon credits seller
+    if (seller.carbonCredits && seller.carbonCredits.length > 0) {
+      console.log(`Seller has ${seller.carbonCredits.length} carbon credit entries before update`);
+      
+      // Cari credit yang memiliki token yang sama dengan yang dibeli
+      for (const credit of seller.carbonCredits) {
+        if (credit.tokens && credit.tokens.length > 0) {
+          console.log(`Checking credit with ${credit.tokens.length} tokens, caseId: ${credit.caseId}`);
+          
+          // Hanya proses jika credit terkait dengan case yang sama
+          if (credit.caseId && credit.caseId.toString() === caseId.toString()) {
+            // Filter untuk menghapus token yang terjual
+            const tokenIdsToRemove = tokensToTransfer.map(token => token.tokenId);
+            console.log(`Removing ${tokenIdsToRemove.length} tokens: ${tokenIdsToRemove.join(', ')}`);
+            
+            const originalTokenCount = credit.tokens.length;
+            credit.tokens = credit.tokens.filter(token => 
+              !tokenIdsToRemove.includes(token.tokenId)
+            );
+            
+            // Update quantity berdasarkan token yang tersisa
+            const tokensRemoved = originalTokenCount - credit.tokens.length;
+            if (tokensRemoved > 0) {
+              credit.quantity -= tokensRemoved;
+              console.log(`Updated credit quantity from ${credit.quantity + tokensRemoved} to ${credit.quantity}`);
+              
+              // Jika credit.quantity adalah 0, hapus credit
+              if (credit.quantity <= 0) {
+                console.log(`Credit quantity is 0 or less, will be removed`);
+              }
+            }
+          }
+        }
+      }
+      
+      // Bersihkan credit entries dengan quantity 0
+      const beforeCount = seller.carbonCredits.length;
+      seller.carbonCredits = seller.carbonCredits.filter(credit => credit.quantity > 0);
+      console.log(`Removed ${beforeCount - seller.carbonCredits.length} empty credits, ${seller.carbonCredits.length} remain`);
+    }
+    
+    // Simpan perubahan ke seller
+    await seller.save();
+    console.log(`Successfully saved seller with updated balance and carbon credits`);
+  }
+} catch (sellerError) {
+  console.error("Error updating seller data:", sellerError);
+  // Lanjutkan proses meskipun ada error dalam memperbarui data seller
+}
+
     // Simpan semua perubahan secara atomic
     await Promise.all([user.save(), carbonCase.save(), purchase.save()]);
 
     // Return success response dengan data blockchain
-    res.status(200).json({
-      message: "Purchase successful",
-      purchase: {
-        transactionId,
-        case: carbonCase.namaProyek,
-        quantity,
-        totalPrice,
-        remainingBalance: user.balance,
-        blockchainData: blockchainResult.success
-          ? {
-              transactionHash: blockchainResult.transactionHash,
-              blockNumber: blockchainResult.blockNumber,
-              timestamp: blockchainResult.timestamp,
-            }
-          : null,
-      },
-    });
+res.status(200).json({
+  message: "Purchase successful",
+  purchase: {
+    transactionId,
+    case: carbonCase.namaProyek,
+    quantity,
+    totalPrice,
+    remainingBalance: user.balance,
+    sellerReceivedAmount: totalPrice,
+    blockchainData: blockchainResult.success
+      ? {
+          transactionHash: blockchainResult.transactionHash,
+          blockNumber: blockchainResult.blockNumber,
+          timestamp: blockchainResult.timestamp,
+        }
+      : null,
+  },
+});
   } catch (error) {
     console.error("Error processing purchase:", error);
     res.status(500).json({ message: error.message });
@@ -540,6 +627,37 @@ const updateStatus = async (req, res) => {
           };
 
           blockchainSuccess = true;
+
+            // Tambahkan: Tambahkan token ke carbon credits seller
+  try {
+    const seller = await User.findById(carbonCase.pengunggah._id);
+    if (seller) {
+      if (!seller.carbonCredits) {
+        seller.carbonCredits = [];
+      }
+      
+      // Tambahkan tokens ke carbon credits seller
+      seller.carbonCredits.push({
+        caseId: carbonCase._id,
+        quantity: carbonCase.jumlahKarbon,
+        purchaseDate: Date.now(),
+        transactionId: `issue-${carbonCase._id}-${Date.now()}`,
+        transactionHash: blockchainResult.transactionHash,
+        blockNumber: blockchainResult.blockNumber,
+        tokens: blockchainResult.tokens || []
+      });
+      
+      // Simpan perubahan ke database
+      await seller.save();
+      console.log(`Added ${blockchainResult.tokens.length} tokens to seller's carbon credits`);
+    } else {
+      console.warn("Seller not found, cannot add tokens to their credits");
+    }
+  } catch (sellerError) {
+    console.error("Error updating seller's carbon credits:", sellerError);
+    // Lanjutkan proses meskipun ada error
+  }
+
         } else {
           console.error("Blockchain process failed:", blockchainResult.error);
           return res.status(500).json({

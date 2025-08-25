@@ -46,8 +46,8 @@ create_default_config() {
         "mixHash": "0x63746963616c2062797a616e74696e65206661756c7420746f6c6572616e6365",
         "coinbase": "0x0000000000000000000000000000000000000000",
         "alloc": {
-            "F84D3c1248c04D7791f7E732B110EF1d337F1CaA": {
-                "privateKey": "1bda73f51aeccda93af5e06826dc4fefec67d283911bbc14ebbb1680aeb774d0",
+            "0x9ffD93f8606F769B3Da649282072131957dd8300": {
+                "privateKey": "0xd6076fa6963006c7fcfcfc278d9ecbdb5123eb69c4026ff3137631050c940276",
                 "balance": "0xad78ebc5ac6200000"
             },
             "d84bF43685Ca85ce262c93DfC1CcBeBdcd7400a8": {
